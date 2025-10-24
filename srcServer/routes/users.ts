@@ -13,40 +13,45 @@ const router: Router = express.Router()
 
 router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) =>  { 
   try {
+    console.log('Trying to scan DynamoDB table:', myTable);
+    
+    // Först: försök utan filter för att se all data
     const result = await db.send(new ScanCommand({
-      TableName: myTable,
-      FilterExpression: 'pk = :pk',
-      ExpressionAttributeValues: {
-        ':pk': 'USER'
-      }
+      TableName: myTable
     }));
+
+    console.log('DynamoDB scan result:', {
+      Count: result.Count,
+      Items: result.Items
+    });
 
     const users: User[] = [];
     
-    if (result.Items) {
+    if (result.Items && result.Items.length > 0) {
+      console.log('Processing', result.Items.length, 'items from DynamoDB');
+      
       for (const item of result.Items) {
-        try {
-          // Validera och transformera data med UserSchema
-          const validatedUser = UserSchema.parse({
-            Pk: item.pk,
-            Sk: item.sk,
-            username: item.username,
-            password: item.password || '',
-            accessLevel: item.accessLevel || 'user'
-          });
-          
-          users.push({
-            Pk: validatedUser.Pk,
-            Sk: validatedUser.Sk,
-            username: validatedUser.username,
-            password: validatedUser.password,
-            accessLevel: validatedUser.accessLevel
-          });
-        } catch (validationError) {
-          console.warn('Skipping invalid user data:', validationError);
-          // Hoppa över ogiltiga användare istället för att krascha
+        console.log('Processing item:', JSON.stringify(item, null, 2));
+        
+        // Kontrollera om detta är en användarpost
+        if (item.pk && item.pk.startsWith('USER#')) {
+          try {
+            const username = item.pk.replace('USER#', '');
+            users.push({
+              Pk: 'USER',
+              Sk: item.pk, // USER#sara
+              username: username,
+              password: item.password || '',
+              accessLevel: item.accessLevel || 'user'
+            });
+            console.log('Added user:', username);
+          } catch (error) {
+            console.warn('Error processing user:', error);
+          }
         }
       }
+    } else {
+      console.log('No items found in DynamoDB');
     }
 
     res.status(200).json({ users }); 
@@ -58,10 +63,5 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
     }); 
   }
 });
-
-
-
-
-
 
 export default router
