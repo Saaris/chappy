@@ -1,5 +1,6 @@
 export interface ErrorMessage {
-  error: string;
+  success: false;
+  message: string;
   issues?: unknown; 
 }
 export interface UsersRes {
@@ -8,8 +9,13 @@ export interface UsersRes {
 
 export interface User {
   Pk: 'USER'
-  Sk: `NAME#${string}`
+  Sk: `user#${string}`
   username: string
   password: string
-  accessLevel: string
+  accessLevel: 'admin' | 'user'
+}
+export interface Payload  {
+    username: string;
+    password: string,
+    accessLevel: string;
 }
