@@ -1,5 +1,6 @@
 import express from 'express'
 import type { Express, Request, Response } from 'express'
+import usersRouter from './routes/users.js'
 
 const port: number = Number(process.env.PORT) || 1337
 const app: Express = express()
@@ -8,7 +9,7 @@ app.use(express.static('./dist/'))
 
 
 //router modules
-app.use('/api/users')
+app.use('/api/users', usersRouter)
 
 app.use('/api/channels')
 
