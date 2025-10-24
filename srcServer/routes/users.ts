@@ -3,7 +3,7 @@
 //ta bort användare (VG), Man kan bara ta bort sig själv
 
 import express, { type Request, type Response, type Router } from 'express'
-import { QueryCommand, ScanCommand} from '@aws-sdk/lib-dynamodb'
+import { ScanCommand} from '@aws-sdk/lib-dynamodb'
 import type { User, UsersRes, ErrorMessage} from '../data/types.ts'
 import { UserSchema } from '../data/schemas.js'
 import { db, myTable } from '../data/dynamoDb.js'
