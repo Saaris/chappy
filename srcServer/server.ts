@@ -1,13 +1,14 @@
 import express from 'express'
 import type { Express, Request, Response } from 'express'
 import usersRouter from './routes/users.js'
-import dmRouter from './routes/users.js'
-import channelsRouter from './routes/users.js'
+import dmRouter from './routes/dm.js'
+import channelsRouter from './routes/channels.js'
 
 const port: number = Number(process.env.PORT) || 1337
 const app: Express = express()
 
 app.use(express.static('./dist/'))
+app.use(express.json()) // För att läsa JSON från POST-requests
 
 
 //router modules

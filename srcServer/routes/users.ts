@@ -3,10 +3,10 @@
 //ta bort användare (VG), Man kan bara ta bort sig själv
 
 import express, { type Request, type Response, type Router } from 'express'
-import { ScanCommand} from '@aws-sdk/lib-dynamodb'
-import type { User, UsersRes, ErrorMessage} from '../data/types.ts'
-import { UserSchema } from '../data/schemas.js'
+import { PutCommand, ScanCommand} from '@aws-sdk/lib-dynamodb'
+import type { User, UsersRes, ErrorMessage, UserPostBody, UserPostRes} from '../data/types.ts'
 import { db, myTable } from '../data/dynamoDb.js'
+import { UserSchema } from '../data/schemas.js'
 
 const router: Router = express.Router()
 
@@ -15,7 +15,6 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
   try {
     console.log('Trying to scan DynamoDB table:', myTable);
     
-    // Först: försök utan filter för att se all data
     const result = await db.send(new ScanCommand({
       TableName: myTable
     }));
@@ -33,14 +32,13 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
       for (const item of result.Items) {
         console.log('Processing item:', JSON.stringify(item, null, 2));
         
-        // Kontrollera om detta är en användarpost
         if (item.pk && item.pk.startsWith('USER#')) {
           try {
             const username = item.pk.replace('USER#', '');
             users.push({
               Pk: 'USER',
               Sk: item.pk, // USER#sara
-              username: username,
+              username: item.username || username,
               password: item.password || '',
               accessLevel: item.accessLevel || 'user'
             });
@@ -63,5 +61,56 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
     }); 
   }
 });
+
+// registrera ny användare
+
+
+router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>) => {
+  try {
+    // Validera inkommande data
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      const errorResponse: ErrorMessage = {
+        success: false,
+        message: "Username and password are required"
+      };
+      return res.status(400).json(errorResponse);
+    }
+  
+    const newUser = {
+      pk: `USER#${username}`,
+      sk: 'NAME', 
+      username,
+      password,
+      accessLevel: 'user'
+    };
+
+    await db.send(new PutCommand({
+      TableName: myTable,
+      Item: newUser,
+    }));
+
+    // Skicka tillbaka utan lösenord i rätt format för API
+    const responseUser: User = {
+      Pk: 'USER' as const,
+      Sk: `USER#${username}` as `user#${string}`,
+      username: username,
+      password: '', // Dölj lösenordet
+      accessLevel: 'user'
+    };
+
+    res.status(201).json({ user: responseUser });
+
+  } catch (error) {
+    console.error('Create user error:', error);
+    const errorResponse: ErrorMessage = {
+      success: false, 
+      message: "Failed to create user"
+    };
+    res.status(500).json(errorResponse);
+  }
+})
+
 
 export default router

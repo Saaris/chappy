@@ -19,3 +19,10 @@ export interface Payload  {
     password: string,
     accessLevel: string;
 }
+export interface UserPostBody {
+	username: string;
+  password: string
+}
+export interface UserPostRes {
+  user: User;
+}
