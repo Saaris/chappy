@@ -26,3 +26,8 @@ export interface UserPostBody {
 export interface UserPostRes {
   user: User;
 }
+
+export interface JwtRes {
+	success: boolean;
+	token?: string;  
+}
