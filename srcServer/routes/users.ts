@@ -9,7 +9,7 @@ import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import type { User, UsersRes, ErrorMessage, UserPostBody, UserPostRes} from '../data/types.ts'
 import { db, myTable } from '../data/dynamoDb.js'
 import { UserSchema } from '../data/schemas.js'
-
+import { hash } from 'bcrypt';
 
 const router: Router = express.Router()
 
@@ -65,14 +65,23 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
       };
       return res.status(400).json(errorResponse);
     }
-  
+    const hashedPassword = await hash(password, 10);
+    // Spara hashedPassword istället för password
     const newUser = {
       pk: `USER#${username}`,
-      sk: 'NAME', 
+      sk: 'NAME',
       username,
-      password,
+      password: hashedPassword,
       accessLevel: 'user'
     };
+      
+    // const newUser = {
+    //   pk: `USER#${username}`,
+    //   sk: 'NAME', 
+    //   username,
+    //   password,
+    //   accessLevel: 'user'
+    // };
 
     await db.send(new PutCommand({
       TableName: myTable,
