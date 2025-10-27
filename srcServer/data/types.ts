@@ -8,8 +8,8 @@ export interface UsersRes {
 }
 
 export interface User {
-  Pk: 'USER'
-  Sk: `user#${string}`
+  pk: 'USER'
+  sk: `user#${string}`
   username: string
   password: string
   accessLevel: 'admin' | 'user'
@@ -31,3 +31,4 @@ export interface JwtRes {
 	success: boolean;
 	token?: string;  
 }
+

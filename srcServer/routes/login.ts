@@ -9,23 +9,15 @@ import { compare } from 'bcrypt'
 const router: Router = express.Router();
 
 
-
 router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Response<JwtRes | void>) => {
-	// validera body
-	// finns användaren i databasen? QueryCommand
-	// matchar lösenordet?
-	// om ja, skapa JWT och skicka tillbaka
-	// om nej, svara med status 401
-
-	// TODO: använd Zod för att kontrollera body
+	
 	const body: UserPostBody = req.body
 	console.log('body', body)
 
 	const command = new QueryCommand({
 		TableName: myTable,
-		KeyConditionExpression: 'pk = :value',
-		ExpressionAttributeValues: {
-			':value': `USER#${body.username}` // ✅ Sök efter specifik användare
+		KeyConditionExpression: 'pk = :pk',
+		ExpressionAttributeValues: { ':pk': `USER#${body.username}`  
 		}
 	})
 	const output = await db.send(command)
@@ -34,9 +26,8 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 		res.sendStatus(404)
 		return
 	}
-
-	// ✅ Ta första (och enda) användaren direkt
-	const found = output.Items[0]
+	const users: User[] = output.Items as User[]
+	const found: User | undefined = users.find(user => user.username === body.username)
 	if( !found ) {
 		console.log('No matching user')
 		res.sendStatus(401)
@@ -44,7 +35,7 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 	}
 	// vi har hittat en användare - men stämmer lösenordet?
 	const passwordMatch: boolean = body.password === found.password
-	if( !passwordMatch ) {
+	if (!passwordMatch) {
 		console.log('Wrong password', body.password, found.password)
 		res.sendStatus(401)
 		return
@@ -52,7 +43,7 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 
 	// pk = 'USER#username'
 	console.log('Found user', found)
-	const token: string = createToken(found.pk.substring(5)) // ✅ Använd pk istället för Sk
+	const token: string = createToken(found.pk.substring(5)) 
 	res.send({ success: true, token: token })
 })
 

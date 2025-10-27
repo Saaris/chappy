@@ -2,65 +2,53 @@
 //Registrera ny användare, för både gäst och inloggad användare
 //ta bort användare (VG), Man kan bara ta bort sig själv
 
+//lägg in hash i POST
+
 import express, { type Request, type Response, type Router } from 'express'
-import { PutCommand, ScanCommand} from '@aws-sdk/lib-dynamodb'
+import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import type { User, UsersRes, ErrorMessage, UserPostBody, UserPostRes} from '../data/types.ts'
 import { db, myTable } from '../data/dynamoDb.js'
 import { UserSchema } from '../data/schemas.js'
 
+
 const router: Router = express.Router()
 
 
+// //GET alla users
 router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) =>  { 
-  try {
-    console.log('Trying to scan DynamoDB table:', myTable);
-    
-    const result = await db.send(new ScanCommand({
-      TableName: myTable
-    }));
+ try {
 
-    console.log('DynamoDB scan result:', {
-      Count: result.Count,
-      Items: result.Items
+    const command = new ScanCommand({
+      TableName: myTable,
+      FilterExpression: 'begins_with(pk, :value)',
+      ExpressionAttributeValues: {
+        ':value': 'USER#'
+      }
     });
 
-    const users: User[] = [];
-    
-    if (result.Items && result.Items.length > 0) {
-      console.log('Processing', result.Items.length, 'items from DynamoDB');
-      
-      for (const item of result.Items) {
-        console.log('Processing item:', JSON.stringify(item, null, 2));
-        
-        if (item.pk && item.pk.startsWith('USER#')) {
-          try {
-            const username = item.pk.replace('USER#', '');
-            users.push({
-              Pk: 'USER',
-              Sk: item.pk, // USER#sara
-              username: item.username || username,
-              password: item.password || '',
-              accessLevel: item.accessLevel || 'user'
-            });
-            console.log('Added user:', username);
-          } catch (error) {
-            console.warn('Error processing user:', error);
-          }
-        }
-      }
-    } else {
-      console.log('No items found in DynamoDB');
+    const output = await db.send(command);
+
+    if (!output.Items) {
+      res.status(500).send();
+      return;
     }
 
-    res.status(200).json({ users }); 
+    const users: User[] = (output.Items ?? [])
+      .filter(item => item.pk && item.pk.startsWith('USER#'))
+      .map(item => ({
+        pk: 'USER',
+        sk: item.pk,
+        username: item.username ?? item.pk.replace('USER#', ''),
+        password: item.password ?? '',
+        accessLevel: item.accessLevel ?? 'user'
+      }));
+
+    res.status(200).send({ users });
   } catch (error) {
-    console.error('Get users error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Failed to fetch users" 
-    }); 
+    res.status(500).send({ success: false, message: "Failed to fetch user" });
   }
 });
+
 
 // registrera ny användare
 
@@ -93,8 +81,8 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
 
     // Skicka tillbaka utan lösenord i rätt format för API
     const responseUser: User = {
-      Pk: 'USER' as const,
-      Sk: `USER#${username}` as `user#${string}`,
+      pk: 'USER' as const,
+      sk: `USER#${username}` as `user#${string}`,
       username: username,
       password: '', // Dölj lösenordet
       accessLevel: 'user'
