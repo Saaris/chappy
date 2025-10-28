@@ -1,4 +1,4 @@
-//Skapa ny kanal (VG), bara för inloggad användare
+
 //Ta bort kanal (VG), bara den som skapat kanalen
 //Öppna kanaler: läsa och skicka meddelanden, för både gäst och inloggad
 //Låsta kanaler: läsa och skicka meddelanden, för inloggad användare
@@ -26,7 +26,7 @@ router.get('/', async (req: Request, res: Response) => {
             }
         }));
 
-        // Filtrera på kanaler (använd små bokstäver pk/sk)
+        // Filtrera på kanaler 
         const channels = result.Items?.filter(item => 
             item.pk && item.pk.startsWith('CHANNEL#') && item.sk === 'META'
         ).map(item => ({
@@ -65,18 +65,13 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
             return res.status(404).send({ success: false, message: 'Channel not found' })
         }
         // Om kanalen är låst, kontrollera JWT-token
-        if (channel.isLocked) {
-            const authHeader = req.headers['authorization']
-            if (!authHeader || !authHeader.startsWith('Bearer ')) {
-                return res.status(401).send({ success: false, message: 'Token required for locked channel' })
+       if (channel.isLocked) {
+            const payload = validateJwt(req.headers['authorization']);
+            if (!payload) {
+                return res.status(401).send({ success: false, message: 'Token required or invalid for locked channel' });
             }
-            const token = authHeader.substring(7)
-            try {
-                jwt.verify(token, process.env.MY_JWT_SECRET || '')
-            } catch {
-                return res.status(401).send({ success: false, message: 'Invalid token' })
-            }
-        }
+            
+}
         // Hämta meddelanden för kanalen med QueryCommand
         const messageResult = await db.send(new QueryCommand({
             TableName: myTable,
