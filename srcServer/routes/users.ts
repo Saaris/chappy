@@ -65,7 +65,7 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
       };
       return res.status(400).json(errorResponse);
     }
-    
+
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt); //lägger till ett "salt" till lösenordet innan man hashar. (salt = ett slumpat tal)
     // Spara hashedPassword istället för password

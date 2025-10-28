@@ -4,9 +4,11 @@
 //Låsta kanaler: läsa och skicka meddelanden, för inloggad användare
 //se alla kanaler, gäst och inloggad användare
 import express, { type Request, type Response, type Router } from 'express'
-import { ScanCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
+import { ScanCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
 import { db, myTable } from '../data/dynamoDb.js'
 import jwt from 'jsonwebtoken'
+import type { Payload} from '../data/types.js'
+import { validateJwt } from '../data/auth.js';
 
 const router: Router = express.Router()
 
@@ -92,7 +94,42 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
     }
 })
 
+interface ChannelIdParam {
+	channelId: string;
+}
+router.delete('/:channelId', async (req: Request<ChannelIdParam>, res: Response<void>) => {
+	const channelIdToDelete: string = req.params.channelId
 
+	const maybePayload: Payload | null = validateJwt(req.headers['authorization'])
+	if( !maybePayload ) {
+		console.log('Gick inte att validera JWT')
+		res.sendStatus(401)
+		return
+	}
+
+	const {channelId, accessLevel } = maybePayload
+
+	if( channelId !== channelIdToDelete && accessLevel !== 'admin' ) {
+		console.log('Inte tillräcklig access level. ', channelId, accessLevel)
+		res.sendStatus(401)
+		return
+	}
+
+	const command = new DeleteCommand({
+		TableName: myTable,
+		Key: {
+			pk: 'CHANNEL',
+			sk: `CHANNEL#${channelId}` + channelIdToDelete
+		},
+		ReturnValues: "ALL_OLD"
+	})
+	const output = await db.send(command)
+	if( output.Attributes ) {
+		res.sendStatus(204)  // lyckades ta bort
+	} else {
+		res.sendStatus(404)
+	}
+})
 
 export default router
 
