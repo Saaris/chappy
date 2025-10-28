@@ -15,8 +15,9 @@ export interface User {
   accessLevel: 'admin' | 'user'
 }
 export interface Payload  {
-    channelId: string,
-    accessLevel: string;
+  channelId: string,
+  accessLevel: string;
+  username: string;
 }
 export interface UserPostBody {
 	username: string;

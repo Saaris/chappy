@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken'
 import type { Payload } from './types.js'
 
-const jwtSecret: string = process.env.MY_JWT_SECRET || ''
+const myJwtSecret: string = process.env.MY_JWT_SECRET || ''
 
 function createToken(username: string, accessLevel?: string): string {
-	if (!jwtSecret) {
+	if (!myJwtSecret) {
 		throw new Error('JWT secret is not configured. Check MY_JWT_SECRET in .env file')
 	}
 	
@@ -16,7 +16,7 @@ function createToken(username: string, accessLevel?: string): string {
 		username: username,
 		accessLevel: accessLevel || 'user',
 		exp: defaultExpiration
-	}, jwtSecret)
+	}, myJwtSecret)
 }
 
 function validateJwt(authHeader: string | undefined): Payload | null {
@@ -25,16 +25,17 @@ function validateJwt(authHeader: string | undefined): Payload | null {
 		return null
 	}
 	
-	const token: string = authHeader.substring(8)  // alternativ: slice, split
+	const token: string = authHeader.substring(7)
 	try {
-		const decodedPayload: Payload = jwt.verify(token, process.env.JWT_SECRET || '') as Payload
-		// TODO: validera decodedPayload
-		const payload: Payload = {channelId: decodedPayload.channelId, accessLevel: decodedPayload.accessLevel }
-		return payload
-
-	} catch(error) {
-		console.log('JWT verify failed: ', (error as any)?.message)
-		return null
+		const decodedPayload: Payload = jwt.verify(token, myJwtSecret) as Payload;
+		const userPayload: Payload = { 
+			channelId: decodedPayload.channelId, 
+			accessLevel: decodedPayload.accessLevel, 
+			username: decodedPayload.username };
+		return userPayload;
+	} catch (error) {
+		console.log('JWT verify failed: ', (error as any)?.message);
+		return null;
 	}
 }
 export { createToken, validateJwt }
