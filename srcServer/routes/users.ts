@@ -5,11 +5,12 @@
 //lägg in hash i POST
 
 import express, { type Request, type Response, type Router } from 'express'
-import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
-import type { User, UsersRes, ErrorMessage, UserPostBody, UserPostRes} from '../data/types.ts'
+import { PutCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
+import type { User, UsersRes, ErrorMessage, UserPostRes, Payload} from '../data/types.ts'
 import { db, myTable } from '../data/dynamoDb.js'
 import { UserSchema } from '../data/schemas.js'
 import { genSalt, hash } from 'bcrypt';
+import { validateJwt, createToken } from '../data/auth.js';
 
 const router: Router = express.Router()
 
@@ -110,6 +111,44 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     res.status(500).json(errorResponse);
   }
 })
+interface UserIdParam {
+	username: string
+  password?: string
+}
+router.delete('/:username', async (req: Request<UserIdParam>, res: Response<void>) => {
+  const userIdToDelete: string = req.params.username;
 
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
+  const maybePayload: Payload | null = validateJwt(token);
+  if (!maybePayload) {
+    console.log('Gick inte att validera JWT');
+    res.sendStatus(401);
+    return;
+  }
+
+  const { username } = maybePayload;
+
+  if (username !== userIdToDelete) {
+    console.log('Du kan inte ta bort denna användare ', username);
+    res.sendStatus(401);
+    return;
+  }
+
+  const command = new DeleteCommand({
+    TableName: myTable,
+    Key: {
+      pk: 'USER',
+      sk: 'USER#' + userIdToDelete
+    },
+    ReturnValues: "ALL_OLD"
+  });
+  const output = await db.send(command);
+  if (output.Attributes) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+})
 
 export default router
