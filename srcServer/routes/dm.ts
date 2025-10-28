@@ -1,5 +1,5 @@
 import express, { type Request, type Response, type Router } from 'express';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { db, myTable } from '../data/dynamoDb.js';
 import { validateJwt } from '../data/auth.js';
 
@@ -37,6 +37,18 @@ router.post('/', async (req: Request, res: Response) => {
 	} catch (error) {
 		res.status(500).send({ success: false, message: 'Failed to send DM' });
 	}
+});
+
+router.get('/:receiverId', async (req, res) => {
+	const { receiverId } = req.params;
+	const result = await db.send(new QueryCommand({
+		TableName: myTable,
+		KeyConditionExpression: 'pk = :pk',
+		ExpressionAttributeValues: { ':pk': 'USER#' + receiverId }
+	}));
+	
+	const dms = result.Items?.filter(item => item.senderId === 'user') || [];
+	res.send({ dms });
 });
 
 export default router;
