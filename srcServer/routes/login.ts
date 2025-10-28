@@ -4,7 +4,7 @@ import { createToken } from '../data/auth.js';
 import type { JwtRes, UserPostBody, User } from '../data/types.js';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { db, myTable } from '../data/dynamoDb.js';
-import { compare } from 'bcrypt'
+import { compare } from 'bcrypt';
 
 const router: Router = express.Router();
 
@@ -34,8 +34,8 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 		return
 	}
 	// vi har hittat en användare - men stämmer lösenordet?
-	const passwordMatch: boolean = body.password === found.password
-	if (!passwordMatch) {
+	const loginSuccess = await compare(body.password, found.password);
+	if (!loginSuccess) {
 		console.log('Wrong password', body.password, found.password)
 		res.sendStatus(401)
 		return
