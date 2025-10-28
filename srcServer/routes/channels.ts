@@ -4,11 +4,11 @@
 //Låsta kanaler: läsa och skicka meddelanden, för inloggad användare
 //se alla kanaler, gäst och inloggad användare
 import express, { type Request, type Response, type Router } from 'express'
-import { ScanCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb'
+import { ScanCommand, QueryCommand, DeleteCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { db, myTable } from '../data/dynamoDb.js'
-import jwt from 'jsonwebtoken'
-import type { Payload} from '../data/types.js'
-import { validateJwt } from '../data/auth.js';
+import type { Payload,ChannelBody, JwtRes} from '../data/types.js'
+import { validateJwt, createToken } from '../data/auth.js';
+
 
 const router: Router = express.Router()
 
@@ -88,6 +88,38 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
     }
 })
+
+// Skapa ny kanal (endast för inloggad användare)
+router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<JwtRes>) => {
+    const body: ChannelBody = req.body
+	console.log('body', body)
+
+    const newChannelId = body.channelId
+
+    // Hämta accessLevel från JWT-payload
+    const payload = validateJwt(req.headers['authorization']);
+    const command = new PutCommand({
+        TableName: myTable,
+        Item: {
+            channelId: newChannelId,
+            accessLevel: payload?.accessLevel || 'user',
+            isLocked: body.isLocked || false,
+            pk: 'CHANNEL#' + newChannelId,
+            sk: 'META'
+        }
+    })
+	try {
+		const result = await db.send(command)
+		const token: string | null = createToken(newChannelId)
+		res.send({ success: true, token: token })
+
+	} catch(error) {
+		console.log(`register.ts fel:`, (error as any)?.message)
+		res.status(500).send({ success: false })
+	}
+
+})
+
 
 interface ChannelIdParam {
 	channelId: string;

@@ -30,4 +30,9 @@ export interface JwtRes {
 	success: boolean;
 	token?: string;  
 }
-
+export interface ChannelBody {
+  channelId: string,
+  accessLevel: string
+  password: string
+  isLocked: string
+}
