@@ -9,7 +9,7 @@ import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import type { User, UsersRes, ErrorMessage, UserPostBody, UserPostRes} from '../data/types.ts'
 import { db, myTable } from '../data/dynamoDb.js'
 import { UserSchema } from '../data/schemas.js'
-import { hash } from 'bcrypt';
+import { genSalt, hash } from 'bcrypt';
 
 const router: Router = express.Router()
 
@@ -65,7 +65,9 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
       };
       return res.status(400).json(errorResponse);
     }
-    const hashedPassword = await hash(password, 10);
+    
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password, salt); //lägger till ett "salt" till lösenordet innan man hashar. (salt = ett slumpat tal)
     // Spara hashedPassword istället för password
     const newUser = {
       pk: `USER#${username}`,
