@@ -1,8 +1,9 @@
-
-//Ta bort kanal (VG), bara den som skapat kanalen
+//se alla kanaler, gäst + inloggad
+//Skapa ny kanal (VG) inloggad
+//Ta bort kanal (VG) inloggad
 //Öppna kanaler: läsa och skicka meddelanden, för både gäst och inloggad
 //Låsta kanaler: läsa och skicka meddelanden, för inloggad användare
-//se alla kanaler, gäst och inloggad användare
+
 import express, { type Request, type Response, type Router } from 'express'
 import { ScanCommand, QueryCommand, DeleteCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { db, myTable } from '../data/dynamoDb.js'
@@ -12,7 +13,7 @@ import { validateJwt, createToken } from '../data/auth.js';
 
 const router: Router = express.Router()
 
-// GET alla kanaler
+// GET, Se alla kanaler
 router.get('/', async (req: Request, res: Response) => {
     try {
         console.log('Fetching all channels from DynamoDB');
@@ -88,6 +89,29 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
     }
 })
+
+ // GET meddelanden för en öppen kanal, även för gäst
+router.get('/:channelId/messages', async (req: Request, res: Response) => {
+    const { channelId } = req.params
+    try {
+       
+        // Hämta meddelanden för kanalen med QueryCommand
+        const messageResult = await db.send(new QueryCommand({
+            TableName: myTable,
+            KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+            ExpressionAttributeValues: {
+                ':pk': `CHANNEL#${channelId}`,
+                ':sk': 'MESSAGE#'
+            }
+        }))
+        const messages = messageResult.Items || []
+        res.status(200).send({ messages })
+    } catch (error) {
+        console.error('Error when get messages from the channel:', error)
+        res.status(500).send({ success: false, message: 'Failed to fetch messages' })
+    }
+})
+
 
 // Skapa ny kanal (endast för inloggad användare)
 router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<JwtRes>) => {

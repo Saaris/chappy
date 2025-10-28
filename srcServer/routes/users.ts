@@ -1,5 +1,5 @@
 //se alla användare, för både gäst och inloggad användare
-//Registrera ny användare, för både gäst och inloggad användare
+//Registrera ny användare, för gäst
 //ta bort användare (VG), Man kan bara ta bort sig själv
 
 //lägg in hash i POST

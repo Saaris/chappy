@@ -5,13 +5,21 @@ import type { JwtRes, UserPostBody, User } from '../data/types.js';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { db, myTable } from '../data/dynamoDb.js';
 import { compare } from 'bcrypt';
+import { UserSchema } from '../data/schemas.js';
 
 const router: Router = express.Router();
 
 
 router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Response<JwtRes | void>) => {
 	
-	const body: UserPostBody = req.body
+	const result = UserSchema.pick({ username: true, password: true }).safeParse(req.body);
+	if (!result.success) {
+		console.log('Validation error', result.error)
+		res.sendStatus(400)
+		return
+	}
+
+	const body: UserPostBody = result.data
 	console.log('body', body)
 
 	const command = new QueryCommand({
@@ -33,7 +41,7 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 		res.sendStatus(401)
 		return
 	}
-	// vi har hittat en användare - men stämmer lösenordet?
+	//  se ifall lösen stämmer
 	const loginSuccess = await compare(body.password, found.password);
 	if (!loginSuccess) {
 		console.log('Wrong password', body.password, found.password)

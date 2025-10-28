@@ -1,7 +1,7 @@
 export interface ErrorMessage {
-  success: false;
-  message: string;
-  issues?: unknown; 
+  success: false
+  message: string
+  issues?: unknown
 }
 export interface UsersRes {
 	users: User[];
@@ -15,9 +15,9 @@ export interface User {
   accessLevel: 'admin' | 'user'
 }
 export interface Payload  {
-  channelId: string,
-  accessLevel: string;
-  username: string;
+  channelId: string
+  accessLevel: string
+  username: string
 }
 export interface UserPostBody {
 	username: string;
@@ -28,12 +28,20 @@ export interface UserPostRes {
 }
 
 export interface JwtRes {
-	success: boolean;
-	token?: string;  
+	success: boolean
+	token?: string
 }
 export interface ChannelBody {
-  channelId: string,
+  channelId: string
   accessLevel: string
   password: string
   isLocked: string
+}
+export type DirectMessage = {
+  pk: string
+  sk: string
+  senderId: string
+  receiverId: string
+  message: string
+  sentAt: number
 }
