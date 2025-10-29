@@ -40,6 +40,7 @@ router.post('/', async (req: Request, res: Response) => {
 		res.status(500).send({ success: false, message: 'Failed to send DM' });
 	}
 });
+
 //GET meessage (vid specifik receiverId ange det i urlen)
 router.get('/:receiverId', async (req, res) => {
 	const { receiverId } = req.params;

@@ -78,7 +78,7 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
             TableName: myTable,
             KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
             ExpressionAttributeValues: {
-                ':pk': 'CHANNEL#grupp1',
+                ':pk': `CHANNEL#${channelId}`,
                 ':sk': 'MESSAGE#'
             }
         }))

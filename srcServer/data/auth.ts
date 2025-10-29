@@ -10,14 +10,14 @@ function createToken(username: string, accessLevel?: string): string {
 	
 	const now = Math.floor(Date.now() / 1000)
 
-	const defaultExpiration: number = now + 15 * 60
+	const expiration: number = now + 15 * 60
 	
-	console.log('JWT sign secret:', myJwtSecret); // i createToken
+	console.log('JWT sign secret:', myJwtSecret); 
 	
 	return jwt.sign({
 		username: username,
 		accessLevel: accessLevel || 'user',
-		exp: defaultExpiration
+		exp: expiration
 	}, myJwtSecret)
 }
 
@@ -35,7 +35,7 @@ function validateJwt(authHeader: string | undefined): Payload | null {
 			channelId: decodedPayload.channelId, 
 			accessLevel: decodedPayload.accessLevel, 
 			username: decodedPayload.username };
-		console.log('JWT verify secret:', myJwtSecret); // i validateJwt
+		console.log('JWT verify secret:', myJwtSecret); 
 		return userPayload;
 	} catch (error) {
 		console.log('JWT verify failed: ', (error as any)?.message);

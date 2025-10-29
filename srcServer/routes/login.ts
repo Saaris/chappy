@@ -9,7 +9,7 @@ import { UserSchema } from '../data/schemas.js';
 
 const router: Router = express.Router();
 
-
+// logga in användare
 router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Response<JwtRes | void>) => {
 	
 	const result = UserSchema.pick({ username: true, password: true }).safeParse(req.body);

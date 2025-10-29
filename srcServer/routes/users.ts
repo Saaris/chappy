@@ -52,8 +52,6 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
 
 
 // registrera ny användare
-
-
 router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>) => {
   try {
     // Validera inkommande data
@@ -111,6 +109,8 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     res.status(500).json(errorResponse);
   }
 })
+
+//fylla användarnamn/och elelr lösenord för att kunna ta bort sin användare?
 interface UserIdParam {
 	username: string
   password?: string
