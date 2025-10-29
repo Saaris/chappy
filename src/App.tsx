@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { NavLink, Outlets } from 'react-router'
+
+import { NavLink, Outlet } from 'react-router'
 import './App.css'
 
 function App() {
