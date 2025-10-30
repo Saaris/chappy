@@ -1,5 +1,6 @@
-
 import {NavLink} from 'react-router'
+import './Header.css'
+
 
 const Header = () => {
 
@@ -7,7 +8,7 @@ const Header = () => {
          <div className='header'>
          
             <nav className='navbar'>
-                <NavLink to='register'>Register</NavLink>
+                <NavLink to='/register'>Register</NavLink>
                 <NavLink to='login'>Login</NavLink>
             </nav>
         </div>

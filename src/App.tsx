@@ -3,19 +3,16 @@ import './App.css'
 import Header from './components/header/Header.tsx'
 
 function App() {
- 
   return (
     <>
-      <div>
-        <header>
-          <Header />
-        </header>
-        <main>
-          <Outlet />
-        </main>
-      </div>
+      <header>
+        <Header />
+      </header>
+      <main>
+        <Outlet />
+      </main>
     </>
-  )
+  );
 }
 
 export default App

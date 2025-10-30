@@ -1,19 +1,22 @@
+import './Register.css'
+
 const Register = () => {
 
 
     return <div className="register-column">
-				<h2> Registrera ny användare </h2>
-				<label> Användarnamn </label>
-				<input type="text" placeholder="användarnamn"
-					
-					/>
+				<p> Sign up to Chappy chatapp </p>
+				<div className='register-form'>
+					<label> Username </label>
+					<input type="text" placeholder="användarnamn"
+						
+						/>
 
-				<label> Lösenord </label>
-				<input type="password" placeholder=""
-					/>
-
-				<button > Logga in </button>
-				<button > Registrera </button>
+					<label> Password </label>
+					<input type="password" placeholder=""
+						/>
+				
+				<button > Sign up </button>
+				</div>
 			</div>
 }
 export default Register
