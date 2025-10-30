@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { createHashRouter, RouterProvider } from 'react-router'
 import Home from './pages/Home.tsx'
 import ChatPage from './pages/ChatPage.tsx'
+import Header from './components/header/Header.tsx'
 
 const router = createHashRouter([
   {
@@ -18,6 +19,10 @@ const router = createHashRouter([
 		{
 			path: '/ChatPage',
 			Component: ChatPage
+		},
+		{
+			path: '/Header',
+			Component: Header
 		},
 	]
   }
