@@ -103,12 +103,8 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     res.status(201).json({ user: responseUser });
 
   } catch (error) {
-    console.error('Create user error:', error);
-    const errorResponse: ErrorMessage = {
-      success: false, 
-      message: "Failed to create user"
-    };
-    res.status(500).json(errorResponse);
+    console.error('Create user error:', error); // Här loggas felet i terminalen
+    res.status(500).json({ success: false, message: "Failed to create user" });
   }
 })
 
