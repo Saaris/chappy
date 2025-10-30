@@ -1,5 +1,6 @@
 import { LoginSchema } from "../../frontenddata/zodSchema";
 import type { User } from "../../frontenddata/types.ts";
+import './Login.css'
 
 const Login = () => {
 
@@ -15,8 +16,9 @@ const formData: User = { username: "Göran", password: "hemligt123" };
       
     }
 
-return <div className="register-column">
-				<h2> Login to Chappy </h2>
+return <div className="login-column">
+				<p> Login to Chappy </p>
+				<div className="login-form">
 				<label> Username</label>
 				<input type="text" placeholder="användarnamn"
 					
@@ -27,6 +29,7 @@ return <div className="register-column">
 					/>
 
 				<button > Logga in </button>
+				</div>
 			</div>
 }
 export default Login

@@ -18,15 +18,18 @@ const Register = () => {
     }
 
     return <div className="register-column">
-				<p> Sign up to Chappy chatapp </p>
+				<p> Create new user </p>
 				<div className='register-form'>
 					<label> Username </label>
-					<input type="text" placeholder="användarnamn"
+					<input type="text" placeholder="username"
 						
 						/>
 
 					<label> Password </label>
-					<input type="password" placeholder=""
+					<input type="password" placeholder="password"
+						/>
+					<label> Confirm password </label>
+					<input type="password" placeholder="password"
 						/>
 				
 				<button > Sign up </button>

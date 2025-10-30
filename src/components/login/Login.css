@@ -1,4 +1,4 @@
-.register-column {
+.login-column {
     
     min-height: 80vh;
     margin-top: 40px;
@@ -11,7 +11,7 @@
     
 }
 
-.register-form {
+.login-form {
     display:flex;
     flex-direction: column;
     margin: 10px;
@@ -31,7 +31,7 @@
 
     button {
         background-color: rgb(50, 127, 127);
-        padding: 6px;
+        padding: 5px;
         border-radius: 5px;
         font-size: 16px;
         min-width: 100px;
