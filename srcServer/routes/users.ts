@@ -11,6 +11,7 @@ import { db, myTable } from '../data/dynamoDb.js'
 import { UserSchema } from '../data/schemas.js'
 import { genSalt, hash } from 'bcrypt';
 import { validateJwt, createToken } from '../data/auth.js';
+import { randomUUID } from "crypto";
 
 const router: Router = express.Router()
 
@@ -41,7 +42,8 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
         sk: item.pk,
         username: item.username ?? item.pk.replace('USER#', ''),
         password: item.password ?? '',
-        accessLevel: item.accessLevel ?? 'user'
+        accessLevel: item.accessLevel ?? 'user',
+        userId: item.userId ?? '',
       }));
 
     res.status(200).send({ users });
@@ -74,12 +76,14 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     const hashedPassword = await hash(password, salt); //lägger till ett "salt" till lösenordet innan man hashar. (salt = ett slumpat tal)
     // Spara hashedPassword istället för password
     //newUser objekt, ny användare
+    const userId = randomUUID().slice(0, 5);
     const newUser = {
       pk: `USER#${username}`,
       sk: 'NAME',
       username,
       password: hashedPassword,
-      accessLevel: 'user'
+      accessLevel: 'user',
+      userId
     };
       
     await db.send(new PutCommand({
