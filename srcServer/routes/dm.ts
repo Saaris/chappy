@@ -15,17 +15,18 @@ router.post('/', async (req: Request, res: Response) => {
 		return res.status(401).send({ success: false, message: 'Access denied: user or admin required' });
 	}
 //Säkerställer att jag skickar både receiverId och message när man skickar DM.
-	const { receiverId, message } = req.body;
-	if (!receiverId || !message) {
-		return res.status(400).send({ success: false, message: 'receiverId and message required' });
+	const { userId, message } = req.body;
+	if (!userId || !message) {
+		return res.status(400).send({ success: false, message: 'userId and message required' });
 	}
 
 	const dmId = crypto.randomUUID();
 	const item: DirectMessage = {
-		pk: 'USER#' + receiverId,
+		pk: 'USER#' + userId,
 		sk: 'DM#' + dmId,
 		senderId: payload.username || 'unknown',
-		receiverId,
+		receiverId: userId,
+		userId: payload.username || 'unknown',
 		message,
 		sentAt: Date.now()
 	};

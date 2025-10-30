@@ -18,6 +18,8 @@ export interface Payload  {
   channelId: string
   accessLevel: string
   username: string
+  creatorUserId: string
+  userId: string
 }
 export interface UserPostBody {
 	username: string;
@@ -32,6 +34,7 @@ export interface JwtRes {
 	token?: string
 }
 export interface ChannelBody {
+  username: string
   channelId: string
   accessLevel: string
   password: string
@@ -44,4 +47,5 @@ export type DirectMessage = {
   receiverId: string
   message: string
   sentAt: number
+  userId: string
 }

@@ -32,7 +32,8 @@ router.get('/', async (req: Request, res: Response) => {
             item.pk && item.pk.startsWith('CHANNEL#') && item.sk === 'META'
         ).map(item => ({
             channelId: item.channelId,
-            isLocked: item.isLocked || false
+            isLocked: item.isLocked || false,
+            creatorUserId: item.creatorUserId
         })) || [];
 
         console.log(`Found ${channels.length} channels:`, channels);
@@ -125,11 +126,13 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
     const command = new PutCommand({
         TableName: myTable,
         Item: {
+            //username: {username},
             channelId: newChannelId,
             accessLevel: payload?.accessLevel || 'user',
             isLocked: body.isLocked || false,
             pk: 'CHANNEL#' + newChannelId,
-            sk: 'META'
+            sk: 'META',
+            creatorUserId: payload?.creatorUserId //TODO validera payload
         }
     })
 	try {
@@ -144,43 +147,55 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
 
 })
 
-
+// Delete channel, ta bort kanal, bara den som skapat kanalen
 interface ChannelIdParam {
 	channelId: string;
 }
 router.delete('/:channelId', async (req: Request<ChannelIdParam>, res: Response<void>) => {
-	const channelIdToDelete: string = req.params.channelId
+  const channelIdToDelete: string = req.params.channelId;
+  const payload: Payload | null = validateJwt(req.headers['authorization']);
+  if (!payload) {
+    res.sendStatus(401);
+    return;
+  }
 
-	const maybePayload: Payload | null = validateJwt(req.headers['authorization'])
-	if( !maybePayload ) {
-		console.log('Gick inte att validera JWT')
-		res.sendStatus(401)
-		return
-	}
+  // Hämta kanalinfo
+  const result = await db.send(new ScanCommand({
+    TableName: myTable,
+    FilterExpression: 'pk = :pk AND sk = :sk',
+    ExpressionAttributeValues: {
+      ':pk': `CHANNEL#${channelIdToDelete}`,
+      ':sk': 'META'
+    }
+  }));
+  const channel = result.Items && result.Items[0];
+  if (!channel) {
+    res.sendStatus(404);
+    return;
+  }
 
-	const {channelId, accessLevel } = maybePayload
+  // Tillåt borttagning endast om userId matchar creatorUserId eller om accessLevel är admin
+  if (channel.creatorUserId !== payload.userId && payload.accessLevel !== 'admin') {
+    res.sendStatus(401);
+    return;
+  }
 
-	if( channelId !== channelIdToDelete && accessLevel !== 'admin' ) {
-		console.log('Inte tillräcklig access level. ', channelId, accessLevel)
-		res.sendStatus(401)
-		return
-	}
-
-	const command = new DeleteCommand({
-		TableName: myTable,
-		Key: {
-			pk: 'CHANNEL',
-			sk: `CHANNEL#${channelId}` + channelIdToDelete
-		},
-		ReturnValues: "ALL_OLD"
-	})
-	const output = await db.send(command)
-	if( output.Attributes ) {
-		res.sendStatus(204)  // lyckades ta bort
-	} else {
-		res.sendStatus(404)
-	}
-})
+  // Ta bort kanalen
+  const command = new DeleteCommand({
+    TableName: myTable,
+    Key: {
+      pk: 'CHANNEL#' + channelIdToDelete,
+      sk: 'META'
+    },
+    ReturnValues: "ALL_OLD"
+  });
+  const output = await db.send(command);
+  if (output.Attributes) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
+});
 
 export default router
 

@@ -34,7 +34,10 @@ function validateJwt(authHeader: string | undefined): Payload | null {
 		const userPayload: Payload = { 
 			channelId: decodedPayload.channelId, 
 			accessLevel: decodedPayload.accessLevel, 
-			username: decodedPayload.username };
+			username: decodedPayload.username,
+			userId: decodedPayload.userId, 
+			creatorUserId: decodedPayload.creatorUserId 
+		};
 		console.log('JWT verify secret:', myJwtSecret); 
 		return userPayload;
 	} catch (error) {

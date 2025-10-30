@@ -55,6 +55,11 @@ router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) => 
 router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>) => {
   try {
     // Validera inkommande data
+    const parseResult = UserSchema.omit({ pk: true, sk: true, accessLevel: true, userId: true }).safeParse(req.body);
+  if (!parseResult.success) {
+    return res.status(400).json({ success: false, message: "Ogiltig data" });
+  }
+
     const { username, password } = req.body;
     
     if (!username || !password) {
@@ -68,6 +73,7 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt); //lägger till ett "salt" till lösenordet innan man hashar. (salt = ett slumpat tal)
     // Spara hashedPassword istället för password
+    //newUser objekt, ny användare
     const newUser = {
       pk: `USER#${username}`,
       sk: 'NAME',
@@ -76,25 +82,17 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
       accessLevel: 'user'
     };
       
-    // const newUser = {
-    //   pk: `USER#${username}`,
-    //   sk: 'NAME', 
-    //   username,
-    //   password,
-    //   accessLevel: 'user'
-    // };
-
     await db.send(new PutCommand({
       TableName: myTable,
       Item: newUser,
     }));
 
-    // Skicka tillbaka utan lösenord i rätt format för API
+    // Skicka tillbaka utan lösenord
     const responseUser: User = {
       pk: 'USER' as const,
       sk: `USER#${username}` as `user#${string}`,
       username: username,
-      password: '', // Dölj lösenordet
+      password: '', 
       accessLevel: 'user'
     };
 
@@ -112,11 +110,10 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
 
 //fylla användarnamn/och elelr lösenord för att kunna ta bort sin användare?
 interface UserIdParam {
-	username: string
-  password?: string
+	userId: string
 }
-router.delete('/:username', async (req: Request<UserIdParam>, res: Response<void>) => {
-  const userIdToDelete: string = req.params.username;
+router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>) => {
+  const userIdToDelete: string = req.params.userId;
 
   const authHeader = req.headers['authorization'];
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
@@ -127,10 +124,10 @@ router.delete('/:username', async (req: Request<UserIdParam>, res: Response<void
     return;
   }
 
-  const { username } = maybePayload;
+  const { userId} = maybePayload;
 
-  if (username !== userIdToDelete) {
-    console.log('Du kan inte ta bort denna användare ', username);
+  if (userId !== userIdToDelete) {
+    console.log('Du kan inte ta bort denna användare ', userId);
     res.sendStatus(401);
     return;
   }
@@ -139,7 +136,7 @@ router.delete('/:username', async (req: Request<UserIdParam>, res: Response<void
     TableName: myTable,
     Key: {
       pk: 'USER',
-      sk: 'USER#' + userIdToDelete
+      sk: 'NAME#' + userIdToDelete
     },
     ReturnValues: "ALL_OLD"
   });
