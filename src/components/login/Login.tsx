@@ -1,8 +1,9 @@
 import { LoginSchema } from "../../frontenddata/zodSchema";
+import type { User } from "../../frontenddata/types.ts";
 
 const Login = () => {
 
-const formData = { username: "Göran", password: "hemligt123" };
+const formData: User = { username: "Göran", password: "hemligt123" };
 
     
     const result = LoginSchema.safeParse(formData);
