@@ -1,7 +1,20 @@
 import './Register.css'
+import { RegisterSchema } from '../../frontenddata/zodSchema.ts';
 
 const Register = () => {
 
+    const formData = { username: "Göran", password: "hemligt123" };
+
+    
+    const result = RegisterSchema.safeParse(formData);
+
+    if (!result.success) {
+     
+	  console.log(result.error.issues);
+    } else {
+      // Data är OK, skicka till backend
+      // t.ex. fetch("/api/users", { method: "POST", body: JSON.stringify(result.data) })
+    }
 
     return <div className="register-column">
 				<p> Sign up to Chappy chatapp </p>
