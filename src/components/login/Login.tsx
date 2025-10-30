@@ -2,19 +2,19 @@ import { LoginSchema } from "../../frontenddata/zodSchema";
 import type { User } from "../../frontenddata/types.ts";
 import './Login.css'
 import { useState } from "react";
-import { LS_KEY } from '../../frontenddata/key.ts';
+import { LocalStorage_KEY } from '../../frontenddata/key.ts';
 
 const Login = () => {
 
 	const [loginErrorMsg, setLoginErrorMsg] = useState<string>('');
-	const formData: User = { username: "Göran", password: "hemligt123" };
+	const [formData, setFormData] = useState<User>({ username: '', password: '' });
 
 	
 	const result = LoginSchema.safeParse(formData);
 
 	if (!result.success) {
 	 
-	  console.log(result.error.issues);
+	//   console.log(result.error.issues);
 	} else {
 	  
 	}
@@ -45,12 +45,12 @@ const Login = () => {
 
 		if( data.success ) {
 			const jwt: string = data.token
-			localStorage.setItem(LS_KEY, jwt)
+			localStorage.setItem(LocalStorage_KEY, jwt)
 			// TODO: visa för användaren att man är inloggad
 			console.log('Inloggningen lyckades')
 
 		} else {
-			localStorage.removeItem(LS_KEY)
+			localStorage.removeItem(LocalStorage_KEY)
 			// Visa meddelande för användaren?
 		}
 	}
@@ -60,14 +60,17 @@ return <div className="login-column">
 				<p> Login to Chappy </p>
 				<div className="login-form">
 				<label> Username</label>
-				<input type="text" placeholder="användarnamn"
+				<input type="text" placeholder="username"
+				onChange={event => setFormData({ ...formData, username: event.target.value })}
+					value={formData.username}
 					
 					/>
 
 				<label> Password </label>
-				<input type="password" placeholder=""
-				
-					/>
+				<input type="password" placeholder="password"
+  onChange={event => setFormData({ ...formData, password: event.target.value })}
+  value={formData.password}
+/>
 					{loginErrorMsg && <span> {loginErrorMsg} </span>}
 
 				<button onClick={handleLogin} > Logga in </button>

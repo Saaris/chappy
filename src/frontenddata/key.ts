@@ -1,1 +1,1 @@
-export const LS_KEY = 'jwt'
+export const LocalStorage_KEY = 'jwt'

@@ -2,7 +2,8 @@ import './Register.css'
 // import { RegisterSchema } from '../../frontenddata/zodSchema.ts';
 import type { User } from "../../frontenddata/types.ts";
 import { useState } from 'react';
-import { LS_KEY } from '../../frontenddata/key.ts';
+import { LocalStorage_KEY } from '../../frontenddata/key.ts';
+import { useUserStore } from '../../frontenddata/userStore';
 
 
 
@@ -10,6 +11,7 @@ const Register = () => {
 
    const [formData, setFormData] = useState<User>({ username: '', password: '' });
    const [confirmPassword, setConfirmPassword] = useState('');
+   const [errorMsg, setErrorMsg] = useState('')
 
    const handleSubmitReg = async () => {
 
@@ -38,16 +40,21 @@ const Register = () => {
          data = null;
       }
 
-      if (data && data.success) {
-         alert("Registrering lyckades!");
-         // eller visa ett meddelande i din komponent
-      } else {
-         alert("Registrering misslyckades!");
-      }
-   }
+      if( data.success ) {
+		setErrorMsg('')
+			const jwt: string = data.token
+			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
+			console.log('Inloggningen lyckades')
+         useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
+         useUserStore.getState().setToken(jwt); //Sparar JWT-token i Zustand-store.
 
-
+		} else {
+			localStorage.removeItem(LocalStorage_KEY)
+			setErrorMsg('Registrering misslyckades!')
+		}
+	}
     return <div className="register-column">
+		     {errorMsg && <p className="error-message">{errorMsg}</p>}
 				<p> Create new user </p>
 				<div className='register-form'>
 					<label> Username </label>
