@@ -1,5 +1,5 @@
 import { LoginSchema } from "../../frontenddata/zodSchema";
-import type { User } from "../../frontenddata/types.ts";
+import type { UserLogin } from "../../frontenddata/types.ts";
 import './Login.css'
 import { useState } from "react";
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
@@ -8,7 +8,7 @@ import { useUserStore } from "../../frontenddata/userStore.ts";
 const Login = () => {
 
 	const [loginErrorMsg, setLoginErrorMsg] = useState<string>('');
-	const [formData, setFormData] = useState<User>({ username: '', password: '' });
+	const [formData, setFormData] = useState<UserLogin>({ username: '', password: '' });
 	useUserStore.getState().setUsername(formData.username);
 	
 	const result = LoginSchema.safeParse(formData);
@@ -72,9 +72,9 @@ return <div className="login-column">
 
 				<label> Password </label>
 				<input type="password" placeholder="password"
-  onChange={event => setFormData({ ...formData, password: event.target.value })}
-  value={formData.password}
-/>
+					onChange={event => setFormData({ ...formData, password: event.target.value })}
+					value={formData.password}
+					/>
 					{loginErrorMsg && <span> {loginErrorMsg} </span>}
 
 				<button onClick={handleLogin} > Logga in </button>

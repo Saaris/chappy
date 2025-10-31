@@ -1,6 +1,6 @@
 import './Register.css'
 // import { RegisterSchema } from '../../frontenddata/zodSchema.ts';
-import type { User } from "../../frontenddata/types.ts";
+import type { UserRegister } from "../../frontenddata/types.ts";
 import { useState } from 'react';
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
 import { useUserStore } from '../../frontenddata/userStore';
@@ -9,7 +9,7 @@ import { useUserStore } from '../../frontenddata/userStore';
 
 const Register = () => {
 
-   const [formData, setFormData] = useState<User>({ username: '', password: '' });
+   const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
    const [errorMsg, setErrorMsg] = useState('')
 
