@@ -15,3 +15,4 @@ export const useUserStore = create<UserState>((set) => ({
   setToken: (token) => set({ token }),
   logout: () => set({ username: '', token: '' })
 }));
+

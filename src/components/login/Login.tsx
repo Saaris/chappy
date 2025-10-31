@@ -3,12 +3,13 @@ import type { User } from "../../frontenddata/types.ts";
 import './Login.css'
 import { useState } from "react";
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
+import { useUserStore } from "../../frontenddata/userStore.ts";
 
 const Login = () => {
 
 	const [loginErrorMsg, setLoginErrorMsg] = useState<string>('');
 	const [formData, setFormData] = useState<User>({ username: '', password: '' });
-
+	useUserStore.getState().setUsername(formData.username);
 	
 	const result = LoginSchema.safeParse(formData);
 
@@ -42,6 +43,9 @@ const Login = () => {
 		// Servern skickar tillbaka ett objekt: { success: boolean, token?: string }
 		// TODO: validera med Zod att data variabeln matchar objektet
 		const data = await response.json()
+
+		if (data && data.success)
+			useUserStore.getState().setUsername(formData.username);
 
 		if( data.success ) {
 			const jwt: string = data.token

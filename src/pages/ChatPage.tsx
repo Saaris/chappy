@@ -11,18 +11,19 @@ const ChatPage = () => {
 
   return (
     <div>
+      <h2>Welcome {username}</h2>
       <h2>Channels</h2>
       <ul>
         {openChannels.map(channel => <li key={channel}>{channel}</li>)}
         {isLoggedIn && lockedChannels.map(channel => 
           <li key={channel}>
-            {channel} <FontAwesomeIcon icon={faKey} style={{ marginLeft: '8px' }} />
+            {channel} <FontAwesomeIcon icon={faKey} />
           </li>
         )}
       </ul>
       {isLoggedIn ? (
         <div>
-          <h3>Direct Messages</h3>
+          <h3>DM</h3>
           
         </div>
       ) : (
