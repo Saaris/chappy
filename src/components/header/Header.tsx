@@ -18,7 +18,7 @@ const Header = () => {
             {/* <h2>Welcome {username ? username : "guest"}</h2> */}
             <nav className='navbar'>
                 {/* <NavLink to='/'>Home</NavLink> */}
-                <NavLink to='/register'>Register</NavLink>
+                {/* <NavLink to='/register'>Register</NavLink> */}
                 <NavLink to='/login'><FontAwesomeIcon icon={faUser} /></NavLink>
                 <NavLink to='/'></NavLink>
             </nav>

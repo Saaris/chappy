@@ -1,6 +1,7 @@
 import { LoginSchema } from "../../frontenddata/zodSchema";
 import type { UserLogin } from "../../frontenddata/types.ts";
 import './Login.css'
+import Register from '../register/Register';
 import { useState } from "react";
 import { useNavigate } from 'react-router';
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
@@ -60,26 +61,29 @@ const Login = () => {
 	}
 
 
-return <div className="login-column">
-	
-				<p> Login to Chappy </p>
-				<div className="login-form">
-				<label> Username</label>
+return (
+	<div className="auth-page">
+		<div className="login-column">
+			<p>Login to Chappy</p>
+			<div className="login-form">
+				<label>Username</label>
 				<input type="text" placeholder="username"
-				onChange={event => setFormData({ ...formData, username: event.target.value })}
+					onChange={event => setFormData({ ...formData, username: event.target.value })}
 					value={formData.username}
-					
-					/>
-
-				<label> Password </label>
+				/>
+				<label>Password</label>
 				<input type="password" placeholder="password"
 					onChange={event => setFormData({ ...formData, password: event.target.value })}
 					value={formData.password}
-					/>
-					{loginErrorMsg && <span> {loginErrorMsg} </span>}
-
-				<button onClick={handleLogin} > Logga in </button>
-				</div>
+				/>
+				{loginErrorMsg && <span> {loginErrorMsg} </span>}
+				<button onClick={handleLogin}>Logga in</button>
 			</div>
+		</div>
+		<div className="register-column">
+			<Register />
+		</div>
+	</div>
+);
 }
 export default Login
