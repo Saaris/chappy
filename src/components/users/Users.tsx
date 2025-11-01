@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { User } from '../../frontenddata/types';
 import { LocalStorage_KEY } from '../../frontenddata/key';
+import './Users.css';
 
 const Users = () => {
 
@@ -11,8 +12,8 @@ const Users = () => {
 		const data = await response.json()
 
 		console.log( data)
-		const userResponse: User[] = data
-		setUsers(userResponse)
+		
+		setUsers(data.users || []);
 	}
 	const handleDeleteUser = async (userId: string): Promise<void> => {
 	 	const jwt: string | null = localStorage.getItem(LocalStorage_KEY)
@@ -46,12 +47,12 @@ const Users = () => {
         
 			<div className="box">
 				<p> Användare </p>
-				<button onClick={ () => handleGetUsers}> Visa alla användare </button>
-				<ul className="list">
+				<button onClick={handleGetUsers}> Visa alla användare </button>
+				<ul className="users-list">
 					{users.map(u => (
-						<li key={u.userId} className="row">
-							<div className="grow"> {u.username} </div>
-							<button onClick={() => handleDeleteUser(u.userId)}> Ta bort </button>
+						<li key={u.userId}>
+							<span className="user-icon">👤</span>
+							{u.username}
 						</li>
 					))}
 				</ul>
