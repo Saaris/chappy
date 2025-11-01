@@ -2,7 +2,8 @@ import {NavLink} from 'react-router'
 // import { useUserStore } from '../../frontenddata/userStore';
 import './Header.css'
 import logo from '../../assets/logo.png'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
    
     
@@ -18,7 +19,7 @@ const Header = () => {
             <nav className='navbar'>
                 {/* <NavLink to='/'>Home</NavLink> */}
                 <NavLink to='/register'>Register</NavLink>
-                <NavLink to='/login'>Login</NavLink>
+                <NavLink to='/login'><FontAwesomeIcon icon={faUser} /></NavLink>
                 <NavLink to='/'></NavLink>
             </nav>
         </div>
