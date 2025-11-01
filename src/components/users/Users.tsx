@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { User } from '../../frontenddata/types';
 import { LocalStorage_KEY } from '../../frontenddata/key';
 import './Users.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark} from '@fortawesome/free-solid-svg-icons';
 
 const Users = () => {
 
@@ -25,9 +27,10 @@ const Users = () => {
 	 	const response: Response = await fetch('/api/users/' + userId, {
 	 		method: 'DELETE',
 	 		headers: {
-	 			'Authorization': `Bearer: ${jwt}`
+	 			'Authorization': `Bearer ${jwt}`
 	 		}
 	 	})
+		console.log('Tar bort userId:', userId);
 
 	 	// kontrollera status för responsen. Lyckades requestet?
 	 	if( response.status === 204 ) {
@@ -53,6 +56,8 @@ const Users = () => {
 						<li key={u.userId}>
 							<span className="user-icon">👤</span>
 							{u.username}
+							<button onClick={() => handleDeleteUser(u.userId)}><FontAwesomeIcon icon={faXmark} /></button>
+							
 						</li>
 					))}
 				</ul>

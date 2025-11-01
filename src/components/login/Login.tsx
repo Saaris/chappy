@@ -2,10 +2,12 @@ import { LoginSchema } from "../../frontenddata/zodSchema";
 import type { UserLogin } from "../../frontenddata/types.ts";
 import './Login.css'
 import { useState } from "react";
+import { useNavigate } from 'react-router';
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
 import { useUserStore } from "../../frontenddata/userStore.ts";
 
 const Login = () => {
+	const navigate = useNavigate();
 
 	const [loginErrorMsg, setLoginErrorMsg] = useState<string>('');
 	const [formData, setFormData] = useState<UserLogin>({ username: '', password: '' });
@@ -44,18 +46,16 @@ const Login = () => {
 		// TODO: validera med Zod att data variabeln matchar objektet
 		const data = await response.json()
 
-		if (data && data.success)
+		if (data && data.success) {
 			useUserStore.getState().setUsername(formData.username);
-
-		if( data.success ) {
-			const jwt: string = data.token
-			localStorage.setItem(LocalStorage_KEY, jwt)
-			// TODO: visa för användaren att man är inloggad
-			console.log('Inloggningen lyckades')
-
+			const jwt: string = data.token;
+			localStorage.setItem(LocalStorage_KEY, jwt);
+			
+			console.log('Inloggningen lyckades');
+			navigate('/chatPage'); 
 		} else {
-			localStorage.removeItem(LocalStorage_KEY)
-			// Visa meddelande för användaren?
+			localStorage.removeItem(LocalStorage_KEY);
+		
 		}
 	}
 

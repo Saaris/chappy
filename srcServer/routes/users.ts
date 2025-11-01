@@ -135,8 +135,8 @@ router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>)
   const command = new DeleteCommand({
     TableName: myTable,
     Key: {
-      pk: 'USER',
-      sk: 'NAME#' + userIdToDelete
+      pk: `USER#${userIdToDelete}`,
+      sk: 'NAME'
     },
     ReturnValues: "ALL_OLD"
   });
