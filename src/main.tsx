@@ -16,7 +16,7 @@ const router = createHashRouter([
 	children: [
 		{
 			index: true,
-			Component: Home
+			Component: ChatPage
 		},
 		{
 			path: '/chatPage',
