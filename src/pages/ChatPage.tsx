@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '../frontenddata/userStore';
 import Users from '../components/users/Users.tsx';
+import Dm from '../components/dm/Dm.tsx';
 
 
 const openChannels = ['General', 'Random', 'Announcements'];
@@ -30,6 +31,7 @@ const ChatPage = () => {
       {isLoggedIn ? (
         <div>
           <h3>DM</h3>
+          <Dm />
           
         </div>
       ) : (

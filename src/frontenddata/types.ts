@@ -17,3 +17,7 @@ export interface UserRegister {
 	password: string
 	accessLevel: string
 }
+export interface DmResponse {
+	senderId: string
+	receiverId: string
+}
