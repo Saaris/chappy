@@ -5,6 +5,7 @@ import Users from '../components/users/Users.tsx';
 import Dm from '../components/dm/Dm.tsx';
 
 
+
 const openChannels = ['General', 'Random', 'Announcements'];
 const lockedChannels = ['grupp1', 'grupp2', 'grupp3'];
 
@@ -22,24 +23,20 @@ const ChatPage = () => {
       <h2>Channels</h2>
       <ul>
         {openChannels.map(channel => <li key={channel}>{channel}</li>)}
-        {isLoggedIn && lockedChannels.map(channel => 
-          <li key={channel}>
-            {channel} <FontAwesomeIcon icon={faKey} />
-          </li>
-        )}
       </ul>
-      {isLoggedIn ? (
-        <div>
+      {isLoggedIn && (
+        <>
+          <h2>Låsta kanaler</h2>
+          <ul>
+            {lockedChannels.map(channel => (
+              <li key={channel}>
+                {channel} <FontAwesomeIcon icon={faKey} />
+              </li>
+            ))}
+          </ul>
           <h3>DM</h3>
           <Dm />
-          
-        </div>
-      ) : (
-        <ul>
-        <li>Grupp 1</li>
-        <li>Grupp 1</li>
-        <li>Grupp 1</li>
-        </ul>
+        </>
       )}
     </div>
     

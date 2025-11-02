@@ -1,10 +1,21 @@
 import express, { type Request, type Response, type Router } from 'express';
-import { PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { db, myTable } from '../data/dynamoDb.js'
 import { validateJwt } from '../data/auth.js'
 import type { DirectMessage} from '../data/types.js'
 
 const router: Router = express.Router();
+
+// Hämta alla DM
+router.get('/', async (req, res) => {
+	const result = await db.send(new ScanCommand({
+		TableName: myTable,
+		FilterExpression: 'begins_with(sk, :dm)',
+		ExpressionAttributeValues: { ':dm': 'DM#' }
+	}));
+	const dm = result.Items || [];
+	res.send({ dm });
+});
 
 // Skicka DM (endast för inloggad användare)
 router.post('/', async (req: Request, res: Response) => {
