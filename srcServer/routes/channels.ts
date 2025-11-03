@@ -123,6 +123,11 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
 
     // Hämta accessLevel från JWT-payload
     const payload = validateJwt(req.headers['authorization']);
+    if (!payload) {
+        res.sendStatus(401)
+        return
+    }
+
     const command = new PutCommand({
         TableName: myTable,
         Item: {
@@ -137,7 +142,7 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
     })
 	try {
 		const result = await db.send(command)
-		const token: string | null = createToken(newChannelId)
+		const token: string | null = createToken(payload.userId, payload.username)
 		res.send({ success: true, token: token })
 
 	} catch(error) {

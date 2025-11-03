@@ -18,7 +18,6 @@ const Login = () => {
 
 	if (!result.success) {
 	 
-	//   console.log(result.error.issues);
 	} else {
 	  
 	}
@@ -27,7 +26,6 @@ const Login = () => {
 	const handleLogin = async () => {
 		setLoginErrorMsg('')
 
-		// TODO: gör login-knappen disabled tills denna funktion är färdig
 		const response = await fetch('/api/login', {
 			method: 'POST',
 			headers: {
@@ -36,15 +34,12 @@ const Login = () => {
 			body: JSON.stringify(formData)
 		})
 		if( response.status !== 200 ) {
-			// Något gick fel - login misslyckades
-			// TODO: visa stylat meddelande för användaren
-			// Snyggare om felmeddelandet inte flyttar på resten av formuläret - använd margin och position:absolute.
+			
 			setLoginErrorMsg('Felaktigt användarnamn eller lösenord!')
 			return
 		}
 
-		// Servern skickar tillbaka ett objekt: { success: boolean, token?: string }
-		// TODO: validera med Zod att data variabeln matchar objektet
+
 		const data = await response.json()
 
 		if (data && data.success) {

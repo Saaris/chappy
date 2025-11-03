@@ -13,6 +13,7 @@ export interface User {
   username: string
   password: string
   accessLevel: 'admin' | 'user'
+  userId: string
 }
 export interface Payload  {
   channelId: string

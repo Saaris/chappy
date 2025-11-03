@@ -3,7 +3,7 @@ import type { Payload } from './types.js'
 
 const myJwtSecret: string = process.env.MY_JWT_SECRET || ''
 
-function createToken(username: string, accessLevel?: string): string {
+function createToken(userId: string,username: string, accessLevel?: string): string {
 	if (!myJwtSecret) {
 		throw new Error('JWT secret is not configured. Check MY_JWT_SECRET in .env file')
 	}
@@ -15,6 +15,7 @@ function createToken(username: string, accessLevel?: string): string {
 	console.log('JWT sign secret:', myJwtSecret); 
 	
 	return jwt.sign({
+		userId: userId,
 		username: username,
 		accessLevel: accessLevel || 'user',
 		exp: expiration
