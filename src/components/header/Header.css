@@ -12,9 +12,9 @@
 }
 .navbar {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
+    align-items: flex-end;
 
     a {
         margin: 5px;
@@ -22,3 +22,17 @@
     }
 
 }
+
+.user-hover-text {
+    display: none;
+    position: absolute;
+    color: #333;
+    padding: 2px;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+   
+}
+.user-icon-container:hover .user-hover-text {
+    display: inline-block;
+}
+

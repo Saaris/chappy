@@ -4,10 +4,13 @@ import type { UserRegister } from "../../frontenddata/types.ts";
 import { useState } from 'react';
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
 import { useUserStore } from '../../frontenddata/userStore';
+import { useNavigate } from 'react-router';
 
 
 
 const Register = () => {
+
+	const navigate = useNavigate();
 
    const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,11 +43,12 @@ const Register = () => {
          data = null;
       }
 
-      if( data.success ) {
+      if (data && (data.success || data.user)) {
 		setErrorMsg('')
 			const jwt: string = data.token
 			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
-			console.log('Inloggningen lyckades')
+			console.log('registreringen lyckades')
+			navigate('/chatPage'); 
          useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
          useUserStore.getState().setToken(jwt); //Sparar JWT-token i Zustand-store.
 

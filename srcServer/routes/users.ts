@@ -97,7 +97,8 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
       sk: `USER#${username}` as `user#${string}`,
       username: username,
       password: '', 
-      accessLevel: 'user'
+      accessLevel: 'user',
+      userId
     };
 
     res.status(201).json({ user: responseUser });
