@@ -3,6 +3,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '../frontenddata/userStore';
 import Users from '../components/users/Users.tsx';
 import Dm from '../components/dm/Dm.tsx';
+import './ChatPage.css';
 
 
 
@@ -18,22 +19,31 @@ const ChatPage = () => {
 
   return (
     <div>
-      <h2>Welcome {username}</h2>
+      <p className="welcome">
+        {isLoggedIn ? username : 'Guest'}
+      </p>
       <Users />
       <h2>Channels</h2>
       <ul>
-        {openChannels.map(channel => <li key={channel}>{channel}</li>)}
+        {openChannels.map(channel => <li key={channel}>{channel}</li>)}  {/* lista öppna kanaler */}
+      </ul>
+      <h2>Channels for users</h2> 
+      <ul>
+         {/* lista låsta kanaler */}
+        {lockedChannels.map(channel => (
+          <li
+            key={channel}
+            className={isLoggedIn ? 'unlocked-channel' : 'locked-channel'}
+          >
+            {channel} 
+            {!isLoggedIn && (
+              <span className="locked-channel-info"><FontAwesomeIcon icon={faKey} /></span>
+            )}
+          </li>
+        ))}
       </ul>
       {isLoggedIn && (
         <>
-          <h2>Låsta kanaler</h2>
-          <ul>
-            {lockedChannels.map(channel => (
-              <li key={channel}>
-                {channel} <FontAwesomeIcon icon={faKey} />
-              </li>
-            ))}
-          </ul>
           <h3>DM</h3>
           <Dm />
         </>

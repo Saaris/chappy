@@ -1,0 +1,28 @@
+.welcome {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    }
+
+.unlocked-channel {
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.unlocked-channel {
+    opacity: 1;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.locked-channel-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.locked-channel {
+    margin-left: 8px;
+    color: #575757;
+    font-size: 0.9em;
+}

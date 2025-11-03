@@ -17,6 +17,7 @@ const Users = () => {
 		
 		setUsers(data.users || []);
 	}
+	
 	const handleDeleteUser = async (userId: string): Promise<void> => {
 	 	const jwt: string | null = localStorage.getItem(LocalStorage_KEY)
 		if( !jwt ) {
@@ -32,15 +33,12 @@ const Users = () => {
 	 	})
 		console.log('Tar bort userId:', userId);
 
-	 	// kontrollera status för responsen. Lyckades requestet?
 	 	if( response.status === 204 ) {
-	 		console.log('DELETE lyckades!')
-	 		handleGetUsers() // uppdatera listan
-	 		// En alternativ metod: ta bort användaren direkt ur state-variabeln <- går inte, eftersom vi inte har userId
-	 		// Tips! Låt servern skicka tillbaka en ny JWT med varje request - så kan vi uppdatera JWT i localStorage, så att det dröjer längre tills JWT slutar gälla (återställa timeout)
+	 		console.log('Tog bort användare!')
+	 		handleGetUsers()
 
 	 	} else {
-	 		console.log('DELETE failade med status ' + response.status)
+	 		console.log('Kunde ej ta bort ' + response.status)
 	 	}
 	 }
 
