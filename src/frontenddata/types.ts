@@ -21,3 +21,7 @@ export interface DmResponse {
 	senderId: string
 	receiverId: string
 }
+export interface Channel {
+	channelId: string,
+	isLocked: boolean
+}

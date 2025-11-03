@@ -4,14 +4,27 @@ import { useUserStore } from '../frontenddata/userStore';
 import Users from '../components/users/Users.tsx';
 import Dm from '../components/dm/Dm.tsx';
 import './ChatPage.css';
+import type { Channel } from '../frontenddata/types.ts';
+import { useState, useEffect } from 'react';
 
 
 
-const openChannels = ['General', 'Random', 'Announcements'];
-const lockedChannels = ['grupp1', 'grupp2', 'grupp3'];
+// const openChannels = ['General', 'Random', 'Announcements'];
+// const lockedChannels = ['grupp1', 'grupp2', 'grupp3'];
 
 const ChatPage = () => {
-  
+  const [channels, setChannels] = useState<Channel[]>([]);
+
+  const handleGetChannels = async () => {
+    const response = await fetch('/api/channels');
+    const data = await response.json();
+    setChannels(data.channels || []);
+  };
+
+  useEffect(() => {
+    handleGetChannels();
+  }, []);
+
   const username = useUserStore((state) => state.username);
   const isLoggedIn = !!username && username !== 'guest';
 
@@ -25,17 +38,17 @@ const ChatPage = () => {
       <Users />
       <h2>Channels</h2>
       <ul>
-        {openChannels.map(channel => <li key={channel}>{channel}</li>)}  {/* lista öppna kanaler */}
+        {channels.map(channel => <li key={channel.channelId}>{channel.channelId}</li>)}  {/* lista öppna kanaler */}
       </ul>
       <h2>Channels for users</h2> 
       <ul>
          {/* lista låsta kanaler */}
-        {lockedChannels.map(channel => (
+        {channels.filter(channel => channel.isLocked === true).map(channel => (
           <li
-            key={channel}
+            key={channel.channelId}
             className={isLoggedIn ? 'unlocked-channel' : 'locked-channel'}
           >
-            {channel} 
+            {channel.channelId} 
             {!isLoggedIn && (
               <span className="locked-channel-info"><FontAwesomeIcon icon={faKey} /></span>
             )}
