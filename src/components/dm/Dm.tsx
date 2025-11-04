@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import type { DmResponse } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
+import './Dm.css';
 
 const Dm = () => {
     const [dms, setDms] = useState<DmResponse[]>([]);

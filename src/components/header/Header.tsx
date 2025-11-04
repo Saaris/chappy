@@ -1,7 +1,7 @@
 import {NavLink} from 'react-router'
 import { useUserStore } from '../../frontenddata/userStore';
 import './Header.css'
-import logo from '../../assets/logo.png'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,7 +15,7 @@ const Header = () => {
 
             return (
                      <div className='header'>
-                            <img src={logo} alt="chat logo" />
+                            
                             {/* <h2>Welcome {username ? username : "guest"}</h2> */}
                             <nav className='navbar'>
                                     {/* <NavLink to='/'>Home</NavLink> */}

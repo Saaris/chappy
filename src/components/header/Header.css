@@ -8,8 +8,8 @@
     align-content: center;
     justify-content:flex-end;
     align-items: stretch;
-    /* background-image: url('../../assets/logo.png'); */
-    background-repeat: no-repeat;
+    /* background-image: url('../../assets/logo.png');  */
+    /* background-repeat: no-repeat; */
     background-size: contain; 
     background-position: center;
 }

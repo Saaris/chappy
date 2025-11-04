@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import { LocalStorage_KEY } from '../../frontenddata/key.ts';
 import { useUserStore } from "../../frontenddata/userStore.ts";
 
+
 const Login = () => {
 	const navigate = useNavigate();
 
@@ -58,7 +59,9 @@ const Login = () => {
 
 return (
 	<div className="auth-page">
+		
 		<div className="login-column">
+			
 			<p>Login to Chappy</p>
 			<div className="login-form">
 				<label>Username</label>

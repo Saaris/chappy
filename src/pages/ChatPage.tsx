@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faTowerBroadcast } from '@fortawesome/free-solid-svg-icons';
 import { useUserStore } from '../frontenddata/userStore';
 import Users from '../components/users/Users.tsx';
 import Dm from '../components/dm/Dm.tsx';
@@ -32,22 +32,28 @@ const ChatPage = () => {
 
   return (
     <div>
-      <p className="welcome">
-        {isLoggedIn ? username : 'Guest'}
+      <p className="welcome">{isLoggedIn ? username : 'Guest'}
       </p>
       <Users />
       <h2>Channels</h2>
-      <ul>
-        {channels.map(channel => <li key={channel.channelId}>{channel.channelId}</li>)}  {/* lista öppna kanaler */}
+      <ul className="channels-list">
+        {channels.map(channel => (
+          <li key={channel.channelId}>
+            <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
+            {channel.channelId}
+          </li>
+        ))}  {/* lista öppna kanaler */}
       </ul>
       <h2>Channels for users</h2> 
-      <ul>
+      <ul className="locked-channels-list">
+        
          {/* lista låsta kanaler */}
         {channels.filter(channel => channel.isLocked === true).map(channel => (
           <li
             key={channel.channelId}
             className={isLoggedIn ? 'unlocked-channel' : 'locked-channel'}
           >
+            <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
             {channel.channelId} 
             {!isLoggedIn && (
               <span className="locked-channel-info"><FontAwesomeIcon icon={faKey} /></span>
