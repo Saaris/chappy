@@ -20,6 +20,8 @@ export interface UserRegister {
 export interface DmResponse {
 	senderId: string
 	receiverId: string
+	message: string
+	sentAt: string
 }
 export interface Channel {
 	channelId: string,
