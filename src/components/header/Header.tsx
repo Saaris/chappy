@@ -21,7 +21,7 @@ const Header = () => {
                                     {/* <NavLink to='/'>Home</NavLink> */}
                                     {/* <NavLink to='/register'>Register</NavLink> */}
                                     <div className="user-icon-container">
-                                        <NavLink to={isLoggedIn ? '/logout' : '/login'}>
+                                        <NavLink to={isLoggedIn ? '/login' : '/login'}>
                                             <FontAwesomeIcon icon={faUser} className="user-icon" />
                                             <span className={`user-hover-text`}>
                                                 {isLoggedIn ? 'logga ut' : 'logga in'}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { User } from '../../frontenddata/types';
 import { LocalStorage_KEY } from '../../frontenddata/key';
 import './Users.css';
@@ -42,13 +42,15 @@ const Users = () => {
 	 	}
 	 }
 
+	 useEffect(() => {  //använde useEffect för att hämta användare. 
+        handleGetUsers();
+    }, []);
 
     return (
         <div className="box">
         
 			<div className="box">
 				<p> Användare </p>
-				<button onClick={handleGetUsers}> Visa alla användare </button>
 				<ul className="users-list">
 					{users.map(u => (
 						<li key={u.userId}>

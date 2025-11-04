@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 const Register = () => {
 
 	const navigate = useNavigate();
+	useUserStore.getState().setGuest();
 
    const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
@@ -56,6 +57,7 @@ const Register = () => {
 			localStorage.removeItem(LocalStorage_KEY)
 			setErrorMsg('Registrering misslyckades!')
 		}
+		
 	}
     return <div className="register-column">
 		     {errorMsg && <p className="error-message">{errorMsg}</p>}
@@ -82,6 +84,9 @@ const Register = () => {
 					/>
 				
 				<button onClick={handleSubmitReg} > Sign up </button>
+				<button onClick={() => {
+					navigate('/chatPage');
+					}}>Continue as a guest</button>
 				</div>
 			</div>
 }
