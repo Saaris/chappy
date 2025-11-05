@@ -1,10 +1,10 @@
-import './Register.css'
-// import { RegisterSchema } from '../../frontenddata/zodSchema.ts';
-import type { UserRegister } from "../../frontenddata/types.ts";
+import './Login.css'
+import type { UserRegister } from "../../../frontenddata/types.ts";
 import { useState } from 'react';
-import { LocalStorage_KEY } from '../../frontenddata/key.ts';
-import { useUserStore } from '../../frontenddata/userStore';
+import { LocalStorage_KEY } from '../../../frontenddata/key.ts';
+import { useUserStore } from '../../../frontenddata/userStore.ts';
 import { useNavigate } from 'react-router';
+import { RegisterSchema } from '../../../frontenddata/zodSchema.ts';
 
 
 
@@ -15,16 +15,16 @@ const Register = () => {
 
    const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
-   const [errorMsg, setErrorMsg] = useState('')
+   const [regErrorMsg, setRegErrorMsg] = useState('')
 
    const handleSubmitReg = async () => {
 	useUserStore.getState().setGuest();
 
-      // const result = RegisterSchema.safeParse(formData);
-      // if (!result.success) {
-      //    // Visa valideringsfel
-      //    return;
-      // }
+      const result = RegisterSchema.safeParse(formData);
+      if (!result.success) {
+         setRegErrorMsg('Could not register! Check username and password.');
+         return;
+      }
 
       if (formData.password !== confirmPassword) {
          // Visa felmeddelande: Lösenorden matchar inte
@@ -46,7 +46,7 @@ const Register = () => {
       }
 
       if (data && (data.success || data.user)) {
-		setErrorMsg('')
+		setRegErrorMsg('')
 			const jwt: string = data.token
 			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
 			console.log('registreringen lyckades')
@@ -56,14 +56,14 @@ const Register = () => {
 
 		} else {
 			localStorage.removeItem(LocalStorage_KEY)
-			setErrorMsg('Registrering misslyckades!')
+			setRegErrorMsg('Registrering misslyckades!')
 		}
 		
 	}
-    return <div className="register-column">
-		     {errorMsg && <p className="error-message">{errorMsg}</p>}
+    return <div className="auth-column">
+		    
 				<p> Create new user </p>
-				<div className='register-form'>
+				<div className='auth-form'>
 					<label> Username </label>
 					<input type="text" placeholder="username"
 					onChange={event => setFormData({ ...formData, username: event.target.value })}
@@ -83,9 +83,9 @@ const Register = () => {
 					onChange={event => setConfirmPassword(event.target.value)}
 					value={confirmPassword}
 					/>
-				
-				<button onClick={handleSubmitReg} > Sign up </button>
-				<button onClick={() => {
+				 {regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
+				<button className='signup-button' onClick={handleSubmitReg} > Sign up </button>
+				<button className='guest-button' onClick={() => {
 					navigate('/chatPage');
 					}}>Continue as a guest</button>
 				</div>

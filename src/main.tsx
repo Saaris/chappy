@@ -5,8 +5,8 @@ import App from './App.tsx'
 import { createHashRouter, RouterProvider } from 'react-router'
 import ChatPage from './pages/ChatPage.tsx'
 import Header from './components/header/Header.tsx'
-import Login from './components/login/Login.tsx'
-import Register from './components/register/Register.tsx'
+import Login from './components/register/login/Login.tsx'
+import Register from './components/register/login/Register.tsx'
 
 const router = createHashRouter([
   {
