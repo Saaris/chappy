@@ -35,7 +35,7 @@ const Channels = () => {
       <h2>Channels for users</h2>
       <ul className="locked-channels-list">
         {channels.filter(channel => channel.isLocked === true).map(channel => (
-          <li
+          <li 
             key={channel.channelId}
             className={isLoggedIn ? 'unlocked-channel' : 'locked-channel'}
           >

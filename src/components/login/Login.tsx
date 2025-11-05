@@ -13,7 +13,7 @@ const Login = () => {
 
 	const [loginErrorMsg, setLoginErrorMsg] = useState<string>('');
 	const [formData, setFormData] = useState<UserLogin>({ username: '', password: '' });
-	useUserStore.getState().setUsername(formData.username);
+	
 	
 	const result = LoginSchema.safeParse(formData);
 
@@ -26,6 +26,7 @@ const Login = () => {
 
 	const handleLogin = async () => {
 		setLoginErrorMsg('')
+		useUserStore.getState().setUsername(formData.username);
 
 		const response = await fetch('/api/login', {
 			method: 'POST',
@@ -59,6 +60,7 @@ const Login = () => {
 
 return (
 	<div className="auth-page">
+		<Register />
 		
 		<div className="login-column">
 			
@@ -78,9 +80,9 @@ return (
 				<button onClick={handleLogin}>Logga in</button>
 			</div>
 		</div>
-		<div className="register-column">
-			<Register />
-		</div>
+		{/* <div className="register-column">
+			
+		</div> */}
 	</div>
 );
 }

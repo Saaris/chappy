@@ -12,8 +12,6 @@ const Users = () => {
     const handleGetUsers = async () => {
 		const response = await fetch('/api/users')
 		const data = await response.json()
-
-		console.log( data)
 		
 		setUsers(data.users || []);
 	}

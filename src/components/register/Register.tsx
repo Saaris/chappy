@@ -11,13 +11,14 @@ import { useNavigate } from 'react-router';
 const Register = () => {
 
 	const navigate = useNavigate();
-	useUserStore.getState().setGuest();
+	
 
    const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
    const [errorMsg, setErrorMsg] = useState('')
 
    const handleSubmitReg = async () => {
+	useUserStore.getState().setGuest();
 
       // const result = RegisterSchema.safeParse(formData);
       // if (!result.success) {
