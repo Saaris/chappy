@@ -29,7 +29,7 @@ const Users = () => {
 	 			'Authorization': `Bearer ${jwt}`
 	 		}
 	 	})
-		console.log('Tar bort userId:', userId);
+		
 
 	 	if( response.status === 204 ) {
 	 		console.log('Tog bort användare!')

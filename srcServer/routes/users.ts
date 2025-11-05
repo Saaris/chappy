@@ -125,7 +125,7 @@ router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>)
     return;
   }
 
-  const { userId} = maybePayload;
+  const { userId, username } = maybePayload;
 
   if (userId !== userIdToDelete) {
     console.log('Du kan inte ta bort denna användare ', userId);
@@ -136,7 +136,7 @@ router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>)
   const command = new DeleteCommand({
     TableName: myTable,
     Key: {
-      pk: `USER#${userIdToDelete}`,
+      pk: `USER#${username}`,
       sk: 'NAME'
     },
     ReturnValues: "ALL_OLD"
