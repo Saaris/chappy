@@ -26,7 +26,7 @@ const Channels = () => {
       <h2>Channels</h2>
       <ul className="channels-list">
         {channels.map(channel => (
-          <li key={channel.channelId}>
+          <li className='channel-box'key={channel.channelId}>
             <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
             {channel.channelId}
           </li>
