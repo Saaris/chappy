@@ -24,7 +24,8 @@ const Header = () => {
                                         <NavLink to={isLoggedIn ? '/login' : '/login'}>
                                             <FontAwesomeIcon icon={faUser} className="user-icon" />
                                             <span className={`user-hover-text`}>
-                                                {isLoggedIn ? 'logout' : 'Register/login'}
+                                                {isLoggedIn ? 'Logout' : ''}
+                                                 {!isLoggedIn ? 'Register/Login' : ''}
                                             </span>
                                         </NavLink>
                                     </div>

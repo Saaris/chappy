@@ -4,10 +4,15 @@ import { LocalStorage_KEY } from '../../frontenddata/key';
 import './Users.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark} from '@fortawesome/free-solid-svg-icons';
+import { useUserStore } from '../../frontenddata/userStore';
+import { useNavigate } from 'react-router';
 
 const Users = () => {
 
     const [users, setUsers] = useState<User[]>([])
+    const logout = useUserStore((state) => state.logout);
+    const currentUser = useUserStore((state) => state.username);
+    const navigate = useNavigate();
 
     const handleGetUsers = async () => {
 		const response = await fetch('/api/users')
@@ -17,27 +22,30 @@ const Users = () => {
 	}
 	
 	const handleDeleteUser = async (userId: string): Promise<void> => {
-	 	const jwt: string | null = localStorage.getItem(LocalStorage_KEY)
-		if( !jwt ) {
- 		console.log('No JWT in localStorage')
-			return
-		}
+        const jwt: string | null = localStorage.getItem(LocalStorage_KEY)
+        if( !jwt ) {
+            console.log('No JWT in localStorage')
+            return
+        }
 
-	 	const response: Response = await fetch('/api/users/' + userId, {
-	 		method: 'DELETE',
-	 		headers: {
-	 			'Authorization': `Bearer ${jwt}`
-	 		}
-	 	})
-		
+        const response: Response = await fetch('/api/users/' + userId, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${jwt}`
+            }
+        })
 
-	 	if( response.status === 204 ) {
-	 		console.log('Tog bort användare!')
-	 		handleGetUsers()
-
-	 	} else {
-	 		console.log('Kunde ej ta bort ' + response.status)
-	 	}
+        if( response.status === 204 ) {
+            console.log('Tog bort användare!')
+            handleGetUsers()
+            if (userId === currentUser) {
+                logout();
+                localStorage.removeItem(LocalStorage_KEY);
+                navigate('/'); // Navigera till startsidan eller login
+            }
+        } else {
+            console.log('Kunde ej ta bort ' + response.status)
+        }
 	 }
 
 	 useEffect(() => {  //använde useEffect för att hämta användare. 
@@ -46,21 +54,21 @@ const Users = () => {
 
     return (
         <div className="box">
-        
-			<div className="box">
-				<p> Användare </p>
-				<ul className="users-list">
-					{users.map(u => (
-						<li key={u.userId}>
-							<span className="user-icon">👤</span>
-							{u.username}
-							<button onClick={() => handleDeleteUser(u.userId)}><FontAwesomeIcon icon={faXmark} /></button>
-							
-						</li>
-					))}
-				</ul>
-			</div>
-		</div>
+            <div className="box">
+                <p> Användare </p>
+                <ul className="users-list">
+                    {users.map(u => (
+                        <li key={u.userId}>
+                            <span className="user-icon">👤</span>
+                            {u.username}
+                            {currentUser && currentUser !== 'guest' && (
+                                <button onClick={() => handleDeleteUser(u.userId)}><FontAwesomeIcon icon={faXmark} /></button>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
     );
 };
 export default Users;

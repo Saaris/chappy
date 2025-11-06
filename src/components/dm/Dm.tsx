@@ -49,12 +49,12 @@ const Dm = () => {
                     <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
                     </div>
                     
-                       <div className='send-dm-box'>
-                        <label>type a new message</label>
+                       <form className='send-dm-box'>
+                        <label className='dm-label'>type a new message</label>
                         <input type="text" />
                         <button>send</button>
                         <button>close</button>
-                     </div>
+                     </form>
                 </div>
             )}
         </div>
