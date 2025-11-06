@@ -42,7 +42,14 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
    
 }
+.user-icon-container {
+    position: relative;
+    display: inline-block;
+}
 .user-icon-container:hover .user-hover-text {
     display: inline-block;
 }
-
+.profile-popup {
+    display: flex;
+    flex-direction: column;
+}

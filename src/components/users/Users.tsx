@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router';
 const Users = () => {
 
     const [users, setUsers] = useState<User[]>([])
+    const [dmReceiver, setDmReceiver] = useState<string | null>(null);
+    const [dmMessage, setDmMessage] = useState('');
+    const [dmStatus, setDmStatus] = useState('');
     const logout = useUserStore((state) => state.logout);
     const currentUser = useUserStore((state) => state.username);
     const navigate = useNavigate();
@@ -41,12 +44,33 @@ const Users = () => {
             if (userId === currentUser) {
                 logout();
                 localStorage.removeItem(LocalStorage_KEY);
-                navigate('/'); // Navigera till startsidan eller login
+                navigate('/'); 
             }
         } else {
             console.log('Kunde ej ta bort ' + response.status)
         }
 	 }
+
+	 const handleSendDm = async () => {
+        if (!dmReceiver || !dmMessage) return;
+        const jwt: string | null = localStorage.getItem(LocalStorage_KEY);
+        if (!jwt) return;
+        const response = await fetch('/api/dm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
+            body: JSON.stringify(
+				{ userId: dmReceiver, message: dmMessage })
+        });
+        if (response.ok) {
+            setDmStatus('Meddelande skickat!');
+            setDmMessage('');
+        } else {
+            setDmStatus('Kunde inte skicka meddelande.');
+        }
+    };
 
 	 useEffect(() => {  //använde useEffect för att hämta användare. 
         handleGetUsers();
@@ -59,10 +83,23 @@ const Users = () => {
                 <ul className="users-list">
                     {users.map(u => (
                         <li key={u.userId}>
-                            <span className="user-icon">👤</span>
+                            <span className="users-icon" onClick={() => setDmReceiver(u.userId)}>👤</span>
                             {u.username}
                             {currentUser && currentUser !== 'guest' && (
                                 <button onClick={() => handleDeleteUser(u.userId)}><FontAwesomeIcon icon={faXmark} /></button>
+                            )}
+                            {dmReceiver === u.userId && (
+                                <div className="dmchat-content">
+                                    <input
+                                        type="text"
+                                        placeholder="Skriv ett meddelande..."
+                                        value={dmMessage}
+                                        onChange={e => setDmMessage(e.target.value)}
+                                    />
+                                    <button onClick={handleSendDm}>Skicka DM</button>
+                                    <button onClick={() => setDmReceiver(null)}>Stäng</button>
+                                    {dmStatus && <p>{dmStatus}</p>}
+                                </div>
                             )}
                         </li>
                     ))}

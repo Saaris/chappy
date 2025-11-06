@@ -8,6 +8,8 @@ import './Dm.css';
 const Dm = () => {
     const [dms, setDms] = useState<DmResponse[]>([]);
     const [selectedDm, setSelectedDm] = useState<DmResponse | null>(null);
+    const [dmMessage, setDmMessage] = useState('');
+    const [dmStatus, setDmStatus] = useState('');
     const isLoggedIn = useUserStore((state) => state.isLoggedIn());
     const currentUser = useUserStore((state) => state.username);
 
@@ -26,6 +28,29 @@ const Dm = () => {
 
     const handleGetDmChat = (dm: DmResponse) => {
         setSelectedDm(dm);
+    };
+    const handleSendDm = async () => {
+        if (!selectedDm) return;
+        if (!dmMessage) return;
+        const response = await fetch('/api/dm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                senderId: currentUser,
+                receiverId: selectedDm.receiverId,
+                message: dmMessage
+            })
+        });
+        if (response.ok) {
+            setDmStatus('Meddelande skickat!');
+            setDmMessage('');
+            handleGetdm();
+        } else {
+            setDmStatus('Kunde inte skicka meddelande.');
+        }
     };
 
     return (
@@ -49,12 +74,13 @@ const Dm = () => {
                     <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
                     </div>
                     
-                       <form className='send-dm-box'>
+                       <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
                         <label className='dm-label'>type a new message</label>
-                        <input type="text" />
-                        <button>send</button>
-                        <button>close</button>
+                        <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
+                        <button type="submit">send</button>
+                        <button type="button" onClick={() => setSelectedDm(null)}>close</button>
                      </form>
+                     {dmStatus && <p className="dm-status">{dmStatus}</p>}
                 </div>
             )}
         </div>
