@@ -6,6 +6,7 @@ export const handleGetUsers = async (setUsers: (users: any[]) => void) => {
     const response = await fetch('/api/users');
     const data = await response.json();
     setUsers(data.users || []);
+    console.log(data)
 };
 
 
@@ -17,9 +18,23 @@ export const handleSendDm = async (
     setDmStatus: (msg: string) => void,
     setDmMessage: (msg: string) => void
 ) => {
-    if (!dmReceiver || !dmMessage) return;
+    console.log('handleSendDm called', { dmReceiver, dmMessage });
+    if (!dmReceiver) {
+        console.log('Ingen mottagare (dmReceiver) angiven!');
+        return;
+    }
+    if (!dmMessage) {
+        console.log('Ingen meddelandetext (dmMessage) angiven!');
+        return;
+    }
     const jwt: string | null = localStorage.getItem(LocalStorage_KEY);
-    if (!jwt) return;
+    console.log('JWT i localStorage:', jwt);
+    if (!jwt) {
+        console.log('Ingen JWT hittades, avbryter DM-sändning.');
+        return;
+    }
+
+    console.log('Skickar DM:', { userId: dmReceiver, message: dmMessage });
     const response = await fetch('/api/dm', {
         method: 'POST',
         headers: {
@@ -31,18 +46,11 @@ export const handleSendDm = async (
     if (response.ok) {
         setDmStatus('Meddelande skickat!');
         setDmMessage('');
+       
     } else {
         setDmStatus('Kunde inte skicka meddelande.');
     }
 };
-
-
-
-
-   
-    
-
-
 
 export const handleDeleteUser = async (
   userId: string,

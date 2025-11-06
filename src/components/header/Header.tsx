@@ -6,7 +6,7 @@ import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { handleDeleteUser } from '../../frontenddata/userActions';
-    
+import { useLocation } from 'react-router'
 
 const Header = () => {
     const username = useUserStore((state) => state.username) || "guest";
@@ -53,8 +53,8 @@ const Header = () => {
                 <div className="user-icon-container">
                     <FontAwesomeIcon 
                         icon={faUser} 
-                        className={`user-icon${!isLoggedIn ? ' disabled' : ''}`} 
-                        onClick={handleProfileClick}
+                        className={`user-icon${(!isLoggedIn || isLoginPage) ? 'disabled' : ''}`} 
+                        onClick={! isLoginPage ? handleProfileClick : undefined}
                     />
                     
                     {isProfileOpen && (

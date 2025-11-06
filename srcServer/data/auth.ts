@@ -10,7 +10,7 @@ function createToken(userId: string,username: string, accessLevel?: string): str
 	
 	const now = Math.floor(Date.now() / 1000)
 
-	const expiration: number = now + 15 * 60
+	const expiration: number = now + 60 * 60
 	
 	console.log('JWT sign secret:', myJwtSecret); 
 	
