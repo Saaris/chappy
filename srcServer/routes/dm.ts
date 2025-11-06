@@ -8,13 +8,22 @@ const router: Router = express.Router();
 
 // Hämta alla DM
 router.get('/', async (req, res) => {
-	const result = await db.send(new ScanCommand({
-		TableName: myTable,
-		FilterExpression: 'begins_with(sk, :dm)',
-		ExpressionAttributeValues: { ':dm': 'DM#' }
-	}));
-	const dm = result.Items || [];
-	res.send({ dm });
+    const authHeader = req.headers['authorization'];
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
+    const payload = validateJwt(token);
+    if (!payload) {
+        return res.status(401).send({ success: false, message: 'Access denied' });
+    }
+    const username = payload.username;
+
+// Hämta DM där användaren är avsändare eller mottagare
+    const result = await db.send(new ScanCommand({
+        TableName: myTable,
+        FilterExpression: 'senderId = :u OR receiverId = :u',
+        ExpressionAttributeValues: { ':u': username }
+    }));
+    const dm = result.Items || [];
+    res.send({ dm });
 });
 
 // Skicka DM (endast för inloggad användare)
@@ -31,10 +40,19 @@ router.post('/', async (req: Request, res: Response) => {
 		return res.status(400).send({ success: false, message: 'userId and message required' });
 	}
 
+// 	// Hämta mottagarens username från användartabellen (t.ex. med QueryCommand)
+// const receiverResult = await db.send(new QueryCommand({
+//   TableName: myTable,
+//   IndexName: 'userId-index', // om du har en GSI på userId
+//   KeyConditionExpression: 'userId = :uid',
+//   ExpressionAttributeValues: { ':uid': userId }
+// }));
+// const receiverUsername = receiverResult.Items?.[0]?.username || 'unknown';
+
 	const dmId = crypto.randomUUID();
 	const item: DirectMessage = {
-		pk: 'USER#' + userId,
-		sk: 'DM#' + dmId,
+		pk: 'DM#' + userId,
+		sk: 'MESSAGE#' + dmId,
 		senderId: payload.username || 'unknown',
 		receiverId: userId,
 		userId: payload.username || 'unknown',

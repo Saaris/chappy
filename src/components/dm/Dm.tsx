@@ -18,13 +18,21 @@ const Dm = () => {
     );
 
     const handleGetdm = async () => {
-        const response = await fetch('/api/dm');
+        const token = localStorage.getItem('token');
+         if (!token) return;
+        const response = await fetch('/api/dm', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         const data = await response.json();
         setDms(data.dm || []);
     };
     useEffect(() => {
-        handleGetdm();
-    }, []);
+        if (isLoggedIn && currentUser) {
+            handleGetdm();
+        }
+    }, [isLoggedIn, currentUser]);
 
     const handleGetDmChat = (dm: DmResponse) => {
         setSelectedDm(dm);

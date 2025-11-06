@@ -110,11 +110,11 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
 })
 
 //fylla användarnamn/och elelr lösenord för att kunna ta bort sin användare?
-interface UserIdParam {
-	userId: string
+interface UsernameParam {
+    username: string
 }
-router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>) => {
-  const userIdToDelete: string = req.params.userId;
+router.delete('/:username', async (req: Request<UsernameParam>, res: Response<void>) => {
+  const usernameToDelete: string = req.params.username;
 
   const authHeader = req.headers['authorization'];
   const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
@@ -125,10 +125,10 @@ router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>)
     return;
   }
 
-  const { userId, username } = maybePayload;
+  const { username } = maybePayload;
 
-  if (userId !== userIdToDelete) {
-    console.log('Du kan inte ta bort denna användare ', userId);
+  if (username !== usernameToDelete) {
+    console.log('Du kan inte ta bort denna användare ', username);
     res.sendStatus(401);
     return;
   }

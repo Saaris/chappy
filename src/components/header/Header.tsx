@@ -1,10 +1,11 @@
-import {NavLink} from 'react-router'
+import { NavLink } from 'react-router';
 import { useNavigate } from 'react-router';
 import { useUserStore } from '../../frontenddata/userStore';
 import { useProfileStore } from '../../frontenddata/profileStore';
-import './Header.css'
+import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { handleDeleteUser } from '../../frontenddata/userActions';
     
 
 const Header = () => {
@@ -25,12 +26,17 @@ const Header = () => {
 
     const handleLogout = () => {
         logout();
-        closeProfile();
+        
     };
 
-    const handleDeleteUser = () => {
-        navigate('/login');
-        handleDeleteUser();
+
+    const handleDeleteUserClick = async () => {
+        await handleDeleteUser(
+            username,
+            username,
+            logout,
+            navigate
+        );
         closeProfile();
     };
 
@@ -38,6 +44,8 @@ const Header = () => {
         navigate('/login');
         closeProfile();
     };
+    const location = useLocation();
+    const isLoginPage = location.pathname === '/login';
 
     return (
         <div className='header'>
@@ -48,21 +56,21 @@ const Header = () => {
                         className={`user-icon${!isLoggedIn ? ' disabled' : ''}`} 
                         onClick={handleProfileClick}
                     />
-                    {isLoggedIn && (
-                        <span className={`user-hover-text`}>
-                            Logout
-                        </span>
-                    )}
+                    
                     {isProfileOpen && (
                         <div className="profile-popup">
                             {isLoggedIn ? (
                                 <>
-                                    <button onClick={handleLogout}>Logga ut</button>
-                                    <button onClick={handleDeleteUser}><FontAwesomeIcon icon={faXmark} /> Ta bort användare</button>
-                                    <button onClick={closeProfile}>Stäng</button>
+                                    <button 
+                                    className='logout-btn'
+                                    onClick={handleLogout}>Logout</button>
+                                    <button className='remove-btn' onClick={handleDeleteUserClick}> Remove this user<FontAwesomeIcon icon={faXmark} /> </button>
+                                    <button
+                                    className='close-btn' onClick={closeProfile}>Close</button>
                                 </>
                             ) : (
-                                <button onClick={handleLogin}>Logga in</button>
+                                <button className='login-btn' onClick={handleLogin}>Logga in</button>
+                                
                             )}
                         </div>
                     )}

@@ -52,4 +52,19 @@
 .profile-popup {
     display: flex;
     flex-direction: column;
+    position: absolute;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 100px;
+    
+}
+.user-icon {
+    cursor: pointer;
+}
+.logout-btn, .remove-btn, .close-btn, .login-btn {
+    
+    font-size: 15px;
+    background: rgb(184, 186, 185);
+    border: 1px solid rgb(165, 165, 165);
+    color: rgb(33, 32, 32);
+    cursor: pointer;
 }
