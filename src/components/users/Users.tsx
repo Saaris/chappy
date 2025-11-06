@@ -24,12 +24,13 @@ const Users = () => {
     return (
         <div className="box">
             
-                <p> Användare </p>
+                <p> Users </p>
                 <ul className="users-list">
 					{users.filter(u => !isLoggedIn || u.username !== currentUser)
            			 	.map(u => (
-                        <li key={u.userId}>
-                            <span className="users-icon" onClick={() => setDmReceiver(u.userId)}>👤</span>
+                        <li key={u.userId} onClick={() => setDmReceiver(u.userId)}>
+							
+                            <span className="users-icon" >👤</span>
                             {u.username}
                             
                                 {dmReceiver === u.userId && (
@@ -40,9 +41,11 @@ const Users = () => {
                                             value={dmMessage}
                                             onChange={e => setDmMessage(e.target.value)}
                                         />
-                                        <button onClick={() => handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage)}>Skicka DM</button>
-                                        <button onClick={() => setDmReceiver(null)}>Stäng</button>
-                                        {dmStatus && <p>{dmStatus}</p>}
+										<div className='send-dm'>
+											<button onClick={() => handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage)}>Send DM</button>
+											<button onClick={() => setDmReceiver(null)}>Close</button>
+											{dmStatus && <p>{dmStatus}</p>}
+										</div>
                                     </div>
                                 )}
                         </li>

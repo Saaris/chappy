@@ -113,7 +113,6 @@ const Dm = () => {
                         <label className='dm-label'>type a new message</label>
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
-                        className='dm-send-button'
                         onClick={handleSendDm} type="submit">send</button>
                         <button type="button" onClick={() => setSelectedDm(null)}>close</button>
                     </form>
