@@ -91,27 +91,27 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
     }
 })
 
- // GET meddelanden för en öppen kanal, även för gäst
-router.get('/:channelId/messages', async (req: Request, res: Response) => {
-    const { channelId } = req.params
-    try {
+//  // GET meddelanden för en öppen kanal, även för gäst
+// router.get('/:channelId/messages', async (req: Request, res: Response) => {
+//     const { channelId } = req.params
+//     try {
        
-        // Hämta meddelanden för kanalen med QueryCommand
-        const messageResult = await db.send(new QueryCommand({
-            TableName: myTable,
-            KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-            ExpressionAttributeValues: {
-                ':pk': `CHANNEL#${channelId}`,
-                ':sk': 'MESSAGE#'
-            }
-        }))
-        const messages = messageResult.Items || []
-        res.status(200).send({ messages })
-    } catch (error) {
-        console.error('Error when get messages from the channel:', error)
-        res.status(500).send({ success: false, message: 'Failed to fetch messages' })
-    }
-})
+//         // Hämta meddelanden för kanalen med QueryCommand
+//         const messageResult = await db.send(new QueryCommand({
+//             TableName: myTable,
+//             KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+//             ExpressionAttributeValues: {
+//                 ':pk': `CHANNEL#${channelId}`,
+//                 ':sk': 'MESSAGE#'
+//             }
+//         }))
+//         const messages = messageResult.Items || []
+//         res.status(200).send({ messages })
+//     } catch (error) {
+//         console.error('Error when get messages from the channel:', error)
+//         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
+//     }
+// })
 
 
 // Skapa ny kanal (endast för inloggad användare)

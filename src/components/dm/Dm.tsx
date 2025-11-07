@@ -8,9 +8,10 @@ import { setDmUpdater } from '../../frontenddata/userActions';
 import './Dm.css';
 
 const Dm = () => {
-    const [dms, setDms] = useState<DmResponse[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
-    // Hämta alla användare
+    const [dms, setDms] = useState<DmResponse[]>([]);//array med alla DM-meddelanden
+    const [users, setUsers] = useState<User[]>([]);//array med alla användare (för att mappa userId till username)
+
+    // Hämta alla användare från '/api/users'
     useEffect(() => {
         const fetchUsers = async () => {
             const res = await fetch('/api/users');
@@ -21,19 +22,25 @@ const Dm = () => {
     }, []);
 
     // Skapa userId -> username map
-    const [selectedDm, setSelectedDm] = useState<DmResponse | null>(null);
-    const [dmMessage, setDmMessage] = useState('');
-    const [dmStatus, setDmStatus] = useState('');
+    const [selectedDm, setSelectedDm] = useState<DmResponse | null> (null); // vilket DM som är valt för chat
+    const [dmMessage, setDmMessage] = useState(''); //text som användaren skriver i chatfönstret
+    const [dmStatus, setDmStatus] = useState(''); //statusmeddelande ("Meddelande skickat!
     const isLoggedIn = useUserStore((state) => state.isLoggedIn());
     const currentUser = useUserStore((state) => state.username);
 
+    //filtrera dm för aktuell anv.
     const isCurrentUserReceiver =  dms.filter(dm =>
         dm.senderId === currentUser || dm.receiverId === currentUser
     );
     
+    //fetch dm från backend
+    // Hämtar JWT från localStorage
+    // Gör fetch till '/api/dm' med Authorization header
+    // Uppdaterar dms state med resultat
+
     const handleGetdm = async () => {
         console.log('handleGetdm körs');
-        const token = localStorage.getItem(LocalStorage_KEY);
+        const token = localStorage.getItem(LocalStorage_KEY); 
         console.log('Token i localStorage:', token);
         if (!token) return;
         const response = await fetch('/api/dm', {
@@ -53,10 +60,10 @@ const Dm = () => {
     };
     useEffect(() => {
         if (isLoggedIn && currentUser) {
-            handleGetdm();
+            handleGetdm(); //// Hämta DM när komponenten laddas
         }
 
-        // Sätt DM-uppdateraren så andra komponenter kan trigga uppdatering
+        // uppdaterings funktion för andra komponenter 
         setDmUpdater(() => {
             if (isLoggedIn && currentUser) {
                 handleGetdm();
@@ -65,8 +72,10 @@ const Dm = () => {
     }, [isLoggedIn, currentUser]);
 
     const handleGetDmChat = (dm: DmResponse) => {
-        setSelectedDm(dm);
+        setSelectedDm(dm); // Öppnar chat för valt DM
     };
+
+    // Skickar nytt DM via POST till '/api/dm'
     const handleSendDm = async () => {
         if (!selectedDm) return;
         if (!dmMessage) return;
@@ -93,7 +102,7 @@ const Dm = () => {
             setDmStatus('Kunde inte skicka meddelande.');
         }
     };
-    //fromEntries gör om den arrayen till ett objekt där kan slå upp username med userId som nyckel.
+    //fromEntries gör om den arrayen till ett objekt där kan slå upp username med userId som nyckel. Mappa userId till username
     const userIdToUsername = Object.fromEntries(users.map(u => [u.userId, u.username]));
 
     return (
@@ -110,6 +119,7 @@ const Dm = () => {
             </ul>
             {selectedDm && (
                 <div className="dm-chat-box">
+                    {isLoggedIn && (
                     <div className='dmchat-content'>
                         <p className='dm-sender'>
                             From: {userIdToUsername[selectedDm.senderId] || selectedDm.senderId}
@@ -117,6 +127,7 @@ const Dm = () => {
                         <p className='dmchat-text'>{selectedDm.message}</p>
                         <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
                     </div>
+                    )}
                     <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
                         <label className='dm-label'>type a new message</label>
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
