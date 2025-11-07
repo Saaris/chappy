@@ -4,6 +4,7 @@ import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import type { DmResponse, User } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
 import { LocalStorage_KEY } from '../../frontenddata/key';
+import { setDmUpdater } from '../../frontenddata/userActions';
 import './Dm.css';
 
 const Dm = () => {
@@ -29,7 +30,7 @@ const Dm = () => {
     const isCurrentUserReceiver =  dms.filter(dm =>
         dm.senderId === currentUser || dm.receiverId === currentUser
     );
-
+    
     const handleGetdm = async () => {
         console.log('handleGetdm körs');
         const token = localStorage.getItem(LocalStorage_KEY);
@@ -54,6 +55,13 @@ const Dm = () => {
         if (isLoggedIn && currentUser) {
             handleGetdm();
         }
+
+        // Sätt DM-uppdateraren så andra komponenter kan trigga uppdatering
+        setDmUpdater(() => {
+            if (isLoggedIn && currentUser) {
+                handleGetdm();
+            }
+        });
     }, [isLoggedIn, currentUser]);
 
     const handleGetDmChat = (dm: DmResponse) => {
@@ -80,7 +88,7 @@ const Dm = () => {
         if (response.ok) {
             setDmStatus('Meddelande skickat!');
             setDmMessage('');
-            handleGetdm();
+            
         } else {
             setDmStatus('Kunde inte skicka meddelande.');
         }

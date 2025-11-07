@@ -70,7 +70,7 @@
     }
 }
 .dm-buttons {
-  width: 60px;
+  width: 80px;
   height: 30px;
   padding: 2px 4px;
 }
@@ -89,6 +89,9 @@
       font-size: 15px;
       border-radius: 4px;
       cursor: pointer;
+    }
+    p {
+      font-size: 14px;
     }
 
 }

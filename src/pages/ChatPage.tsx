@@ -24,7 +24,7 @@ const ChatPage = () => {
       <Channels />
       {isLoggedIn && (
         <>
-          <h3>DM</h3>
+          <h3>MY DMS</h3>
           <Dm />
         </>
       )}

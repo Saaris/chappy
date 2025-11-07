@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import type { User } from '../../frontenddata/types';
 import './Users.css';
 import { useUserStore } from '../../frontenddata/userStore';
-import { handleGetUsers,  handleSendDm } from '../../frontenddata/userActions';
+import { handleGetUsers,  handleSendDm, triggerDmUpdate } from '../../frontenddata/userActions';
 
+//triggerDmUpdate, callback för att trigga uppdatering av DM-listan.
+//stopPropagation används för att förhindra att klick på DM-inputen och knapparna stänger DM-fönstret.
 
 const Users = () => {
     const [users, setUsers] = useState<User[]>([]);
-    const [dmReceiver, setDmReceiver] = useState<string | null>(null);
-    const [dmMessage, setDmMessage] = useState('');
-    const [dmStatus, setDmStatus] = useState('');
+    const [dmReceiver, setDmReceiver] = useState<string | null>(null); //vem som ska få medd
+    const [dmMessage, setDmMessage] = useState(''); //medd som ska skickas, setDmMessage rensa fältet
+    const [dmStatus, setDmStatus] = useState(''); //status för meddelande
+
     
      const isLoggedIn = useUserStore((state) => state.isLoggedIn());
 		const currentUser = useUserStore((state) => state.username);
@@ -34,7 +37,7 @@ const Users = () => {
                             {u.username}
                             
                                 {dmReceiver === u.userId && (
-                                    <div className="dmchat-content">
+                                    <div className="dmchat-content" onClick={(e) => e.stopPropagation()}>
                                         <input
                                             type="text"
                                             placeholder="Skriv ett meddelande..."
@@ -42,8 +45,8 @@ const Users = () => {
                                             onChange={e => setDmMessage(e.target.value)}
                                         />
 										<div className='send-dm'>
-											<button onClick={() => handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage)}>Send DM</button>
-											<button onClick={() => setDmReceiver(null)}>Close</button>
+											<button onClick={(e) => { e.stopPropagation(); handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage, () => triggerDmUpdate()); }}>Send DM</button>
+											<button onClick={(e) => { e.stopPropagation(); setDmReceiver(null); }}>Close</button>
 											{dmStatus && <p>{dmStatus}</p>}
 										</div>
                                     </div>

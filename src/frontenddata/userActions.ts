@@ -1,5 +1,18 @@
 import { LocalStorage_KEY } from './key'
 
+// Global DM uppdateringshantering
+export let showNewDm: (() => void) | null = null;
+
+export const setDmUpdater = (updater: () => void) => {
+    showNewDm = updater;
+};
+
+export const triggerDmUpdate = () => {
+    if (showNewDm) {
+        showNewDm();
+    }
+};
+
 
 // Hämta alla användare
 export const handleGetUsers = async (setUsers: (users: any[]) => void) => {
@@ -16,7 +29,8 @@ export const handleSendDm = async (
     dmReceiver: string | null,
     dmMessage: string,
     setDmStatus: (msg: string) => void,
-    setDmMessage: (msg: string) => void
+    setDmMessage: (msg: string) => void,
+    onSuccess?: () => void  // Callback för att trigga uppdatering
 ) => {
     console.log('handleSendDm called', { dmReceiver, dmMessage });
     if (!dmReceiver) {
@@ -46,9 +60,36 @@ export const handleSendDm = async (
     if (response.ok) {
         setDmStatus('Meddelande skickat!');
         setDmMessage('');
-       
+        // Trigga uppdatering av DM-lista
+        triggerDmUpdate();
+        if (onSuccess) {
+            onSuccess();
+        }
     } else {
         setDmStatus('Kunde inte skicka meddelande.');
+    }
+};
+
+// Hämta DM
+export const handleGetDm = async () => {
+    const jwt: string | null = localStorage.getItem(LocalStorage_KEY);
+    if (!jwt) {
+        console.log('Ingen JWT hittades');
+        return [];
+    }
+
+    const response = await fetch('/api/dm', {
+        headers: {
+            'Authorization': `Bearer ${jwt}`
+        }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        return data.dm || [];
+    } else {
+        console.log('Kunde inte hämta DM:', response.status);
+        return [];
     }
 };
 
