@@ -31,12 +31,16 @@ const Users = () => {
                 <ul className="users-list">
 					{users.filter(u => !isLoggedIn || u.username !== currentUser)
            			 	.map(u => (
-                        <li key={u.userId} onClick={() => setDmReceiver(u.userId)}>
+                        <li 
+                            key={u.userId} 
+                            onClick={() => setDmReceiver(u.userId)}
+                            className="user-item"
+                        >
 							
                             <span className="users-icon" >👤</span>
                             {u.username}
                             
-                                {dmReceiver === u.userId && (
+                                {dmReceiver === u.userId && isLoggedIn && (
                                     <div className="dmchat-content" onClick={(e) => e.stopPropagation()}>
                                         <input
                                             type="text"

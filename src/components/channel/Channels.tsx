@@ -52,52 +52,22 @@ const Channels = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !activeChatChannel || !canSendChannelMessages) return;
+    const channelId = activeChatChannel;
+    if (!channelId) return;
 
-    try {
-      const headers: any = {
-        'Content-Type': 'application/json'
-      };
-
-      // Endast inloggade användare behöver token
-      if (isLoggedIn) {
-        headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-      }
-
-      const response = await fetch(`/api/channels/${activeChatChannel}/messages`, {
+    await fetch(`/api/channels/${channelId}/messages`,
+      {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           message: newMessage,
-          senderId: username || 'guest'
+          senderId: username
         })
       });
-
-      if (response.ok) {
-        // Lägg till meddelandet lokalt direkt
-        const newMsg = {
-          senderId: username || 'guest',
-          message: newMessage,
-          time: new Date().toISOString()
-        };
-
-        setChannelMessages(prev => ({
-          ...prev,
-          [activeChatChannel]: [...(prev[activeChatChannel] || []), newMsg]
-        }));
-
-        setNewMessage(''); // Rensa input
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
     }
-  };
-
-  // const handleKeyPress = (e: React.KeyboardEvent) => {
-  //   if (e.key === 'Enter') {
-  //     handleSendMessage();
-  //   }
-  // };
+    
 
   return (
     <>
@@ -141,14 +111,14 @@ const Channels = () => {
             </div>
             <div className="channel-chat-content">
               {channelMessages[activeChatChannel] && channelMessages[activeChatChannel].length === 0 ? (
-                <p>Inga meddelanden i denna kanal än.</p>
+                <p>No messages in this channel</p>
               ) : (
                 channelMessages[activeChatChannel]?.map((message, index) => (
                   <div key={index} className="channel-chat-message">
                     <div className="channel-message-header">
-                      <p className='chat-sender'>{message.senderId || 'Okänd'}</p>
+                      <p className='chat-sender'>{message.senderId || null}</p>
                       <span className="channel-message-time">
-                        {message.time ? new Date(message.time).toLocaleTimeString() : 'Okänd tid'}
+                        {message.time ? new Date(message.time).toLocaleTimeString() : null}
                       </span>
                     </div>
                     <div className="channel-message-text">{message.message}</div>
@@ -162,7 +132,7 @@ const Channels = () => {
               <div className="channel-chat-input">
                 <input
                   type="text"
-                  placeholder={`Skriv meddelande i #${activeChatChannel}...`}
+                  placeholder='type a message...'
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                 
@@ -181,7 +151,7 @@ const Channels = () => {
             {/* Visa meddelande för ej inloggade */}
             {!canSendChannelMessages && (
               <div className="channel-chat-guest">
-                <p>only users can send messages.</p>
+                <p>only users can send messages in this channel.</p>
               </div>
             )}
           </div>

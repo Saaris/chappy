@@ -117,9 +117,8 @@ const Dm = () => {
                     </li>
                 ))}
             </ul>
-            {selectedDm && (
+            {selectedDm && isLoggedIn && (
                 <div className="dm-chat-box">
-                    {isLoggedIn && (
                     <div className='dmchat-content'>
                         <p className='dm-sender'>
                             From: {userIdToUsername[selectedDm.senderId] || selectedDm.senderId}
@@ -127,7 +126,6 @@ const Dm = () => {
                         <p className='dmchat-text'>{selectedDm.message}</p>
                         <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
                     </div>
-                    )}
                     <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
                         <label className='dm-label'>type a new message</label>
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
