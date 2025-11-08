@@ -105,22 +105,25 @@ export const handleDeleteUser = async (
             return
         }
 
-        const response: Response = await fetch('/api/users/' + currentUser, {
+        console.log('Försöker ta bort användare:', userId);
+        const response: Response = await fetch('/api/users/' + userId, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${jwt}`
             }
         })
 
+        console.log('Delete response status:', response.status);
         if( response.status === 204 ) {
-            console.log('Tog bort användare!')
+            console.log('Tog bort användare!', userId)
+            // Om vi tar bort oss själva, logga ut
             if (userId === currentUser) {
                 logout();
                 localStorage.removeItem(LocalStorage_KEY);
-                navigate('/logout'); 
+                navigate('/login'); 
             }
         } else {
-            console.log('Kunde ej ta bort ' + response.status)
+            console.log('Kunde ej ta bort användare', userId, 'Status:', response.status)
         }
 }
 

@@ -58,3 +58,16 @@
 .auth-form .guest-button:hover {
   filter:brightness(.9);
 }
+.success-message {
+  font-size: 14px;
+  color: rgb(45, 159, 45);
+  font-weight: 600;
+  margin: 0;
+  
+}
+.error-message {
+  font-size: 14px;
+  color: rgb(224, 38, 38);
+  font-weight: 600;
+  margin: 0;
+}

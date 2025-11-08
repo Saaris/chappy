@@ -15,7 +15,8 @@ const Register = () => {
 
    const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
    const [confirmPassword, setConfirmPassword] = useState('');
-   const [regErrorMsg, setRegErrorMsg] = useState('')
+   const [regErrorMsg, setRegErrorMsg] = useState('');
+   const [regSuccessMsg, setRegSuccessMsg] = useState('');
 
    const handleSubmitReg = async () => {
 	useUserStore.getState().setGuest();
@@ -49,17 +50,20 @@ const Register = () => {
 		setRegErrorMsg('')
 			const jwt: string = data.token
 			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
-			console.log('registreringen lyckades')
-			navigate('/chatPage'); 
-         useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
-         useUserStore.getState().setToken(jwt); //Sparar JWT-token i Zustand-store.
+			setRegSuccessMsg('register succed, now you can sign in')
+			// navigate('/chatPage'); 
 
-		} else {
-			localStorage.removeItem(LocalStorage_KEY)
-			setRegErrorMsg('Registrering misslyckades!')
-		}
-		
-	}
+			 setFormData({ username: '', password: '', accessLevel: 'user' });
+   			setConfirmPassword(''); //töm formuläret
+			useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
+			useUserStore.getState().setToken(jwt); //Sparar JWT-token i Zustand-store.
+
+			} else {
+				localStorage.removeItem(LocalStorage_KEY)
+				setRegErrorMsg('Register failed!')
+			}
+			
+}
     return <div className="auth-column">
 		    
 				<p> Create new user </p>
@@ -84,6 +88,7 @@ const Register = () => {
 					value={confirmPassword}
 					/>
 				 {regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
+				 {regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
 				<button className='signup-button' onClick={handleSubmitReg} > Sign up </button>
 				<button className='guest-button' onClick={() => {
 					navigate('/chatPage');

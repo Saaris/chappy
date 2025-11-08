@@ -72,7 +72,7 @@ return (
 					value={formData.password}
 				/>
 				{loginErrorMsg && <span> {loginErrorMsg} </span>}
-				<button onClick={handleLogin}>Logga in</button>
+				<button onClick={handleLogin}>Login</button>
 			</div>
 		</div>
 		{/* <div className="register-column">
