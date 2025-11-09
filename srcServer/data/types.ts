@@ -41,7 +41,7 @@ export interface ChannelBody {
   password: string
   isLocked: string
 }
-export type DirectMessage = {
+export interface DirectMessage {
   pk: string
   sk: string
   senderId: string
@@ -49,4 +49,18 @@ export type DirectMessage = {
   message: string
   sentAt: number
   userId: string
+}
+export interface ChannelMessage {
+  pk: string
+  sk: string
+  channelId: string
+  message: string
+  senderId: string
+  time: string
+  isLocked: boolean
+}
+
+export interface NewChannelMessage {
+  message: string
+  senderId: string
 }
