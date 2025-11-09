@@ -49,7 +49,7 @@ const Users = () => {
                                             onChange={e => setDmMessage(e.target.value)}
                                         />
 										<div className='send-dm'>
-											<button onClick={(e) => { e.stopPropagation(); handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage, () => triggerDmUpdate()); }}>Send DM</button>
+											<button onClick={(e) => { e.stopPropagation(); handleSendDm(dmReceiver, dmMessage, setDmStatus, setDmMessage, () => setDmReceiver(null), () => triggerDmUpdate()); }}>Send DM</button>
 											<button onClick={(e) => { e.stopPropagation(); setDmReceiver(null); }}>Close</button>
 											{dmStatus && <p>{dmStatus}</p>}
 										</div>

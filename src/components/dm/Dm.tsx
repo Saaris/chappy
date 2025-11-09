@@ -10,8 +10,14 @@ import './Dm.css';
 const Dm = () => {
     const [dms, setDms] = useState<DmResponse[]>([]);//array med alla DM-meddelanden
     const [users, setUsers] = useState<User[]>([]);//array med alla användare (för att mappa userId till username)
+     // Skapa userId -> username map
+    const [selectedDm, setSelectedDm] = useState<DmResponse | null> (null); // vilket DM som är valt för chat
+    const [dmMessage, setDmMessage] = useState(''); //text som användaren skriver i chatfönstret
+    const [dmStatus, setDmStatus] = useState(''); //statusmeddelande ("Meddelande skickat!
+    const isLoggedIn = useUserStore((state) => state.isLoggedIn());
+    const currentUser = useUserStore((state) => state.username);
 
-    // Hämta alla användare från '/api/users'
+    // Hämta alla användare från '/api/users' för att mappa userId till username
     useEffect(() => {
         const fetchUsers = async () => {
             const res = await fetch('/api/users');
@@ -21,12 +27,7 @@ const Dm = () => {
         fetchUsers();
     }, []);
 
-    // Skapa userId -> username map
-    const [selectedDm, setSelectedDm] = useState<DmResponse | null> (null); // vilket DM som är valt för chat
-    const [dmMessage, setDmMessage] = useState(''); //text som användaren skriver i chatfönstret
-    const [dmStatus, setDmStatus] = useState(''); //statusmeddelande ("Meddelande skickat!
-    const isLoggedIn = useUserStore((state) => state.isLoggedIn());
-    const currentUser = useUserStore((state) => state.username);
+   
 
     //filtrera dm för aktuell anv.
     const isCurrentUserReceiver =  dms.filter(dm =>
@@ -76,6 +77,8 @@ const Dm = () => {
     };
 
     // Skickar nytt DM via POST till '/api/dm'
+   //kontrollerar att ett DM är valt (selectedDm är inte null)
+   //Kontrollerar att användaren har skrivit ett meddelande (dmMessage är inte tom)
     const handleSendDm = async () => {
         if (!selectedDm) return;
         if (!dmMessage) return;
@@ -97,6 +100,7 @@ const Dm = () => {
         if (response.ok) {
             setDmStatus('Meddelande skickat!');
             setDmMessage('');
+            
             
         } else {
             setDmStatus('Kunde inte skicka meddelande.');

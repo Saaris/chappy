@@ -51,22 +51,22 @@ const Channels = () => {
     setNewMessage(''); // Rensa input när vi stänger
   };
 
-  const handleSendMessage = async () => {
-    const channelId = activeChatChannel;
-    if (!channelId) return;
+  // const handleSendMessage = async () => {
+  //   const channelId = activeChatChannel;
+  //   if (!channelId) return;
 
-    await fetch(`/api/channels/${channelId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: newMessage,
-          senderId: username
-        })
-      });
-    }
+  //   await fetch(`/api/channels/${channelId}/messages`,
+  //     {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         message: newMessage,
+  //         senderId: username
+  //       })
+  //     });
+  //   }
     
 
   return (
@@ -85,7 +85,7 @@ const Channels = () => {
           </li>
         ))}
       </ul>
-      <h2>Channels for users</h2>
+      {/* <h2>Channels for users</h2> */}
       {/* <ul className="locked-channels-list">
         {channels.filter(channel => channel.isLocked === true).map(channel => (
           <li 
@@ -139,8 +139,7 @@ const Channels = () => {
                   className="channel-message-input"
                 />
                 <button 
-                  onClick={handleSendMessage}
-                  disabled={!newMessage.trim()}
+                  
                   className="channel-send-button"
                 >
                   Send

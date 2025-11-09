@@ -30,6 +30,7 @@ export const handleSendDm = async (
     dmMessage: string,
     setDmStatus: (msg: string) => void,
     setDmMessage: (msg: string) => void,
+    setCloseMessage: (msg: string) => void,
     onSuccess?: () => void  // Callback för att trigga uppdatering
 ) => {
     console.log('handleSendDm called', { dmReceiver, dmMessage });
@@ -60,6 +61,7 @@ export const handleSendDm = async (
     if (response.ok) {
         setDmStatus('Meddelande skickat!');
         setDmMessage('');
+        setCloseMessage('')
         // Trigga uppdatering av DM-lista
         triggerDmUpdate();
         if (onSuccess) {
