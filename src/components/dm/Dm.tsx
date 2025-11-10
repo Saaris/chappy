@@ -109,14 +109,46 @@ const Dm = () => {
     //fromEntries gör om den arrayen till ett objekt där kan slå upp username med userId som nyckel. Mappa userId till username
     const userIdToUsername = Object.fromEntries(users.map(u => [u.userId, u.username]));
 
+
+    // I din dm.tsx, lägg till denna funktion:
+const oneDmConversation = () => {
+    const conversations = new Map();
+    
+    isCurrentUserReceiver.forEach(dm => {
+        // Bestäm vem som är "den andra personen" i konversationen
+        const otherPerson = dm.senderId === currentUser ? dm.receiverId : dm.senderId;
+        
+        if (!conversations.has(otherPerson)) {
+            conversations.set(otherPerson, {
+                otherPerson,
+                latestMessage: dm,
+                messageCount: 1,
+                messages: [dm]
+            });
+        } else {
+            const existing = conversations.get(otherPerson);
+            existing.messageCount++;
+            existing.messages.push(dm);
+            
+            // Uppdatera till senaste meddelandet (om detta är nyare)
+            if (dm.sentAt > existing.latestMessage.sentAt) {
+                existing.latestMessage = dm;
+            }
+        }
+    });
+    
+    return Array.from(conversations.values());
+};
+
     return (
         <div>
             <ul className="dm-list">
-                {isCurrentUserReceiver.map(dm => (
-                    <li key={dm.senderId + dm.receiverId + (dm.sentAt || '')}>
+                {oneDmConversation().map(conversation => (
+                    <li key={conversation.otherPerson}>
                         <span className="dm-icon"><FontAwesomeIcon icon={faMessage} /></span>
-                        <button className="dm-buttons" onClick={() => handleGetDmChat(dm)}>
-                            {isLoggedIn ? userIdToUsername[dm.receiverId] || dm.receiverId : 'dm-from'}
+                        <button className="dm-buttons" onClick={() => handleGetDmChat(conversation.latestMessage)}>
+                            {isLoggedIn ? userIdToUsername[conversation.otherPerson] || conversation.otherPerson : 'dm-from'}
+                            <span className="message-count">({conversation.messageCount})</span>
                         </button>
                     </li>
                 ))}
