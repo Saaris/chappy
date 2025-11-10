@@ -5,7 +5,7 @@ import App from './App.tsx'
 import { createHashRouter, RouterProvider } from 'react-router'
 import ChatPage from './pages/ChatPage.tsx'
 import Header from './components/header/Header.tsx'
-import Login from './components/register/login/Login.tsx'
+import LoginPage from './components/register/login/LoginPage.tsx'
 import Register from './components/register/login/Register.tsx'
 
 const router = createHashRouter([
@@ -31,7 +31,7 @@ const router = createHashRouter([
       },
       {
         	path: '/login',
-        	Component: Login
+        	Component: LoginPage
       }
 	]
   }

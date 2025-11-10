@@ -123,21 +123,7 @@ const Channels = () => {
           );
         })}
       </ul>
-      {/* <h2>Channels for users</h2> */}
-      {/* <ul className="locked-channels-list">
-        {channels.filter(channel => channel.isLocked === true).map(channel => (
-          <li 
-            key={channel.channelId}
-            className={isLoggedIn ? 'unlocked-channel' : 'locked-channel'}
-          >
-            <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
-            {channel.channelId}
-            {!isLoggedIn && (
-              <span className="locked-channel-info"><FontAwesomeIcon icon={faKey} /></span>
-            )}
-          </li>
-        ))}
-      </ul> */}
+    
 
       {/* Popup chattfönster */}
       {activeChatChannel && (
@@ -165,7 +151,7 @@ const Channels = () => {
               )}
             </div>
             
-            {/* Send message sektion - alla kan skicka i öppna kanaler */}
+            {/* alla kan skicka i öppna kanaler */}
             <div className="channel-chat-input">
               <input
                 type="text"
