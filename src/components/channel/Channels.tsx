@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTowerBroadcast } from '@fortawesome/free-solid-svg-icons';
+import { faTowerBroadcast, faLock } from '@fortawesome/free-solid-svg-icons';
 import type { Channel } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
 import { useState, useEffect } from 'react';
@@ -13,7 +13,7 @@ const Channels = () => {
   const [newMessage, setNewMessage] = useState('');
   const username = useUserStore((state) => state.username);
   
-  const canSendChannelMessages = !!username; // Både inloggade och gäster kan skicka i kanaler
+
 
   const handleGetChannels = async () => {
     const response = await fetch('/api/channels');
@@ -51,39 +51,58 @@ const Channels = () => {
     setNewMessage(''); // Rensa input när vi stänger
   };
 
-  // const handleSendMessage = async () => {
-  //   const channelId = activeChatChannel;
-  //   if (!channelId) return;
+  const handleSendMessage = async () => {
+    const channelId = activeChatChannel;
+    if (!channelId || !newMessage.trim()) return;
 
-  //   await fetch(`/api/channels/${channelId}/messages`,
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({
-  //         message: newMessage,
-  //         senderId: username
-  //       })
-  //     });
-  //   }
+    try {
+      const response = await fetch(`/api/channels/${channelId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: newMessage,
+          senderId: username || 'guest'
+        })
+      });
+
+      if (response.ok) {
+        setNewMessage(''); // Rensa input
+        handleGetChannelMsg(channelId); // Hämta meddelanden igen
+      } else {
+        console.error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
     
 
   return (
     <>
       <h2>Channels</h2>
       <ul className="channels-list">
-        {channels.map(channel => (
-          <li key={channel.channelId}>
-            <div className='channel-box' onClick={() => handleGetChannelMsg(channel.channelId)}>
-              <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
-              {channel.channelId}
-              <span className="message-count">
-                {channelMessages[channel.channelId] ? `(${channelMessages[channel.channelId].length})` : ''}
-              </span>
-            </div>
-          </li>
-        ))}
+        {channels.map(channel => {
+          const isGuest = !username || username === 'guest';
+          const isDisabled = channel.isLocked && isGuest;
+          
+          return (
+            <li key={channel.channelId}>
+              <div 
+                className={`channel-box ${isDisabled ? 'disabled' : ''}`}
+                onClick={isDisabled ? undefined : () => handleGetChannelMsg(channel.channelId)}
+              >
+                <span><FontAwesomeIcon icon={faTowerBroadcast} /></span>
+                {channel.channelId}
+                {isDisabled && <span className="lock-icon"><FontAwesomeIcon icon={faLock} /></span>}
+                <span className="message-count">
+                  {channelMessages[channel.channelId] ? `(${channelMessages[channel.channelId].length})` : ''}
+                </span>
+              </div>
+            </li>
+          );
+        })}
       </ul>
       {/* <h2>Channels for users</h2> */}
       {/* <ul className="locked-channels-list">
@@ -116,43 +135,34 @@ const Channels = () => {
                 channelMessages[activeChatChannel]?.map((message, index) => (
                   <div key={index} className="channel-chat-message">
                     <div className="channel-message-header">
-                      <p className='chat-sender'>{message.senderId || null}</p>
+                      <p className='chat-sender'>{String(message.senderId || 'Unknown')}</p>
                       <span className="channel-message-time">
                         {message.time ? new Date(message.time).toLocaleTimeString() : null}
                       </span>
                     </div>
-                    <div className="channel-message-text">{message.message}</div>
+                    <div className="channel-message-text">{String(message.message || '')}</div>
                   </div>
                 ))
               )}
             </div>
             
-            {/* Send message sektion */}
-            {canSendChannelMessages && (
-              <div className="channel-chat-input">
-                <input
-                  type="text"
-                  placeholder='type a message...'
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                
-                  className="channel-message-input"
-                />
-                <button 
-                  
-                  className="channel-send-button"
-                >
-                  Send
-                </button>
-              </div>
-            )}
-            
-            {/* Visa meddelande för ej inloggade */}
-            {!canSendChannelMessages && (
-              <div className="channel-chat-guest">
-                <p>only users can send messages in this channel.</p>
-              </div>
-            )}
+            {/* Send message sektion - alla kan skicka i öppna kanaler */}
+            <div className="channel-chat-input">
+              <input
+                type="text"
+                placeholder='type a message...'
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              
+                className="channel-message-input"
+              />
+              <button 
+                onClick={handleSendMessage}
+                className="channel-send-button"
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -21,3 +21,9 @@ if (!result.success) {
 } else {
   console.log("Validering lyckades!", result.data); //ta bort hela if satsen sen
 }
+
+// Schema för att skicka meddelande till kanal
+export const ChannelMessageSchema = z.object({
+  message: z.string().min(1, "Message cannot be empty").max(500, "Message too long"),
+  senderId: z.string().min(1, "SenderId is required").max(30, "SenderId too long")
+})

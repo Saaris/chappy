@@ -7,8 +7,9 @@
 import express, { type Request, type Response, type Router } from 'express'
 import { ScanCommand, QueryCommand, DeleteCommand, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { db, myTable } from '../data/dynamoDb.js'
-import type { Payload,ChannelBody, JwtRes} from '../data/types.js'
+import type { Payload, ChannelBody, JwtRes, ChannelMessagesRes, ChannelParams, ChannelMessage } from '../data/types.js'
 import { validateJwt, createToken } from '../data/auth.js';
+import { ChannelMessageSchema } from '../data/schemas.js';
 
 
 const router: Router = express.Router()
@@ -50,7 +51,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 
 // GET meddelanden för en kanal
-router.get('/:channelId/messages', async (req: Request, res: Response) => {
+router.get('/:channelId/messages', async (req: Request<ChannelParams>, res: Response<ChannelMessagesRes>) => {
     const { channelId } = req.params
     try {
         // Hämta kanalinfo för att se om den är låst
@@ -83,8 +84,19 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
                 ':sk': 'MESSAGE#'
             }
         }))
-        const messages = messageResult.Items || []
-        res.status(200).send({ messages })
+        const messages: ChannelMessage[] = (messageResult.Items || []).map(item => ({
+            pk: item.pk,
+            sk: item.sk,
+            channelId: item.channelId,
+            message: item.message,
+            senderId: item.senderId,
+            time: item.time,
+            isLocked: item.isLocked || false
+        }));
+        res.status(200).send({ 
+            success: true,
+            messages 
+        })
     } catch (error) {
         console.error('Get channel messages error:', error)
         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
@@ -112,7 +124,6 @@ router.get('/:channelId/messages', async (req: Request, res: Response) => {
 //         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
 //     }
 // })
-
 
 // Skapa ny kanal (endast för inloggad användare)
 router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<JwtRes>) => {
@@ -153,10 +164,7 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
 })
 
 // Delete channel, ta bort kanal, bara den som skapat kanalen
-interface ChannelIdParam {
-	channelId: string;
-}
-router.delete('/:channelId', async (req: Request<ChannelIdParam>, res: Response<void>) => {
+router.delete('/:channelId', async (req: Request<ChannelParams>, res: Response<void>) => {
   const channelIdToDelete: string = req.params.channelId;
   const payload: Payload | null = validateJwt(req.headers['authorization']);
   if (!payload) {
@@ -200,6 +208,88 @@ router.delete('/:channelId', async (req: Request<ChannelIdParam>, res: Response<
   } else {
     res.sendStatus(404);
   }
+});
+
+// POST meddelande till en kanal
+router.post('/:channelId/messages', async (req: Request<ChannelParams>, res: Response<ChannelMessagesRes>) => {
+    const { channelId } = req.params;
+    
+    // Validera request body med schema
+    const validation = ChannelMessageSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).send({
+            success: false,
+            message: 'Invalid request data'
+        });
+    }
+
+    const { message, senderId } = validation.data;
+
+    try {
+        // hämta info för kontrollera om kanal är låst
+        const channelResult = await db.send(new QueryCommand({
+            TableName: myTable,
+            KeyConditionExpression: 'pk = :pk AND sk = :sk',
+            ExpressionAttributeValues: {
+                ':pk': `CHANNEL#${channelId}`,
+                ':sk': 'META'
+            }
+        }));
+
+        const channel = channelResult.Items?.[0];
+        if (!channel) {
+            return res.status(404).send({ 
+                success: false, 
+                message: 'Channel not found' 
+            });
+        }
+
+        // Om kanalen är låst (isLocked = true), kräv JWT-token
+        if (channel.isLocked) {
+            const payload = validateJwt(req.headers['authorization']);
+            if (!payload) {
+                return res.status(401).send({ 
+                    success: false, 
+                    message: 'Authentication required for locked channel' 
+                });
+            }
+        }
+
+        // För öppna kanaler (isLocked = false): tillåt både gäster och inloggade
+        // För låsta kanaler (isLocked = true): kräv autentisering (kontrollerat ovan)
+
+        // Skapa meddelande med timestamp
+        const timestamp = new Date().toISOString();
+        
+        const messageItem: ChannelMessage = {
+            pk: `CHANNEL#${channelId}`,
+            sk: `MESSAGE#${timestamp}`,
+            channelId: channelId,
+            message: message,
+            senderId: senderId,
+            time: timestamp,
+            isLocked: channel.isLocked || false
+        };
+
+        // Spara meddelandet i DynamoDB
+        await db.send(new PutCommand({
+            TableName: myTable,
+            Item: messageItem
+        }));
+
+        res.status(201).send({ 
+            success: true, 
+            message: 'Message sent successfully',
+            data: messageItem
+        });
+
+    } catch (error) {
+        console.error('Error sending channel message:', error);
+        res.status(500).send({ 
+            success: false, 
+            message: 'Failed to send message' 
+        });
+    }
 });
 
 export default router
