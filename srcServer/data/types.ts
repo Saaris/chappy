@@ -60,7 +60,16 @@ export interface ChannelMessage {
   isLocked: boolean
 }
 
-export interface NewChannelMessage {
-  message: string
-  senderId: string
+// Parameter interface för channel routes
+export interface ChannelParams {
+  channelId: string
 }
+
+// Response interfaces för channel messages
+export interface ChannelMessagesRes {
+  success: boolean
+  message?: string
+  messages?: ChannelMessage[]
+  data?: ChannelMessage
+}
+
