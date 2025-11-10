@@ -69,7 +69,7 @@ const Header = () => {
                                     className='close-btn' onClick={closeProfile}>Close</button>
                                 </>
                             ) : (
-                                <button className='login-btn' onClick={handleLogin}>Logga in</button>
+                                <button className='login-btn' onClick={handleLogin}>Login</button>
                                 
                             )}
                         </div>

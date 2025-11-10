@@ -15,7 +15,8 @@ export interface UserLogin {
 export interface UserRegister {
 	username: string
 	password: string
-	accessLevel: string
+	accessLevel: 'user'
+	confirmPassword: string;  
 }
 export interface DmResponse {
 	senderId: string

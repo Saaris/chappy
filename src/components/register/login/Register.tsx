@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { LocalStorage_KEY } from '../../../frontenddata/key.ts';
 import { useUserStore } from '../../../frontenddata/userStore.ts';
 import { useNavigate } from 'react-router';
-import { RegisterSchema } from '../../../frontenddata/zodSchema.ts';
+import { getRegisterErrorMessage, RegisterSchema, validateAndGetError } from '../../../frontenddata/zodSchema.ts';
 
 
 
@@ -13,24 +13,21 @@ const Register = () => {
 	const navigate = useNavigate();
 	
 
-   const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user' });
-   const [confirmPassword, setConfirmPassword] = useState('');
+   const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user', confirmPassword: '' });
    const [regErrorMsg, setRegErrorMsg] = useState('');
    const [regSuccessMsg, setRegSuccessMsg] = useState('');
 
    const handleSubmitReg = async () => {
 	useUserStore.getState().setGuest();
 
-      const result = RegisterSchema.safeParse(formData);
-      if (!result.success) {
-         setRegErrorMsg('Could not register! Check username and password.');
-         return;
-      }
+    const validation = validateAndGetError(RegisterSchema, formData, getRegisterErrorMessage);
 
-      if (formData.password !== confirmPassword) {
-         // Visa felmeddelande: Lösenorden matchar inte
-         return;
-      }
+if (!validation.success) {
+  setRegErrorMsg(validation.error);
+  return;
+}
+
+// validation.data innehåller nu validerad data
 
       const response = await fetch('/api/users', {
          method: 'POST',
@@ -53,8 +50,7 @@ const Register = () => {
 			setRegSuccessMsg('register succed, now you can sign in')
 			// navigate('/chatPage'); 
 
-			 setFormData({ username: '', password: '', accessLevel: 'user' });
-   			setConfirmPassword(''); //töm formuläret
+			 setFormData({ username: '', password: '', accessLevel: 'user', confirmPassword: '' }); //töm formuläret
 			useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
 			useUserStore.getState().setToken(jwt); //Sparar JWT-token i Zustand-store.
 
@@ -84,8 +80,8 @@ const Register = () => {
 					<input
 					type="password"
 					placeholder="confirm password"
-					onChange={event => setConfirmPassword(event.target.value)}
-					value={confirmPassword}
+					onChange={event => setFormData({ ...formData, confirmPassword: event.target.value })}
+					value={formData.confirmPassword}
 					/>
 				 {regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
 				 {regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
