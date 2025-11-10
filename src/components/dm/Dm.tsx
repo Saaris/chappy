@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import type { DmResponse, User } from '../../frontenddata/types';
@@ -107,7 +107,10 @@ const Dm = () => {
         }
     };
     //fromEntries gör om den arrayen till ett objekt där kan slå upp username med userId som nyckel. Mappa userId till username
-    const userIdToUsername = Object.fromEntries(users.map(u => [u.userId, u.username]));
+    const userIdToUsername = useMemo(() => 
+        Object.fromEntries(users.map(u => [u.userId, u.username])), 
+        [users]
+    );
 
 
     // I din dm.tsx, lägg till denna funktion:
@@ -122,12 +125,10 @@ const oneDmConversation = () => {
             conversations.set(otherPerson, {
                 otherPerson,
                 latestMessage: dm,
-                messageCount: 1,
                 messages: [dm]
             });
         } else {
             const existing = conversations.get(otherPerson);
-            existing.messageCount++;
             existing.messages.push(dm);
             
             // Uppdatera till senaste meddelandet (om detta är nyare)
@@ -148,7 +149,7 @@ const oneDmConversation = () => {
                         <span className="dm-icon"><FontAwesomeIcon icon={faMessage} /></span>
                         <button className="dm-buttons" onClick={() => handleGetDmChat(conversation.latestMessage)}>
                             {isLoggedIn ? userIdToUsername[conversation.otherPerson] || conversation.otherPerson : 'dm-from'}
-                            <span className="message-count">({conversation.messageCount})</span>
+                          
                         </button>
                     </li>
                 ))}

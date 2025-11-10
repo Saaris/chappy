@@ -32,7 +32,7 @@ const Login = () => {
 			body: JSON.stringify(formData)
 		})
 		if( response.status !== 200 ) {
-			setLoginErrorMsg('Felaktigt användarnamn eller lösenord!')
+			setLoginErrorMsg('Wrong username or password!')
 			return
 		}
 
@@ -44,7 +44,7 @@ const Login = () => {
 			const jwt: string = data.token;
 			localStorage.setItem(LocalStorage_KEY, jwt);
 			
-			console.log('Inloggningen lyckades');
+			console.log('Login succed');
 			navigate('/chatPage'); 
 		} else {
 			localStorage.removeItem(LocalStorage_KEY);

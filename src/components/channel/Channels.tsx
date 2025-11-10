@@ -3,6 +3,7 @@ import { faTowerBroadcast, faLock } from '@fortawesome/free-solid-svg-icons';
 import type { Channel } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
 import { useState, useEffect } from 'react';
+import { LocalStorage_KEY } from '../../frontenddata/key';
 import './Channels.css';
 
 
@@ -27,7 +28,18 @@ const Channels = () => {
 
   const handleGetChannelMsg = async (channelId: string) => {
     try {
-      const response = await fetch(`/api/channels/${channelId}/messages`);
+      // Kontrollera om användaren är inloggad och hämta token
+      const isLoggedIn = username && username !== 'guest';
+      const token = localStorage.getItem(LocalStorage_KEY);
+      
+      const response = await fetch(`/api/channels/${channelId}/messages`, {
+        headers: {
+          ...(isLoggedIn && token && {
+            'Authorization': `Bearer ${token}`
+          }),
+        }
+      });
+      
       const data = await response.json();
       const messages = data.messages || [];
       
@@ -55,11 +67,18 @@ const Channels = () => {
     const channelId = activeChatChannel;
     if (!channelId || !newMessage.trim()) return;
 
+    // Kontrollera om användaren är inloggad och hämta token
+    const isLoggedIn = username && username !== 'guest';
+    const token = localStorage.getItem(LocalStorage_KEY);
+
     try {
       const response = await fetch(`/api/channels/${channelId}/messages`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(isLoggedIn && token && {
+            'Authorization': `Bearer ${token}`
+          }),
         },
         body: JSON.stringify({
           message: newMessage,
