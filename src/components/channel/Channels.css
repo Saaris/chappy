@@ -95,7 +95,6 @@
     margin-left: 1rem;
 }
 
-/* Popup chattfönster för kanaler */
 .channel-chat-overlay {
     position: fixed;
     top: 0;
@@ -149,6 +148,7 @@
 
 .channel-chat-message {
     padding: 0.5rem;
+    border-bottom: 1px dotted rgb(153, 152, 152);
     
 }
 

@@ -106,7 +106,7 @@ const Dm = () => {
             setDmStatus('Kunde inte skicka meddelande.');
         }
     };
-    //fromEntries gör om den arrayen till ett objekt där kan slå upp username med userId som nyckel. Mappa userId till username
+    //n React Hook som cachar/sparar resultatet av en beräkning och bara räknar om när dependencies ändras. Bara räkna om när 'users' ändras
     const userIdToUsername = useMemo(() => 
         Object.fromEntries(users.map(u => [u.userId, u.username])), 
         [users]
