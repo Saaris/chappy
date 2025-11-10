@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTowerBroadcast, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faTowerBroadcast, faLock, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { Channel } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
 import { useState, useEffect } from 'react';
@@ -145,7 +145,7 @@ const Channels = () => {
           <div className="channel-chat-popup" onClick={(e) => e.stopPropagation()}>
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
-              <button className="close-channel-chat" onClick={closeChatWindow}>×</button>
+              <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
             </div>
             <div className="channel-chat-content">
               {channelMessages[activeChatChannel] && channelMessages[activeChatChannel].length === 0 ? (

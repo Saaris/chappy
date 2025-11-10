@@ -2,6 +2,9 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin: 1rem 0;
+    background-image: url('./chappylogo.png');
+    background-size:cover;
+
 }
 
 

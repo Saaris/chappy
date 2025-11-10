@@ -139,20 +139,29 @@ const oneDmConversation = () => {
     });
     
     return Array.from(conversations.values());
+
+    
 };
 
     return (
         <div>
             <ul className="dm-list">
-                {oneDmConversation().map(conversation => (
-                    <li key={conversation.otherPerson}>
+                {oneDmConversation().length === 0 ? (
+                <li className="no-dms-message">
+                    <p>No DMs yet</p>
+
+                </li>
+                ) : (
+                oneDmConversation().map(conversation => (
+                <li key={conversation.otherPerson}>
                         <span className="dm-icon"><FontAwesomeIcon icon={faMessage} /></span>
                         <button className="dm-buttons" onClick={() => handleGetDmChat(conversation.latestMessage)}>
                             {isLoggedIn ? userIdToUsername[conversation.otherPerson] || conversation.otherPerson : 'dm-from'}
                           
                         </button>
                     </li>
-                ))}
+                ))
+                )}
             </ul>
             {selectedDm && isLoggedIn && (
                 <div className="dm-chat-box">

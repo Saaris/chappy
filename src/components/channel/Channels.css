@@ -196,8 +196,8 @@
     padding: 4px 8px;
     background: #2a6e98;
     color: white;
-    
-    border-radius: 10px;
+    font-size: 16px;
+    border-radius: 8px;
     cursor: pointer;
     
     
@@ -230,4 +230,8 @@
   cursor: not-allowed;
   background-color: #f5f5f5;
   border: 1px dashed #ccc;
+}
+.close-channel-chat {
+    font-size: 18px;
+    padding: 0;
 }
