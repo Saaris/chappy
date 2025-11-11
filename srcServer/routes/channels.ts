@@ -173,9 +173,9 @@ router.delete('/:channelId', async (req: Request<ChannelParams>, res: Response<v
   }
 
   // Hämta kanalinfo
-  const result = await db.send(new ScanCommand({
+  const result = await db.send(new QueryCommand({
     TableName: myTable,
-    FilterExpression: 'pk = :pk AND sk = :sk',
+    KeyConditionExpression: 'pk = :pk AND sk = :sk',
     ExpressionAttributeValues: {
       ':pk': `CHANNEL#${channelIdToDelete}`,
       ':sk': 'META'
@@ -204,6 +204,24 @@ router.delete('/:channelId', async (req: Request<ChannelParams>, res: Response<v
   });
   const output = await db.send(command);
   if (output.Attributes) {
+    // Ta bort alla meddelanden för kanalen 
+const messagesResult = await db.send(new QueryCommand({
+  TableName: myTable,
+  KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+  ExpressionAttributeValues: {
+    ':pk': `CHANNEL#${channelIdToDelete}`,
+    ':sk': 'MESSAGE#'
+  }
+}));
+
+// Ta bort varje meddelande
+for (const message of messagesResult.Items || []) {
+  await db.send(new DeleteCommand({
+    TableName: myTable,
+    Key: { pk: message.pk, sk: message.sk }
+  }));
+}
+
     res.sendStatus(204);
   } else {
     res.sendStatus(404);

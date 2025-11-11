@@ -129,17 +129,27 @@ const Channels = () => {
   };
   const handleDeleteChannel = async (channelId: string) => {
     const token = localStorage.getItem(LocalStorage_KEY);
-    const response = await fetch(`/api/channels/${channelId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      } 
-    });
 
-    if (response.ok) {
-      handleGetChannels(); // Uppdatera
+    
+    try {
+      const response = await fetch(`/api/channels/${channelId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        } 
+      });
+
+      if (response.ok) {
+        handleGetChannels(); // Uppdatera
+        setActiveChatChannel(null); 
+      } else {
+        console.error('Failed to delete channel:', response.status);
+        const errorData = await response.text();
+        console.error('Delete error details:', errorData);
+      }
+    } catch (error) {
+      console.error('Error deleting channel:', error);
     }
-
   };
 
 
