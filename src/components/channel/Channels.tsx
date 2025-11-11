@@ -185,7 +185,7 @@ const Channels = () => {
             placeholder="Channel name"
           />
           <button className="create-button" onClick={handleCreateChannel}>Create</button>
-          <button onClick={() => setShowCreateChannel(false)}>Cancel</button>
+          <button className="close-channel-button" onClick={() => setShowCreateChannel(false)}>Cancel</button>
         </div>
       )}
       <ul className="channels-list">

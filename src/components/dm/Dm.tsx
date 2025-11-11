@@ -187,7 +187,7 @@ const oneDmConversation = () => {
                         <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
                     </div>
                     <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
-                        <label className='dm-label'>type a new message</label>
+                        {/* <label className='dm-label'>type a new message</label> */}
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
                         onClick={handleSendDm} type="submit">send</button>

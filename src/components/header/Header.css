@@ -65,12 +65,13 @@
     color: rgb(35, 16, 66)
 }
 .logout-btn, .remove-btn, .close-btn, .login-btn {
-    
-    font-size: 15px;
-    background: rgb(233, 233, 233);
-    border: 1px solid rgb(165, 165, 165);
-    color: rgb(33, 32, 32);
-    cursor: pointer;
+    padding:6px;
+    font-size:16px;
+    background: var(--buttonBackground);
+    border: 1px dotted rgb(165, 165, 165);
+    border-radius:1px;
+    color:rgb(35, 37, 37);
+    cursor:pointer;
 }
 .user-icondisabled{
     font-size: 22px;

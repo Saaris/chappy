@@ -49,9 +49,10 @@
 .send-dm-box {
   display: flex;
   flex-direction: column;
-  width: 50%;
-  margin: 6px;
+  max-width: 400px;
+  min-width: 200px;
   padding: 6px;
+  
 
     input {
       margin: 6px;
@@ -61,11 +62,14 @@
     }
 
     button {
-      margin: 2px;
-      border-radius: 2px;
-      padding: 2px;
-      font-size: 16px;
-      width: 25%;
+      padding:6px;
+      font-size:16px;
+      background:rgb(214, 233, 229);
+      border: 1px dotted rgb(165, 165, 165);
+      border-radius:2px;
+      color:rgb(35, 37, 37);
+      cursor:pointer;
+      margin: 4px;
       
     }
 }
@@ -76,7 +80,7 @@
 }
 .dm-label {
   font-size: 16px;
-  margin-bottom: 4px;
+  
 }
 .send-dm {
   margin: 2px;

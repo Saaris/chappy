@@ -3,6 +3,7 @@
 
 :root {
   --boxShadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+  --buttonBackground: rgb(214, 233, 229);
   line-height: 1.5;
   font-weight: 400;
 
