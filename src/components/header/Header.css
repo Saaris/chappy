@@ -12,6 +12,7 @@
     /* background-repeat: no-repeat; */
     background-size: contain; 
     background-position: center;
+   
 }
 
 .logo {
@@ -45,6 +46,7 @@
 .user-icon-container {
     position: relative;
     display: inline-block;
+    background-color: var(--boxShadow);
 }
 .user-icon-container:hover .user-hover-text {
     display: inline-block;
@@ -68,4 +70,8 @@
     border: 1px solid rgb(165, 165, 165);
     color: rgb(33, 32, 32);
     cursor: pointer;
+}
+.svg-inline--fa {
+    font-size: 18px;
+    color: rgb(35, 16, 66)
 }

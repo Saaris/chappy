@@ -13,6 +13,8 @@ const Channels = () => {
   const [activeChatChannel, setActiveChatChannel] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const username = useUserStore((state) => state.username);
+  const [newChannelId, setNewChannelId] = useState('');
+  const [showCreateChannel, setShowCreateChannel] = useState(false);
   
 
 
@@ -96,6 +98,32 @@ const Channels = () => {
       console.error('Error sending message:', error);
     }
   };
+  //skapa ny kanal 
+  const handleCreateChannel = async () => {
+    const channelId = newChannelId;
+    const isLoggedIn = username && username !== 'guest';
+    const token = localStorage.getItem(LocalStorage_KEY);
+    
+    const response = await fetch('/api/channels', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(isLoggedIn && token && {
+          'Authorization': `Bearer ${token}`
+        }),
+      },
+      body: JSON.stringify({
+        channelId: channelId,
+        isLocked: false //
+      })
+    });
+    
+    if (response.ok) {
+      handleGetChannels(); // Uppdatera
+      setNewChannelId(''); // Rensa inputfältets
+    }
+  };
+  
     
 
   return (
@@ -106,7 +134,9 @@ const Channels = () => {
           const isGuest = !username || username === 'guest';
           const isDisabled = channel.isLocked && isGuest;
           
+          
           return (
+            
             <li key={channel.channelId}>
               <div 
                 className={`channel-box ${isDisabled ? 'disabled' : ''}`}
@@ -119,6 +149,17 @@ const Channels = () => {
                   {channelMessages[channel.channelId] ? `(${channelMessages[channel.channelId].length})` : ''}
                 </span>
               </div>
+              {showCreateChannel && (
+              <div className="create-channel-form">
+                <input 
+                  value={newChannelId}
+                  onChange={(e) => setNewChannelId(e.target.value)}
+                  placeholder="Channel name"
+                />
+                <button onClick={() => setShowCreateChannel(true)}>Cancel</button>
+                <button onClick={() => handleCreateChannel}>Create new channel</button>
+              </div>
+              )}
             </li>
           );
         })}
@@ -170,8 +211,10 @@ const Channels = () => {
             </div>
           </div>
         </div>
+        
       )}
     </>
+    
   );
 };
 

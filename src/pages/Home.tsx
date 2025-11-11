@@ -1,17 +1,17 @@
-import logo from '../assets/logo.png'
+// import logo from '../assets/logo.png'
 
 
-const Home = () => {
+// const Home = () => {
    
-    const username = "guest"; //loggedInUsername || "guest";
+//     const username = "guest"; //loggedInUsername || "guest";
 
-    return (
-        <div>
-            <h1>Start chatting with</h1>
-            <img src={logo} alt="chat logo" />
-            <h2>Welcome {username}</h2>
-        </div>
-    );
-};
+//     return (
+//         <div>
+//             <h1>Start chatting with</h1>
+//             <img src={logo} alt="chat logo" />
+//             <h2>Welcome {username}</h2>
+//         </div>
+//     );
+// };
 
-export default Home;
+// export default Home;

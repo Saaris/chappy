@@ -31,4 +31,7 @@
   font-size: 1.2rem;
   cursor: pointer;
 }
-
+.user-item {
+  font-size: 18px;
+  margin: 6px 0;
+}
