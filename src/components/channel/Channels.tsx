@@ -16,6 +16,7 @@ const Channels = () => {
   const [newChannelId, setNewChannelId] = useState(''); // Namn för ny kanal
   const [showCreateChannel, setShowCreateChannel] = useState(false); // Visa/dölj formulär för att skapa kanal
   const isLoggedIn = username && username !== 'guest';
+  const [removeMessage, setRemoveMessage] = useState<string | null>(null);
    
 
 
@@ -143,8 +144,14 @@ const Channels = () => {
       });
 
       if (response.ok) {
+        setRemoveMessage('Channel removed');
         handleGetChannels(); // Uppdatera
-        setActiveChatChannel(null); 
+        
+        // Stäng overlay:n efter 2 sekunder för att visa animationen
+        setTimeout(() => {
+          setActiveChatChannel(null);
+          setRemoveMessage(null); // Rensa meddelandet
+        }, 2000);
       } else {
         console.error('Failed to delete channel:', response.status);
         const errorData = await response.text();
@@ -155,6 +162,11 @@ const Channels = () => {
     }
   };
 
+  // Lägg till denna funktion i komponenten:
+  const isChannelCreator = (channelId: string): boolean => {
+    const channel = channels.find(ch => ch.channelId === channelId);
+    return channel?.creatorUserId === username;
+  };
 
   return (
     <>
@@ -211,7 +223,11 @@ const Channels = () => {
               <h3>#{activeChatChannel}</h3>
               <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
               
-              <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}><FontAwesomeIcon icon={faTrash} /></button>
+              {isLoggedIn && isChannelCreator(activeChatChannel) && (
+                <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              )}
             </div>
 
             <div className="channel-chat-content">
@@ -231,6 +247,9 @@ const Channels = () => {
                   </div>
                 ))
               )}
+               {removeMessage && (
+        <p className="remove-message">{removeMessage}</p>
+      )}
             </div>
             
             {/* alla kan skicka i öppna kanaler */}

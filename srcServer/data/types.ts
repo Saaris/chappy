@@ -48,7 +48,7 @@ export interface DirectMessage {
   receiverId: string
   message: string
   sentAt: number
-  userId: string
+  // userId: string
 }
 export interface ChannelMessage {
   pk: string
@@ -60,12 +60,12 @@ export interface ChannelMessage {
   isLocked: boolean
 }
 
-// Parameter interface för channel routes
+// interface för channel routes
 export interface ChannelParams {
   channelId: string
 }
 
-// Response interfaces för channel messages
+// interface för channel messages
 export interface ChannelMessagesRes {
   success: boolean
   message?: string

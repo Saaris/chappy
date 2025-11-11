@@ -262,3 +262,8 @@
   opacity: 0.5;
   pointer-events: none; 
 }
+.remove-message {
+    color: rgb(55, 186, 55);
+    font-size: 16px;
+    animation: slideDown 0.3s ease-out, fadeOut 0.5s ease-in 1.5s forwards;
+}

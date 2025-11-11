@@ -30,4 +30,5 @@ export interface Channel {
 	message: string
 	time: string
 	senderId: string
+	creatorUserId?: string
 }

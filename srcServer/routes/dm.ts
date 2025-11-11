@@ -40,22 +40,13 @@ router.post('/', async (req: Request, res: Response) => {
 		return res.status(400).send({ success: false, message: 'userId and message required' });
 	}
 
-// 	// Hämta mottagarens username från användartabellen (t.ex. med QueryCommand)
-// const receiverResult = await db.send(new QueryCommand({
-//   TableName: myTable,
-//   IndexName: 'userId-index', // om du har en GSI på userId
-//   KeyConditionExpression: 'userId = :uid',
-//   ExpressionAttributeValues: { ':uid': userId }
-// }));
-// const receiverUsername = receiverResult.Items?.[0]?.username || 'unknown';
-
 	const dmId = crypto.randomUUID();
 	const item: DirectMessage = {
 		pk: 'DM#' + userId,
 		sk: 'MESSAGE#' + dmId,
 		senderId: payload.username || 'unknown',
 		receiverId: userId,
-		userId: payload.username || 'unknown',
+		// userId: payload.username || 'unknown',
 		message,
 		sentAt: Date.now()
 	};
@@ -71,17 +62,17 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 });
 
-//GET meessage (vid specifik receiverId ange det i urlen)
-router.get('/:receiverId', async (req, res) => {
-	const { receiverId } = req.params;
-	const result = await db.send(new QueryCommand({
-		TableName: myTable,
-		KeyConditionExpression: 'pk = :pk',
-		ExpressionAttributeValues: { ':pk': 'USER#' + receiverId }
-	}));
+// //GET meessage (vid specifik receiverId ange det i urlen)
+// router.get('/:receiverId', async (req, res) => {
+// 	const { receiverId } = req.params;
+// 	const result = await db.send(new QueryCommand({
+// 		TableName: myTable,
+// 		KeyConditionExpression: 'pk = :pk',
+// 		ExpressionAttributeValues: { ':pk': 'USER#' + receiverId }
+// 	}));
 	
-	const dm = result.Items || []
-	res.send({ dm });
-});
+// 	const dm = result.Items || []
+// 	res.send({ dm });
+// });
 
 export default router;
