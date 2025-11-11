@@ -15,10 +15,13 @@ const Channels = () => {
   const username = useUserStore((state) => state.username);
   const [newChannelId, setNewChannelId] = useState('');
   const [showCreateChannel, setShowCreateChannel] = useState(false);
-  
+  const isLoggedIn = username && username !== 'guest';
+   
 
 
   const handleGetChannels = async () => {
+
+    
     const response = await fetch('/api/channels');
     const data = await response.json();
     setChannels(data.channels || []);
@@ -31,7 +34,7 @@ const Channels = () => {
   const handleGetChannelMsg = async (channelId: string) => {
     try {
       // Kontrollera om användaren är inloggad och hämta token
-      const isLoggedIn = username && username !== 'guest';
+    
       const token = localStorage.getItem(LocalStorage_KEY);
       
       const response = await fetch(`/api/channels/${channelId}/messages`, {
@@ -66,15 +69,15 @@ const Channels = () => {
   };
 
   const handleSendMessage = async () => {
-    const channelId = activeChatChannel;
-    if (!channelId || !newMessage.trim()) return;
+    const activeChannelId = activeChatChannel;
+    if (!activeChannelId || !newMessage.trim()) return;
 
     // Kontrollera om användaren är inloggad och hämta token
-    const isLoggedIn = username && username !== 'guest';
+   
     const token = localStorage.getItem(LocalStorage_KEY);
 
     try {
-      const response = await fetch(`/api/channels/${channelId}/messages`, {
+      const response = await fetch(`/api/channels/${activeChannelId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +93,7 @@ const Channels = () => {
 
       if (response.ok) {
         setNewMessage(''); // Rensa input
-        handleGetChannelMsg(channelId); // Hämta meddelanden igen
+        handleGetChannelMsg(activeChannelId); // Hämta meddelanden igen
       } else {
         console.error('Failed to send message');
       }
@@ -101,7 +104,7 @@ const Channels = () => {
   //skapa ny kanal 
   const handleCreateChannel = async () => {
     const channelId = newChannelId;
-    const isLoggedIn = username && username !== 'guest';
+    
     const token = localStorage.getItem(LocalStorage_KEY);
     
     const response = await fetch('/api/channels', {
@@ -123,18 +126,47 @@ const Channels = () => {
       setNewChannelId(''); // Rensa inputfältets
     }
   };
-  
-    
+  const handleDeleteChannel = async (channelId: string) => {
+    const token = localStorage.getItem(LocalStorage_KEY);
+    const response = await fetch(`/api/channels/${channelId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      } 
+    });
+
+    if (response.ok) {
+      handleGetChannels(); // Uppdatera
+    }
+
+  };
+
 
   return (
     <>
       <h2>Channels</h2>
+      {!showCreateChannel && isLoggedIn && (
+      <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
+        Create New Channel
+      </button>
+    )}
+    
+      {showCreateChannel && isLoggedIn &&  (
+        <div className="create-channel-form">
+          <input 
+            value={newChannelId}
+            onChange={(e) => setNewChannelId(e.target.value)}
+            placeholder="Channel name"
+          />
+          <button className="create-button" onClick={handleCreateChannel}>Create</button>
+          <button onClick={() => setShowCreateChannel(false)}>Cancel</button>
+        </div>
+      )}
       <ul className="channels-list">
+        
         {channels.map(channel => {
           const isGuest = !username || username === 'guest';
           const isDisabled = channel.isLocked && isGuest;
-          
-          
           return (
             
             <li key={channel.channelId}>
@@ -149,17 +181,7 @@ const Channels = () => {
                   {channelMessages[channel.channelId] ? `(${channelMessages[channel.channelId].length})` : ''}
                 </span>
               </div>
-              {showCreateChannel && (
-              <div className="create-channel-form">
-                <input 
-                  value={newChannelId}
-                  onChange={(e) => setNewChannelId(e.target.value)}
-                  placeholder="Channel name"
-                />
-                <button onClick={() => setShowCreateChannel(true)}>Cancel</button>
-                <button onClick={() => handleCreateChannel}>Create new channel</button>
-              </div>
-              )}
+             
             </li>
           );
         })}
@@ -173,6 +195,7 @@ const Channels = () => {
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
               <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
+              <button className="delete-channel" onClick={closeChatWindow}></button>
             </div>
             <div className="channel-chat-content">
               {channelMessages[activeChatChannel] && channelMessages[activeChatChannel].length === 0 ? (

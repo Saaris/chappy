@@ -134,10 +134,28 @@
     margin: 0;
     font-size: 1.2rem;
 }
+.create-channel-button {
+    font-size: 15px;
+    background: rgb(233, 233, 233);
+    border: 1px solid rgb(165, 165, 165);
+    color: rgb(33, 32, 32);
+    cursor: pointer;
+}
+.create-channel-form {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    width: 70%;
+    flex-wrap: wrap;
 
-
-
-
+    input {
+        width: 100%;
+        padding: 0.2rem;
+        font-size: 18px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+}
 .channel-chat-content {
     flex: 1;
     padding: 1rem;
@@ -239,4 +257,8 @@
 .fa-lock {
     font-size: 15px;
     padding: 4px;
-};
+}
+.create-channel-button.transparent {
+  opacity: 0.5;
+  pointer-events: none; 
+}
