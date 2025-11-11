@@ -118,7 +118,7 @@ export const handleDeleteUser = async (
         console.log('Delete response status:', response.status);
         if( response.status === 204 ) {
             console.log('Tog bort användare!', userId)
-            // Om vi tar bort oss själva, logga ut
+            // Om man tar bort sig själv, logga ut
             if (userId === currentUser) {
                 logout();
                 localStorage.removeItem(LocalStorage_KEY);

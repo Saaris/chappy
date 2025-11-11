@@ -97,16 +97,30 @@ const Dm = () => {
             },
             body: JSON.stringify(payload)
         });
+        console.log('Response status:', response.status);
+        
         if (response.ok) {
+            console.log('DM skickat framgångsrikt!');
             setDmStatus('Meddelande skickat!');
+            console.log('dmStatus är nu satt till: Meddelande skickat!');
             setDmMessage('');
             
+            // Rensa meddelandet efter 2.5 sekunder (när animationen är klar)
+            setTimeout(() => {
+                setDmStatus('');
+            }, 2500);
             
         } else {
+            console.log('Fel vid skickning av DM:', response.status);
             setDmStatus('Kunde inte skicka meddelande.');
+            
+            // Rensa felmeddelandet efter 3 sekunder
+            setTimeout(() => {
+                setDmStatus('');
+            }, 3000);
         }
     };
-    //n React Hook som cachar/sparar resultatet av en beräkning och bara räknar om när dependencies ändras. Bara räkna om när 'users' ändras
+    // React Hook som cachar/sparar resultatet av en beräkning och bara räknar om när dependencies ändras. Bara räkna om när 'users' ändras
     const userIdToUsername = useMemo(() => 
         Object.fromEntries(users.map(u => [u.userId, u.username])), 
         [users]

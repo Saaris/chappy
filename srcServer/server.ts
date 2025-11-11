@@ -5,6 +5,7 @@ import dmRouter from './routes/dm.js'
 import channelsRouter from './routes/channels.js'
 import loginRouter from './routes/login.js'
 import { logger } from './middleware.js'
+import cors from 'cors'
 
 
 const port: number = Number(process.env.PORT) || 1337
@@ -13,6 +14,7 @@ const app: Express = express()
 app.use(express.static('./dist/'))
 app.use(express.json()) // För att läsa JSON från POST-requests
 app.use('/', logger)
+app.use(cors())
 
 
 //router modules

@@ -69,7 +69,7 @@ const Channels = () => {
   };
 
   const handleSendMessage = async () => {
-     //kontr det finns medd. och aktiv kanal
+     //kontr det finns medd. och aktiv kanal, trim tar bort space
     const activeChannelId = activeChatChannel;
     if (!activeChannelId || !newMessage.trim()) return;
 
