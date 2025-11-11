@@ -61,7 +61,8 @@
 }
 .user-icon {
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 22px;
+    color: rgb(35, 16, 66)
 }
 .logout-btn, .remove-btn, .close-btn, .login-btn {
     
@@ -71,7 +72,7 @@
     color: rgb(33, 32, 32);
     cursor: pointer;
 }
-.svg-inline--fa {
-    font-size: 18px;
+.user-icondisabled{
+    font-size: 22px;
     color: rgb(35, 16, 66)
 }

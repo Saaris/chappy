@@ -9,27 +9,27 @@ import './Channels.css';
 
 const Channels = () => {
   const [channels, setChannels] = useState<Channel[]>([]);
-  const [channelMessages, setChannelMessages] = useState<{[key: string]: any[]}>({});
-  const [activeChatChannel, setActiveChatChannel] = useState<string | null>(null);
+  const [channelMessages, setChannelMessages] = useState<{[key: string]: any[]}>({}); //Meddelanden för varje kanal 
+  const [activeChatChannel, setActiveChatChannel] = useState<string | null>(null); //Vilken kanal som är öppen just nu
   const [newMessage, setNewMessage] = useState('');
-  const username = useUserStore((state) => state.username);
-  const [newChannelId, setNewChannelId] = useState('');
-  const [showCreateChannel, setShowCreateChannel] = useState(false);
+  const username = useUserStore((state) => state.username); //från zustand
+  const [newChannelId, setNewChannelId] = useState(''); // Namn för ny kanal
+  const [showCreateChannel, setShowCreateChannel] = useState(false); // Visa/dölj formulär för att skapa kanal
   const isLoggedIn = username && username !== 'guest';
    
 
 
   const handleGetChannels = async () => {
 
-    
     const response = await fetch('/api/channels');
     const data = await response.json();
     setChannels(data.channels || []);
   };
-
+//useeffect när komponenten laddas första gången
   useEffect(() => {
     handleGetChannels();
   }, []);
+
 
   const handleGetChannelMsg = async (channelId: string) => {
     try {
@@ -62,13 +62,14 @@ const Channels = () => {
       console.error('Error fetching channel messages:', error);
     }
   };
-
+  //stäng chattfönster
   const closeChatWindow = () => {
     setActiveChatChannel(null);
     setNewMessage(''); // Rensa input när vi stänger
   };
 
   const handleSendMessage = async () => {
+     //kontr det finns medd. och aktiv kanal
     const activeChannelId = activeChatChannel;
     if (!activeChannelId || !newMessage.trim()) return;
 
@@ -115,6 +116,7 @@ const Channels = () => {
           'Authorization': `Bearer ${token}`
         }),
       },
+      //skickar med kanalnamn, låsstatus, creator
       body: JSON.stringify({
         channelId: channelId,
         isLocked: false,
@@ -123,10 +125,11 @@ const Channels = () => {
     });
     
     if (response.ok) {
-      handleGetChannels(); // Uppdatera
-      setNewChannelId(''); // Rensa inputfältets
+      handleGetChannels(); // Uppdatera kanallista
+      setNewChannelId(''); // Rensa inputfältet
     }
   };
+
   const handleDeleteChannel = async (channelId: string) => {
     const token = localStorage.getItem(LocalStorage_KEY);
 
@@ -158,7 +161,7 @@ const Channels = () => {
       <h2>Channels</h2>
       {!showCreateChannel && isLoggedIn && (
       <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
-        Create New Channel
+        Create new channel
       </button>
     )}
     
@@ -203,16 +206,20 @@ const Channels = () => {
       {activeChatChannel && (
         <div className="channel-chat-overlay" onClick={closeChatWindow}>
           <div className="channel-chat-popup" onClick={(e) => e.stopPropagation()}>
+
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
               <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
+              
               <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}><FontAwesomeIcon icon={faTrash} /></button>
             </div>
+
             <div className="channel-chat-content">
               {channelMessages[activeChatChannel] && channelMessages[activeChatChannel].length === 0 ? (
                 <p>No messages in this channel</p>
               ) : (
                 channelMessages[activeChatChannel]?.map((message, index) => (
+
                   <div key={index} className="channel-chat-message">
                     <div className="channel-message-header">
                       <p className='chat-sender'>{String(message.senderId || 'Unknown')}</p>

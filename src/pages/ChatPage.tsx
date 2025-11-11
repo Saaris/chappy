@@ -18,7 +18,7 @@ const ChatPage = () => {
 
   return (
     <div>
-      <p className="welcome">{isLoggedIn ? username : 'Guest'}
+      <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'}
       </p>
       <Users />
       <Channels />
