@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTowerBroadcast, faLock, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faTowerBroadcast, faLock, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import type { Channel } from '../../frontenddata/types';
 import { useUserStore } from '../../frontenddata/userStore';
 import { useState, useEffect } from 'react';
@@ -117,7 +117,8 @@ const Channels = () => {
       },
       body: JSON.stringify({
         channelId: channelId,
-        isLocked: false //
+        isLocked: false,
+        creatorUserId: username // Lägg till skaparen
       })
     });
     
@@ -195,7 +196,7 @@ const Channels = () => {
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
               <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
-              <button className="delete-channel" onClick={closeChatWindow}></button>
+              <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}><FontAwesomeIcon icon={faTrash} /></button>
             </div>
             <div className="channel-chat-content">
               {channelMessages[activeChatChannel] && channelMessages[activeChatChannel].length === 0 ? (

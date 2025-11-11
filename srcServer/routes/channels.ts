@@ -148,7 +148,7 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
             isLocked: body.isLocked || false,
             pk: 'CHANNEL#' + newChannelId,
             sk: 'META',
-            creatorUserId: payload?.creatorUserId //TODO validera payload
+            creatorUserId: payload?.userId 
         }
     })
 	try {
