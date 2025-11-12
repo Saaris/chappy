@@ -52,7 +52,12 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 	// pk = 'USER#username'
 	console.log('Found user', found)
 	const token: string = createToken(found.userId, found.pk.substring(5), found.accessLevel)
-	res.send({ success: true, token: token })
+	res.send({ 
+		success: true, 
+		token: token,
+		username: found.username,
+		userId: found.userId 
+	})
 })
 
 export default router

@@ -33,6 +33,8 @@ export interface UserPostRes {
 export interface JwtRes {
 	success: boolean
 	token?: string
+	username?: string
+	userId?: string
 }
 export interface ChannelBody {
   username: string

@@ -13,9 +13,10 @@ const Channels = () => {
   const [activeChatChannel, setActiveChatChannel] = useState<string | null>(null); //Vilken kanal som är öppen just nu
   const [newMessage, setNewMessage] = useState('');
   const username = useUserStore((state) => state.username); //från zustand
+  const userId = useUserStore((state) => state.userId); // userId från zustand
   const [newChannelId, setNewChannelId] = useState(''); // Namn för ny kanal
   const [showCreateChannel, setShowCreateChannel] = useState(false); // Visa/dölj formulär för att skapa kanal
-  const isLoggedIn = username && username !== 'guest';
+  const isLoggedIn = username && username !== 'guest'; 
   const [removeMessage, setRemoveMessage] = useState<string | null>(null);
    
 
@@ -120,21 +121,23 @@ const Channels = () => {
       //skickar med kanalnamn, låsstatus, creator
       body: JSON.stringify({
         channelId: channelId,
-        isLocked: false,
-        creatorUserId: username // Lägg till skaparen
+        isLocked: false
+        // creatorUserId sätts automatiskt av backend från JWT token
       })
     });
     
+   
     if (response.ok) {
       handleGetChannels(); // Uppdatera kanallista
       setNewChannelId(''); // Rensa inputfältet
+    } else {
+      console.error('Failed to create channel');
     }
   };
 
   const handleDeleteChannel = async (channelId: string) => {
     const token = localStorage.getItem(LocalStorage_KEY);
 
-    
     try {
       const response = await fetch(`/api/channels/${channelId}`, {
         method: 'DELETE',
@@ -164,8 +167,21 @@ const Channels = () => {
 
   // endast för UX , göm knappen
   const isChannelCreator = (channelId: string): boolean => {
+      // Säkerhetscheck: Om channels inte är laddade än, returnera false
+      if (!channels || channels.length === 0) {
+        return false;
+      }
+      
       const channel = channels.find(ch => ch.channelId === channelId);
-      return channel?.creatorUserId === username;
+      
+      // Om kanalen inte hittas, returnera false
+      if (!channel) {
+        return false;
+      }
+      
+      // Primärt: jämför med userId (för nya kanaler)
+      // Fallback: jämför med username (för gamla kanaler som kan ha userId som creatorUserId)
+      return channel?.creatorUserId === userId || channel?.creatorUserId === username;
     };
 
   return (

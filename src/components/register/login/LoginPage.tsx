@@ -40,11 +40,13 @@ const Login = () => {
 		const data = await response.json()
 
 		if (data && data.success) {
-			useUserStore.getState().setUsername(formData.username);
+			// Sätt både username och userId från backend
+			useUserStore.getState().setUsername(data.username);
+			useUserStore.getState().setUserId(data.userId);
 			const jwt: string = data.token;
 			localStorage.setItem(LocalStorage_KEY, jwt);
 			
-			console.log('Login succed');
+			console.log('Login succed', 'Username:', data.username, 'UserId:', data.userId);
 			navigate('/chatPage'); 
 		} else {
 			localStorage.removeItem(LocalStorage_KEY);
