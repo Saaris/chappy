@@ -31,7 +31,7 @@ const Channels = () => {
     handleGetChannels();
   }, []);
 
-
+//hämta meddelanden i kanal
   const handleGetChannelMsg = async (channelId: string) => {
     try {
       // Kontrollera om användaren är inloggad och hämta token
@@ -49,7 +49,7 @@ const Channels = () => {
       const data = await response.json();
       const messages = data.messages || [];
       
-      // Lagra meddelanden för den här kanalen
+      // Lagra meddelanden för den här kanalen, kopierar och uppd. med prev(previous)
       setChannelMessages(prev => ({
         ...prev,
         [channelId]: messages
@@ -66,7 +66,7 @@ const Channels = () => {
   //stäng chattfönster
   const closeChatWindow = () => {
     setActiveChatChannel(null);
-    setNewMessage(''); // Rensa input när vi stänger
+    setNewMessage(''); // Rensa input när man stänger
   };
 
   const handleSendMessage = async () => {
@@ -162,11 +162,11 @@ const Channels = () => {
     }
   };
 
-  // Lägg till denna funktion i komponenten:
+  // endast för UX , göm knappen
   const isChannelCreator = (channelId: string): boolean => {
-    const channel = channels.find(ch => ch.channelId === channelId);
-    return channel?.creatorUserId === username;
-  };
+      const channel = channels.find(ch => ch.channelId === channelId);
+      return channel?.creatorUserId === username;
+    };
 
   return (
     <>

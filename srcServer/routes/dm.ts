@@ -62,17 +62,5 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 });
 
-// //GET meessage (vid specifik receiverId ange det i urlen)
-// router.get('/:receiverId', async (req, res) => {
-// 	const { receiverId } = req.params;
-// 	const result = await db.send(new QueryCommand({
-// 		TableName: myTable,
-// 		KeyConditionExpression: 'pk = :pk',
-// 		ExpressionAttributeValues: { ':pk': 'USER#' + receiverId }
-// 	}));
-	
-// 	const dm = result.Items || []
-// 	res.send({ dm });
-// });
 
 export default router;

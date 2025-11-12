@@ -10,12 +10,12 @@ import { useLocation } from 'react-router'
 
 const Header = () => {
     const username = useUserStore((state) => state.username) || "guest";
-    const isLoggedIn = !!username && username !== "guest";
-    const logout = useUserStore((state) => state.logout);
+    const isLoggedIn = !!username && username !== "guest";// kontrollerar om användaren är inloggad (inte guest)
+    const logout = useUserStore((state) => state.logout);// logga ut från userStore
     const isProfileOpen = useProfileStore((state) => state.isProfileOpen);
     const openProfile = useProfileStore((state) => state.openProfile);
     const closeProfile = useProfileStore((state) => state.closeProfile);
-    const setProfileUserId = useProfileStore((state) => state.setProfileUserId);
+    const setProfileUserId = useProfileStore((state) => state.setProfileUserId);// sätta användar-ID för profil
 
     const navigate = useNavigate();
 
@@ -32,8 +32,8 @@ const Header = () => {
 
     const handleDeleteUserClick = async () => {
         await handleDeleteUser(
-            username,
-            username,
+            username, //anv som ska tas bort
+            username, //nuvarande användare
             logout,
             navigate
         );
@@ -45,10 +45,10 @@ const Header = () => {
         closeProfile();
     };
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login';
+    const isLoginPage = location.pathname === '/login'; // kolla om anv är på login-sidan
 
     return (
-        <div className='header'>
+        <div className='header-container'>
             <nav className='navbar'>
                 <div className="user-icon-container">
                     <FontAwesomeIcon 
