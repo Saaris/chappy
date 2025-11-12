@@ -15,14 +15,20 @@ router.get('/', async (req, res) => {
         return res.status(401).send({ success: false, message: 'Access denied' });
     }
     const username = payload.username;
+    const userId = payload.userId;
 
 // Hämta DM där användaren är avsändare eller mottagare
+// Sök efter både username OCH userId för att hantera inkonsistent data
     const result = await db.send(new ScanCommand({
         TableName: myTable,
-        FilterExpression: 'senderId = :u OR receiverId = :u',
-        ExpressionAttributeValues: { ':u': username }
+        FilterExpression: 'senderId = :username OR receiverId = :username OR senderId = :userId OR receiverId = :userId',
+        ExpressionAttributeValues: { 
+            ':username': username,
+            ':userId': userId 
+        }
     }));
     const dm = result.Items || [];
+    console.log(`Hämtade ${dm.length} DM:s för ${username} (${userId})`);
     res.send({ dm });
 });
 
@@ -36,6 +42,9 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 //Säkerställer att jag skickar både receiverId och message när man skickar DM.
 	const { userId, message } = req.body;
+	console.log('DM POST request body:', req.body);
+	console.log('Sender (from JWT):', payload.username, payload.userId);
+	console.log('Receiver (from body):', userId);
 	if (!userId || !message) {
 		return res.status(400).send({ success: false, message: 'userId and message required' });
 	}

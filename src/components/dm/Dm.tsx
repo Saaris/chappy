@@ -16,6 +16,7 @@ const Dm = () => {
     const [dmStatus, setDmStatus] = useState(''); //statusmeddelande ("Meddelande skickat!
     const isLoggedIn = useUserStore((state) => state.isLoggedIn());
     const currentUser = useUserStore((state) => state.username);
+    const currentUserId = useUserStore((state) => state.userId);
 
     // Hämta alla användare från '/api/users' för att mappa userId till username
     useEffect(() => {
@@ -30,9 +31,14 @@ const Dm = () => {
    
 
     //filtrera dm för aktuell anv.
-    const isCurrentUserReceiver =  dms.filter(dm =>
-        dm.senderId === currentUser || dm.receiverId === currentUser
-    );
+    const isCurrentUserReceiver =  dms.filter(dm => {
+        // Jämför med både username OCH userId för både sender och receiver
+        const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
+        const isReceiver = dm.receiverId === currentUser || dm.receiverId === currentUserId;
+        const match = isSender || isReceiver;
+        console.log('Filtering DM:', dm, 'isSender:', isSender, 'isReceiver:', isReceiver, 'Match:', match);
+        return match;
+    });
     
     //fetch dm från backend
     // Hämtar JWT från localStorage
@@ -57,11 +63,26 @@ const Dm = () => {
         }
         const data = await response.json();
         console.log('DM från backend:', data.dm);
+        console.log('Antal DM:s från backend:', data.dm?.length || 0);
+        
+        // Debug: visa alla DM:s
+        data.dm?.forEach((dm: any, index: number) => {
+            console.log(`DM ${index}:`, {
+                senderId: dm.senderId,
+                receiverId: dm.receiverId,
+                message: dm.message?.substring(0, 20) + '...'
+            });
+        });
+        
         setDms(data.dm || []);
     };
     useEffect(() => {
+        console.log('DM useEffect körs - isLoggedIn:', isLoggedIn, 'currentUser:', currentUser);
         if (isLoggedIn && currentUser) {
+            console.log('Båda villkor uppfyllda, kör handleGetdm');
             handleGetdm(); //// Hämta DM när komponenten laddas
+        } else {
+            console.log('Villkor inte uppfyllda för handleGetdm');
         }
 
         // uppdaterings funktion för andra komponenter 
@@ -121,19 +142,33 @@ const Dm = () => {
         }
     };
     // React Hook som cachar/sparar resultatet av en beräkning och bara räknar om när dependencies ändras. Bara räkna om när 'users' ändras
-    const userIdToUsername = useMemo(() => 
-        Object.fromEntries(users.map(u => [u.userId, u.username])), 
-        [users]
-    );
+    const userIdToUsername = useMemo(() => {
+        console.log('All users for mapping:', users);
+        
+        // Skapa mapping för både userId -> username OCH username -> username
+        const mapping: { [key: string]: string } = {};
+        users.forEach(u => {
+            mapping[u.userId] = u.username;  // Normal mapping: userId -> username
+            mapping[u.username] = u.username; // Fallback: username -> username
+        });
+        
+        console.log('userIdToUsername mapping:', mapping);
+        return mapping;
+    }, [users]);
 
 
     // I din dm.tsx, lägg till denna funktion:
 const oneDmConversation = () => {
     const conversations = new Map();
     
+    console.log('currentUser:', currentUser);
+    console.log('isCurrentUserReceiver:', isCurrentUserReceiver);
+    
     isCurrentUserReceiver.forEach(dm => {
         // Bestäm vem som är "den andra personen" i konversationen
         const otherPerson = dm.senderId === currentUser ? dm.receiverId : dm.senderId;
+        console.log('DM:', dm);
+        console.log('otherPerson beräknad som:', otherPerson);
         
         if (!conversations.has(otherPerson)) {
             conversations.set(otherPerson, {
@@ -152,7 +187,9 @@ const oneDmConversation = () => {
         }
     });
     
-    return Array.from(conversations.values());
+    const result = Array.from(conversations.values());
+    console.log('Final conversations:', result);
+    return result;
 
     
 };
