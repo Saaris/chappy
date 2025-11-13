@@ -52,7 +52,7 @@ const Header = () => {
             <nav className='navbar'>
                 <div 
                     className="user-icon-container" 
-                    data-tooltip={isLoggedIn ? 'logout' : 'log in'}
+                    data-tooltip={isLoggedIn ? 'logout' : 'login as user'}
                     onClick={!isLoginPage ? (isLoggedIn ? handleProfileClick : handleLogin) : undefined}
                 >
                     <FontAwesomeIcon 

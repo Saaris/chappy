@@ -71,12 +71,12 @@ if (!validation.success) {
 						
 						/>
 
-					<label> Password </label>
+					<label> New password </label>
 					<input type="password" placeholder="password"
 					onChange={event => setFormData({ ...formData, password: event.target.value })}
 					value={formData.password}
 						/>
-					<label> Confirm password </label>
+					<label> Confirm new password </label>
 					<input
 					type="password"
 					placeholder="confirm password"

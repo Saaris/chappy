@@ -190,14 +190,20 @@ const Channels = () => {
      
     
       {showCreateChannel && isLoggedIn &&  (
-        <div className="create-channel-form">
-          <input 
-            value={newChannelId}
-            onChange={(e) => setNewChannelId(e.target.value)}
-            placeholder="Channel name"
-          />
-          <button className="create-button" onClick={handleCreateChannel}>Create</button>
-          <button className="close-channel-button" onClick={() => setShowCreateChannel(false)}>Cancel</button>
+        <div className="create-channel-form" onClick={() => setShowCreateChannel(false)}>
+          <div className="create-channel-content" onClick={(e) => e.stopPropagation()}>
+             
+            <h3>Create New Channel<FontAwesomeIcon icon={faXmark}className="close-channel-button" onClick={() => setShowCreateChannel(false)}></FontAwesomeIcon></h3>
+            <input 
+              value={newChannelId}
+              onChange={(e) => setNewChannelId(e.target.value)}
+              placeholder="Channel name"
+              autoFocus
+            />
+            <div className="create-channel-buttons">
+              <button className="create-button" onClick={handleCreateChannel}>Create</button>
+            </div>
+          </div>
         </div>
       )}
       <ul className="channels-list">

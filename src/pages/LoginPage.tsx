@@ -62,7 +62,7 @@ return (
 		<div className="auth-column">
 			
 			<p className='create-title'>Login to Chappy</p>
-			<div className="auth-form">
+			<form className="auth-form">
 				<label>Username</label>
 				<input type="text" placeholder="username"
 					onChange={event => setFormData({ ...formData, username: event.target.value })}
@@ -75,7 +75,7 @@ return (
 				/>
 				{loginErrorMsg && <span> {loginErrorMsg} </span>}
 				<button onClick={handleLogin}>Login</button>
-			</div>
+			</form>
 		</div>
 		{/* <div className="register-column">
 			
