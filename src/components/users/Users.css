@@ -12,7 +12,10 @@
     font-size: 22px;
   }
 }
-
+h2 {
+  color: rgb(25, 47, 53);
+  font-size: 1.38rem;
+}
 .users-list {
   list-style: none;
   padding: 0;

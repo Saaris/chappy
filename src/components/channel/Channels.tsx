@@ -202,12 +202,14 @@ const Channels = () => {
       )}
       <ul className="channels-list">
       
+        <div className='title-button'>
         <h2>Channels</h2>
               {!showCreateChannel && isLoggedIn && (
           <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
             Create new channel
           </button>
         )}
+        </div>
         {channels.map(channel => {
           const isGuest = !username || username === 'guest';
           const isDisabled = channel.isLocked && isGuest;

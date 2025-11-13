@@ -63,7 +63,7 @@
     
     input {
       font-size: 16px;
-      width: 90%;
+      width: 100%;
       padding: 4px;
     }
   
@@ -79,12 +79,14 @@
   
   
 
-    input {
+    input, textarea {
       max-width: 380px;
       margin: 6px;
       padding: 6px;
       font-size: 18px;
-      height: 60px;
+      min-height: 60px;
+      resize: vertical;
+      font-family: inherit;
     }
 
     button {
@@ -103,8 +105,11 @@
   width: 80px;
   height: 30px;
   padding: 2px 4px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
+  margin: 4px;
+  border: none;
+  cursor: pointer;
 }
 .dm-label {
   font-size: 16px;
@@ -146,25 +151,33 @@
 }
 .new-dm-section {
   padding: 4px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
   gap: 4px;
+
+  border-radius: 8px;
+
 }
 h4 {
     margin: 4px;
+    color: rgb(25, 47, 53);
 }
 option {
     font-size: 1.1rem;
     border: 1px dotted rgb(150, 150, 150);
+}
+ select {
+      height: 30px;
+      border-radius: 2px;
+      padding: 2px 4px;
+  
 }
 @media (max-width: 400px) {
   .new-dm-section {
       flex-direction: column;
       align-items: center;
   }
-  select {
-      height: 30px;
-  
-}
+ 
+  .send-dm-box textarea {
+      font-size: 14px;
+      
+  }
 }

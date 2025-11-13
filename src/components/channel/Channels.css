@@ -109,13 +109,14 @@
     font-size: 1.2rem;
 }
 .create-channel-button {
-    padding:6px;
-    font-size:16px;
+    padding:4px;
+    font-size:14px;
     background:rgb(214, 233, 229);
     border:none;
     border-radius:6px;
     color:rgb(35, 37, 37);
     cursor:pointer;
+    
 }
 .create-channel-form {
     display: flex;
@@ -237,6 +238,13 @@
     border-radius:6px;
     color:white;
     cursor:pointer;
+}
+.title-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    
 }
 /* @media (max-width: 768px) {
     .channels-list {

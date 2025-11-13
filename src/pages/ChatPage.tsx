@@ -18,6 +18,12 @@ const ChatPage = () => {
   return (
     <div className='chat-container'>
       <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'} </p>
+      {isLoggedIn && (
+        <div className='dm-selection'>
+          <h3>MY DMs</h3>
+          <Dm />
+        </div>
+      )}
        <div className='chatpage'>
         <div className='sidebar'>
 
@@ -25,12 +31,6 @@ const ChatPage = () => {
       <Users />
       <Channels />
       </div>
-      {isLoggedIn && (
-        <div className='dm-selection'>
-          <h3>MY DMs</h3>
-          <Dm />
-        </div>
-      )}
     </div>
    </div> 
   );

@@ -286,7 +286,7 @@ const oneDmConversation = useMemo(() => {
             {/* Sektion för att starta ny DM-konversation */}
             {isLoggedIn && (
                 <div className="new-dm-section">
-                    <h4>Start New DM</h4>
+                    <h4>Start new DM</h4>
                     <select onChange={(e) => {
                         if (e.target.value) {
                             const userId = e.target.value;
