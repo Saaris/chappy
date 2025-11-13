@@ -50,28 +50,24 @@ const Header = () => {
     return (
         <div className='header-container'>
             <nav className='navbar'>
-                <div className="user-icon-container">
+                <div 
+                    className="user-icon-container" 
+                    data-tooltip={isLoggedIn ? 'logout' : 'log in'}
+                    onClick={!isLoginPage ? (isLoggedIn ? handleProfileClick : handleLogin) : undefined}
+                >
                     <FontAwesomeIcon 
                         icon={faUser} 
-                        className={`user-icon${(!isLoggedIn || isLoginPage) ? 'disabled' : ''}`} 
-                        onClick={! isLoginPage ? handleProfileClick : undefined}
+                        className={`user-icon${(!isLoggedIn || isLoginPage) ? 'disabled' : ''}`}
                     />
                     
-                    {isProfileOpen && (
-                        <div className="profile-popup">
-                            {isLoggedIn ? (
-                                <>
-                                    <button 
-                                    className='logout-btn'
-                                    onClick={handleLogout}>Logout</button>
-                                    <button className='remove-btn' onClick={handleDeleteUserClick}> Remove this user<FontAwesomeIcon icon={faXmark} /> </button>
-                                    <button
-                                    className='close-btn' onClick={closeProfile}>Close</button>
-                                </>
-                            ) : (
-                                <button className='login-btn' onClick={handleLogin}>Login</button>
-                                
-                            )}
+                    {isProfileOpen && isLoggedIn && (
+                        <div className="profile-popup" onClick={(e) => e.stopPropagation()}>
+                            <button 
+                                className='logout-btn'
+                                onClick={(e) => { e.stopPropagation(); handleLogout(); }}>Logout</button>
+                            <button className='remove-btn' onClick={(e) => { e.stopPropagation(); handleDeleteUserClick(); }}> Remove this user<FontAwesomeIcon icon={faXmark} /> </button>
+                            <button
+                                className='close-btn' onClick={(e) => { e.stopPropagation(); closeProfile(); }}>Close</button>
                         </div>
                     )}
                 </div>

@@ -47,7 +47,7 @@ if (!validation.success) {
 		setRegErrorMsg('')
 			const jwt: string = data.token
 			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
-			setRegSuccessMsg('register succed, now you can sign in')
+			setRegSuccessMsg('Register succed, now you can sign in!')
 			// navigate('/chatPage'); 
 
 			 setFormData({ username: '', password: '', accessLevel: 'user', confirmPassword: '' }); //töm formuläret
@@ -86,6 +86,7 @@ if (!validation.success) {
 				 {regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
 				 {regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
 				<button className='signup-button' onClick={handleSubmitReg} > Sign up </button>
+				<p className='or'>or</p>
 				<button className='guest-button' onClick={() => {
 					navigate('/chatPage');
 					}}>Continue as a guest</button>

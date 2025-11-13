@@ -22,7 +22,6 @@
   align-items: flex-start;
   padding: 0.5rem 0;
   border-bottom: 1px solid #ddd;
-  cursor: pointer;
   gap: 6px;
   font-size: 1.2rem;
 }
@@ -30,7 +29,7 @@
 .users-icon {
   margin-right: 8px;
   font-size: 1.2rem;
-  cursor: pointer;
+
 }
 .user-item {
   

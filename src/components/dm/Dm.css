@@ -41,14 +41,17 @@
   font-weight:600;
 }
 .dmchat-content {
-  background: white;
+  background: rgb(249, 252, 254);
   border-radius: 8px;
   padding: 20px;
   max-width: 600px;
   max-height: 70vh;
   width: 90%;
   overflow-y: auto;
-   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
     
     input {
       font-size: 16px;
@@ -60,16 +63,20 @@
 .send-dm-box {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
   max-width: 400px;
   min-width: 200px;
   padding: 6px;
   
+  
 
     input {
+      max-width: 380px;
       margin: 6px;
       padding: 6px;
       font-size: 18px;
-      height: 50px;
+      height: 60px;
     }
 
     button {
@@ -124,4 +131,7 @@
     20% { opacity: 1; transform: translateY(0); }
     80% { opacity: 1; transform: translateY(0); }
     100% { opacity: 0; transform: translateY(-10px); }
+}
+.dm-message {
+    border-bottom: 1px dotted rgb(153, 152, 152);
 }
