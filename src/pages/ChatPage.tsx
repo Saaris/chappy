@@ -1,9 +1,8 @@
 import Users from '../components/users/Users.tsx';
 import Dm from '../components/dm/Dm.tsx';
-import './ChatPage.css';
 import { useUserStore } from '../frontenddata/userStore';
 import Channels from '../components/channel/Channels';
-import './ChatPage.css'
+import './ChatPage.css';
 
 
 
