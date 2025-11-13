@@ -18,11 +18,12 @@ router.get('/', async (req, res) => {
     const userId = payload.userId;
 
 // Hämta DM där användaren är avsändare eller mottagare
-// Sök efter både username OCH userId för att hantera inkonsistent data
+// Filtrera BARA på DM-objekt genom att kräva att pk börjar med 'DM#'
     const result = await db.send(new ScanCommand({
         TableName: myTable,
-        FilterExpression: 'senderId = :username OR receiverId = :username OR senderId = :userId OR receiverId = :userId',
+        FilterExpression: 'begins_with(pk, :dmPrefix) AND (senderId = :username OR receiverId = :username OR senderId = :userId OR receiverId = :userId)',
         ExpressionAttributeValues: { 
+            ':dmPrefix': 'DM#',
             ':username': username,
             ':userId': userId 
         }

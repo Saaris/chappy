@@ -63,7 +63,7 @@ if (!validation.success) {
     return <div className="auth-column">
 		    
 				<p className='create-title'> Create new user </p>
-				<div className='auth-form'>
+				<form className='auth-form'>
 					<label> Username </label>
 					<input type="text" placeholder="username"
 					onChange={event => setFormData({ ...formData, username: event.target.value })}
@@ -89,7 +89,7 @@ if (!validation.success) {
 				<button className='guest-button' onClick={() => {
 					navigate('/chatPage');
 					}}>Continue as a guest</button>
-				</div>
+				</form>
 			</div>
 }
 export default Register

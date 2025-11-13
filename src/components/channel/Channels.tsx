@@ -59,7 +59,7 @@ const Channels = () => {
       // Öppna chattfönstret för denna kanal
       setActiveChatChannel(channelId);
       
-      console.log(`Hämtade ${messages.length} meddelanden för kanal ${channelId}`);
+      // console.log(`Hämtade ${messages.length} meddelanden för kanal ${channelId}`);
     } catch (error) {
       console.error('Error fetching channel messages:', error);
     }

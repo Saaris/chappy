@@ -30,15 +30,7 @@ const Dm = () => {
 
    
 
-    //filtrera dm för aktuell anv.
-    const isCurrentUserReceiver =  dms.filter(dm => {
-        // Jämför med både username OCH userId för både sender och receiver
-        const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
-        const isReceiver = dm.receiverId === currentUser || dm.receiverId === currentUserId;
-        const match = isSender || isReceiver;
-        console.log('Filtering DM:', dm, 'isSender:', isSender, 'isReceiver:', isReceiver, 'Match:', match);
-        return match;
-    });
+    //filtrera dm för aktuell anv. (now done inside useMemo)
     
     //fetch dm från backend
     // Hämtar JWT från localStorage
@@ -70,11 +62,22 @@ const Dm = () => {
             console.log(`DM ${index}:`, {
                 senderId: dm.senderId,
                 receiverId: dm.receiverId,
-                message: dm.message?.substring(0, 20) + '...'
+                message: dm.message?.substring(0, 20) + '...',
+                sentAt: dm.sentAt
             });
         });
         
-        setDms(data.dm || []);
+        // Ta bort eventuella dubbletter baserat på sentAt + message + senderId
+        const uniqueDms = data.dm?.filter((dm: any, index: number, arr: any[]) => 
+            arr.findIndex((d: any) => 
+                d.sentAt === dm.sentAt && 
+                d.message === dm.message && 
+                d.senderId === dm.senderId
+            ) === index
+        ) || [];
+        
+        console.log(`Efter deduplicering: ${uniqueDms.length} unika DMs`);
+        setDms(uniqueDms);
     };
     useEffect(() => {
         console.log('DM useEffect körs - isLoggedIn:', isLoggedIn, 'currentUser:', currentUser);
@@ -104,9 +107,12 @@ const Dm = () => {
         if (!selectedDm) return;
         if (!dmMessage) return;
 
-        // Backend förväntar sig { userId, message }
+        // Bestäm vem som är den andra personen (inte den inloggade användaren)
+        const isSender = selectedDm.senderId === currentUser || selectedDm.senderId === currentUserId;
+        const otherPersonId = isSender ? selectedDm.receiverId : selectedDm.senderId;
+
         const payload = {
-            userId: selectedDm.receiverId,
+            userId: otherPersonId,  // Skicka till den andra personen, inte currentUser
             message: dmMessage
         };
         console.log('DM payload som skickas:', payload);
@@ -126,8 +132,14 @@ const Dm = () => {
             console.log('dmStatus är nu satt till: Meddelande skickat!');
             setDmMessage('');
             
+            console.log('🔄 Laddar om DM-lista efter att ha skickat meddelande...');
+            console.log('Antal DMs FÖRE reload:', dms.length);
+            
             // Ladda om DM-listan för att visa det nya meddelandet
             await handleGetdm();
+            
+            console.log('✅ DM-lista laddad om');
+            console.log('Antal DMs EFTER reload:', dms.length);
             
             // Rensa meddelandet efter 2.5 sekunder (när animationen är klar)
             setTimeout(() => {
@@ -160,31 +172,88 @@ const Dm = () => {
     }, [users]);
 
 
-    // I din dm.tsx, lägg till denna funktion:
-const oneDmConversation = () => {
+    // Memoized DM conversation grouping
+const oneDmConversation = useMemo(() => {
     const conversations = new Map();
     
+    console.log('=== oneDmConversation START ===');
     console.log('currentUser:', currentUser);
-    console.log('isCurrentUserReceiver:', isCurrentUserReceiver);
+    
+    // Filter DMs for current user inside useMemo
+    const isCurrentUserReceiver = dms.filter(dm => {
+        // Jämför med både username OCH userId för både sender och receiver
+        const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
+        const isReceiver = dm.receiverId === currentUser || dm.receiverId === currentUserId;
+        const match = isSender || isReceiver;
+        console.log('Filtering DM:', dm, 'isSender:', isSender, 'isReceiver:', isReceiver, 'Match:', match);
+        return match;
+    });
+    
+    console.log('Total DMs to process:', isCurrentUserReceiver.length);
+    
+    // Debug: kolla om det finns dubbletter i rådata
+    const duplicateCheck = new Map();
+    isCurrentUserReceiver.forEach(dm => {
+        const key = `${dm.senderId}-${dm.receiverId}-${dm.sentAt}-${dm.message}`;
+        if (duplicateCheck.has(key)) {
+            console.log('🚨 DUPLICATE FOUND in raw data:', dm);
+        } else {
+            duplicateCheck.set(key, dm);
+        }
+    });
     
     isCurrentUserReceiver.forEach(dm => {
         // Bestäm vem som är "den andra personen" i konversationen
-        // Kontrollera både username och userId för att hitta den andra personen
         const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
-        const otherPerson = isSender ? dm.receiverId : dm.senderId;
+        const otherPersonRaw = isSender ? dm.receiverId : dm.senderId;
+        
+        // Förbättrad normalisering - försök båda riktningar
+        let otherPerson = userIdToUsername[otherPersonRaw] || otherPersonRaw;
+        
+        // Om otherPersonRaw redan är ett username, behåll det
+        // Om det är ett userId, konvertera till username
+        // Men vi behöver också kolla omvänt (om någon userId mappar till otherPersonRaw)
+        const userByUsername = users.find(u => u.username === otherPersonRaw);
+        const userByUserId = users.find(u => u.userId === otherPersonRaw);
+        
+        if (userByUsername) {
+            otherPerson = userByUsername.username; // Det är redan ett username
+        } else if (userByUserId) {
+            otherPerson = userByUserId.username; // Konvertera userId -> username
+        }
+        
+        console.log('=== DM Processing ===');
         console.log('dm.senderId:', dm.senderId, 'dm.receiverId:', dm.receiverId);
         console.log('currentUser:', currentUser, 'currentUserId:', currentUserId);
-        console.log('isSender:', isSender, 'otherPerson beräknad som:', otherPerson);
+        console.log('isSender:', isSender, 'otherPersonRaw:', otherPersonRaw);
+        console.log('userByUsername:', userByUsername?.username, 'userByUserId:', userByUserId?.username);
+        console.log('Final otherPerson:', otherPerson);
+        console.log('Available userIdToUsername mapping:', userIdToUsername);
         
         if (!conversations.has(otherPerson)) {
+            console.log('➕ Creating new conversation for:', otherPerson);
             conversations.set(otherPerson, {
                 otherPerson,
                 latestMessage: dm,
                 messages: [dm]
             });
         } else {
+            console.log('📝 Adding to existing conversation for:', otherPerson);
             const existing = conversations.get(otherPerson);
-            existing.messages.push(dm);
+            
+            // Kolla om meddelandet redan finns (undvik dubbletter)
+            const messageExists = existing.messages.some((existingDm: DmResponse) => 
+                existingDm.sentAt === dm.sentAt && 
+                existingDm.message === dm.message && 
+                existingDm.senderId === dm.senderId
+            );
+            
+            if (!messageExists) {
+                existing.messages.push(dm);
+                console.log('✅ Added unique message. Total messages for', otherPerson, ':', existing.messages.length);
+            } else {
+                console.log('🚫 Skipped duplicate message for', otherPerson);
+            }
             
             // Uppdatera till senaste meddelandet (om detta är nyare)
             if (dm.sentAt > existing.latestMessage.sentAt) {
@@ -194,27 +263,57 @@ const oneDmConversation = () => {
     });
     
     const result = Array.from(conversations.values());
-    console.log('Final conversations:', result);
+    console.log('=== oneDmConversation END ===');
+    console.log('Final conversations count:', result.length);
+    result.forEach(conv => {
+        console.log(`Conversation with ${conv.otherPerson}: ${conv.messages.length} messages`);
+    });
     return result;
-
-    
-};
+}, [dms, users, userIdToUsername, currentUser, currentUserId]);
 
     return (
         <div>
+            {/* Sektion för att starta ny DM-konversation */}
+            {isLoggedIn && (
+                <div className="new-dm-section">
+                    <h4>Start New DM</h4>
+                    <select onChange={(e) => {
+                        if (e.target.value) {
+                            const userId = e.target.value;
+                            // Skapa ett mock DM-objekt för att öppna chat med denna användare
+                            setSelectedDm({
+                                senderId: currentUser || '',
+                                receiverId: userId,
+                                message: '',
+                                sentAt: Date.now().toString()
+                            });
+                            e.target.value = ''; // Reset select
+                        }
+                    }}>
+                        <option value="">Select user to message...</option>
+                        {users
+                            .filter(u => u.username !== currentUser && u.userId !== currentUserId)
+                            .map(u => (
+                                <option key={u.userId} value={u.userId}>
+                                    {u.username}
+                                </option>
+                            ))
+                        }
+                    </select>
+                </div>
+            )}
+
             <ul className="dm-list">
-                {oneDmConversation().length === 0 ? (
+                {oneDmConversation.length === 0 ? (
                 <li className="no-dms-message">
                     <p>No DMs yet</p>
-
                 </li>
                 ) : (
-                oneDmConversation().map(conversation => (
+                oneDmConversation.map((conversation: any) => (
                 <li key={conversation.otherPerson}>
                         <span className="dm-icon"><FontAwesomeIcon icon={faMessage} /></span>
                         <button className="dm-buttons" onClick={() => handleGetDmChat(conversation.latestMessage)}>
                             {isLoggedIn ? userIdToUsername[conversation.otherPerson] || conversation.otherPerson : 'dm-from'}
-                          
                         </button>
                     </li>
                 ))
@@ -224,10 +323,19 @@ const oneDmConversation = () => {
                 <div className="dm-chat-box">
                     <div className='dmchat-content'>
                         {/* Visa alla meddelanden i konversationen */}
-                        {oneDmConversation()
-                            .find(conv => conv.otherPerson === (selectedDm.senderId === currentUser || selectedDm.senderId === currentUserId ? selectedDm.receiverId : selectedDm.senderId))
-                            ?.messages
-                            .sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera chronologiskt
+                        {(() => {
+                            const isSender = selectedDm.senderId === currentUser || selectedDm.senderId === currentUserId;
+                            const otherPersonRaw = isSender ? selectedDm.receiverId : selectedDm.senderId;
+                            const normalizedOtherPerson = userIdToUsername[otherPersonRaw] || otherPersonRaw;
+                            
+                            console.log('Chat lookup - selectedDm:', selectedDm);
+                            console.log('Chat lookup - otherPersonRaw:', otherPersonRaw, 'normalized:', normalizedOtherPerson);
+                            
+                            return oneDmConversation
+                                .find((conv: any) => conv.otherPerson === normalizedOtherPerson)
+                                ?.messages || [];
+                        })()
+                            ?.sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera chronologiskt
                             .map((message: DmResponse, index: number) => (
                                 <div key={index} className={`dm-message ${message.senderId === currentUser || message.senderId === currentUserId ? 'sent' : 'received'}`}>
                                     <p className='dm-sender'>
@@ -242,7 +350,7 @@ const oneDmConversation = () => {
                         {/* <label className='dm-label'>type a new message</label> */}
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
-                        onClick={handleSendDm} type="submit">send</button>
+                        type="submit">send</button>
                         <button type="button" onClick={() => setSelectedDm(null)}>close</button>
                     </form>
                     {dmStatus && <p className="dm-status">{dmStatus}</p>}
