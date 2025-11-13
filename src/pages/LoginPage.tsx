@@ -61,7 +61,7 @@ return (
 		
 		<div className="auth-column">
 			
-			<p>Login to Chappy</p>
+			<p className='create-title'>Login to Chappy</p>
 			<div className="auth-form">
 				<label>Username</label>
 				<input type="text" placeholder="username"

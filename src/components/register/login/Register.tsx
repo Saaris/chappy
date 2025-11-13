@@ -62,7 +62,7 @@ if (!validation.success) {
 }
     return <div className="auth-column">
 		    
-				<p> Create new user </p>
+				<p className='create-title'> Create new user </p>
 				<div className='auth-form'>
 					<label> Username </label>
 					<input type="text" placeholder="username"
