@@ -17,19 +17,23 @@ const ChatPage = () => {
 
 
   return (
-    <div>
-      <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'}
-      </p>
+    <div className='chat-container'>
+      <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'} </p>
+       <div className='chatpage'>
+        <div className='sidebar'>
+
+     
       <Users />
       <Channels />
+      </div>
       {isLoggedIn && (
-        <>
+        <div className='dm-selection'>
           <h3>MY DMs</h3>
           <Dm />
-        </>
+        </div>
       )}
     </div>
-    
+   </div> 
   );
 };
 
