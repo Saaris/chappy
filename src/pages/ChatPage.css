@@ -21,7 +21,31 @@
 .chatpage {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 20px;
+    margin-bottom: 10px;
 }
+
+.sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dm-section {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    
+}
+
+.dm-section h3 {
+    margin: 0 0 10px 0;
+    color: rgb(25, 47, 53);
+    font-size: 18px;
+    padding-bottom: 8px;
+}
+
+
+
+
 
