@@ -1,11 +1,11 @@
-import { LoginSchema } from "../../../frontenddata/zodSchema.ts";
-import type { UserLogin } from "../../../frontenddata/types.ts";
-import './Login.css'
-import Register from './Register.tsx';
+import { LoginSchema } from "../frontenddata/zodSchema.ts";
+import type { UserLogin } from "../frontenddata/types.ts";
+import '../components/register/login/Login.css'
+import Register from '../components/register/login/Register.tsx';
 import { useState } from "react";
 import { useNavigate } from 'react-router';
-import { LocalStorage_KEY } from '../../../frontenddata/key.ts';
-import { useUserStore } from "../../../frontenddata/userStore.ts";
+import { LocalStorage_KEY } from '../frontenddata/key.ts';
+import { useUserStore } from "../frontenddata/userStore.ts";
 
 
 const Login = () => {

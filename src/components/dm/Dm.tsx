@@ -126,6 +126,9 @@ const Dm = () => {
             console.log('dmStatus är nu satt till: Meddelande skickat!');
             setDmMessage('');
             
+            // Ladda om DM-listan för att visa det nya meddelandet
+            await handleGetdm();
+            
             // Rensa meddelandet efter 2.5 sekunder (när animationen är klar)
             setTimeout(() => {
                 setDmStatus('');
@@ -166,9 +169,12 @@ const oneDmConversation = () => {
     
     isCurrentUserReceiver.forEach(dm => {
         // Bestäm vem som är "den andra personen" i konversationen
-        const otherPerson = dm.senderId === currentUser ? dm.receiverId : dm.senderId;
-        console.log('DM:', dm);
-        console.log('otherPerson beräknad som:', otherPerson);
+        // Kontrollera både username och userId för att hitta den andra personen
+        const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
+        const otherPerson = isSender ? dm.receiverId : dm.senderId;
+        console.log('dm.senderId:', dm.senderId, 'dm.receiverId:', dm.receiverId);
+        console.log('currentUser:', currentUser, 'currentUserId:', currentUserId);
+        console.log('isSender:', isSender, 'otherPerson beräknad som:', otherPerson);
         
         if (!conversations.has(otherPerson)) {
             conversations.set(otherPerson, {
@@ -217,13 +223,22 @@ const oneDmConversation = () => {
             {selectedDm && isLoggedIn && (
                 <div className="dm-chat-box">
                     <div className='dmchat-content'>
-                        <p className='dm-sender'>
-                            From: {userIdToUsername[selectedDm.senderId] || selectedDm.senderId}
-                        </p>
-                        <p className='dmchat-text'>{selectedDm.message}</p>
-                        <p className='dm-date'> {new Date(selectedDm.sentAt).toLocaleString()}</p>
-                    </div>
-                    <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
+                        {/* Visa alla meddelanden i konversationen */}
+                        {oneDmConversation()
+                            .find(conv => conv.otherPerson === (selectedDm.senderId === currentUser || selectedDm.senderId === currentUserId ? selectedDm.receiverId : selectedDm.senderId))
+                            ?.messages
+                            .sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera chronologiskt
+                            .map((message: DmResponse, index: number) => (
+                                <div key={index} className={`dm-message ${message.senderId === currentUser || message.senderId === currentUserId ? 'sent' : 'received'}`}>
+                                    <p className='dm-sender'>
+                                        {message.senderId === currentUser || message.senderId === currentUserId ? 'You' : userIdToUsername[message.senderId] || message.senderId}
+                                    </p>
+                                    <p className='dmchat-text'>{message.message}</p>
+                                    <p className='dm-date'>{new Date(message.sentAt).toLocaleString()}</p>
+                                </div>
+                            ))
+                        }   
+                        <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
                         {/* <label className='dm-label'>type a new message</label> */}
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
@@ -231,6 +246,8 @@ const oneDmConversation = () => {
                         <button type="button" onClick={() => setSelectedDm(null)}>close</button>
                     </form>
                     {dmStatus && <p className="dm-status">{dmStatus}</p>}
+                    </div>
+                 
                 </div>
             )}
         </div>

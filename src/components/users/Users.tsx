@@ -27,7 +27,7 @@ const Users = () => {
     return (
         <div className="box">
             
-                <p> Users </p>
+                <h2> Users </h2>
                 <ul className="users-list">
 					{users.filter(u => !isLoggedIn || u.username !== currentUser)
            			 	.map(u => (

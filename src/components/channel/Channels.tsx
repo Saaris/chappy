@@ -186,12 +186,8 @@ const Channels = () => {
 
   return (
     <>
-      <h2>Channels</h2>
-      {!showCreateChannel && isLoggedIn && (
-      <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
-        Create new channel
-      </button>
-    )}
+      
+     
     
       {showCreateChannel && isLoggedIn &&  (
         <div className="create-channel-form">
@@ -205,7 +201,13 @@ const Channels = () => {
         </div>
       )}
       <ul className="channels-list">
-        
+      
+        <h2>Channels</h2>
+              {!showCreateChannel && isLoggedIn && (
+          <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
+            Create new channel
+          </button>
+        )}
         {channels.map(channel => {
           const isGuest = !username || username === 'guest';
           const isDisabled = channel.isLocked && isGuest;
