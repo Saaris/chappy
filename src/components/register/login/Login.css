@@ -5,6 +5,7 @@
   padding-block:4rem;
   flex-wrap:wrap;
   font-family:system-ui, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .auth-column {
