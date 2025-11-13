@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import type { DmResponse, User } from '../../frontenddata/types';
@@ -17,6 +17,16 @@ const Dm = () => {
     const isLoggedIn = useUserStore((state) => state.isLoggedIn());
     const currentUser = useUserStore((state) => state.username);
     const currentUserId = useUserStore((state) => state.userId);
+
+    // Ref för att scroll till senaste meddelande
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll till senaste meddelande när selectedDm ändras
+    useEffect(() => {
+        if (selectedDm && messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [selectedDm]);
 
     // Hämta alla användare från '/api/users' för att mappa userId till username
     useEffect(() => {
@@ -320,8 +330,8 @@ const oneDmConversation = useMemo(() => {
                 )}
             </ul>
             {selectedDm && isLoggedIn && (
-                <div className="dm-chat-box">
-                    <div className='dmchat-content'>
+                <div className="dm-chat-box" onClick={() => setSelectedDm(null)}>
+                    <div className='dmchat-content' onClick={(e) => e.stopPropagation()}>
                         {/* Visa alla meddelanden i konversationen */}
                         {(() => {
                             const isSender = selectedDm.senderId === currentUser || selectedDm.senderId === currentUserId;
@@ -345,13 +355,15 @@ const oneDmConversation = useMemo(() => {
                                     <p className='dm-date'>{new Date(message.sentAt).toLocaleString()}</p>
                                 </div>
                             ))
-                        }   
+                        }
+                        {/* Element för auto-scroll till senaste meddelande */}
+                        <div ref={messagesEndRef} />
                         <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
                         {/* <label className='dm-label'>type a new message</label> */}
                         <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
-                        type="submit">send</button>
-                        <button type="button" onClick={() => setSelectedDm(null)}>close</button>
+                        type="submit">Send</button>
+                        <button type="button" onClick={() => setSelectedDm(null)}>Close</button>
                     </form>
                     {dmStatus && <p className="dm-status">{dmStatus}</p>}
                     </div>

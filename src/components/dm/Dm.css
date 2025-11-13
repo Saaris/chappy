@@ -29,16 +29,18 @@
     }
 }
 .dmchat-text {
-  font-size: 16px;
+  font-size: 1rem;
   margin: 4px;
   font-style: italic;
 }
 .dm-date {
-  font-size: 14px;
+  font-size: 0.8rem;
   margin: 4px;
 }
 .dm-sender {
   font-weight:600;
+  font-size: 1rem;
+  
 }
 .dmchat-content {
   background: rgb(249, 252, 254);
@@ -81,7 +83,7 @@
 
     button {
       padding:6px;
-      font-size:16px;
+      font-size:1.1rem;
       background:rgb(214, 233, 229);
       border: 1px dotted rgb(165, 165, 165);
       border-radius:2px;
@@ -134,4 +136,29 @@
 }
 .dm-message {
     border-bottom: 1px dotted rgb(153, 152, 152);
+    color: rgb(25, 47, 53);
+}
+.new-dm-section {
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4px;
+}
+h4 {
+    margin: 4px;
+}
+option {
+    font-size: 1.1rem;
+    border: 1px dotted rgb(150, 150, 150);
+}
+@media (max-width: 400px) {
+  .new-dm-section {
+      flex-direction: column;
+      align-items: center;
+  }
+  select {
+      height: 30px;
+  
+}
 }
