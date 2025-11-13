@@ -56,8 +56,19 @@
         font-size: 1.4rem;
         padding: 15px;
     }
+    .chat-container {
+        padding: 8px;
+    }
 }
 
+ @media (max-width: 400px) {
 
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+    .welcome {
+        font-size: 1.1rem;
+    }
+}
 
 
