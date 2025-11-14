@@ -65,7 +65,9 @@ if (!validation.success) {
 				<p className='create-title'> Create new user </p>
 				<form className='auth-form'>
 					<label> Username </label>
-					<input type="text" placeholder="username"
+					<input type="text" 
+					placeholder="username"
+					autoComplete="username"
 					onChange={event => setFormData({ ...formData, username: event.target.value })}
 					value={formData.username}
 						
@@ -73,13 +75,16 @@ if (!validation.success) {
 
 					<label> New password </label>
 					<input type="password" placeholder="password"
+					autoComplete="new-password"
 					onChange={event => setFormData({ ...formData, password: event.target.value })}
 					value={formData.password}
+					
 						/>
 					<label> Confirm new password </label>
 					<input
 					type="password"
 					placeholder="confirm password"
+					autoComplete="new-password"
 					onChange={event => setFormData({ ...formData, confirmPassword: event.target.value })}
 					value={formData.confirmPassword}
 					/>

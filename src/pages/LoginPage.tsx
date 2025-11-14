@@ -65,21 +65,22 @@ return (
 			<form className="auth-form">
 				<label>Username</label>
 				<input type="text" placeholder="username"
+					autoComplete="username"
 					onChange={event => setFormData({ ...formData, username: event.target.value })}
 					value={formData.username}
 				/>
 				<label>Password</label>
-				<input type="password" placeholder="password"
-					onChange={event => setFormData({ ...formData, password: event.target.value })}
-					value={formData.password}
-				/>
+				<input type="password"
+						placeholder="password"
+						autoComplete="current-password"
+						onChange={event => setFormData({ ...formData, password: event.target.value })}
+						value={formData.password}
+					/>
 				{loginErrorMsg && <span> {loginErrorMsg} </span>}
 				<button onClick={handleLogin}>Login</button>
 			</form>
 		</div>
-		{/* <div className="register-column">
-			
-		</div> */}
+		
 	</div>
 );
 }

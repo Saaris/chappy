@@ -20,7 +20,6 @@ const ChatPage = () => {
       <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'} </p>
       {isLoggedIn && (
         <div className='dm-selection'>
-          <h3>MY DMs</h3>
           <Dm />
         </div>
       )}
