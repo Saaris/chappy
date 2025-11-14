@@ -8,7 +8,7 @@ import { logger } from './middleware.js'
 import cors from 'cors'
 
 
-const port: number = Number(process.env.PORT) || 1337
+const port: number = Number(process.env.PORT) || 1338
 const app: Express = express()
 
 app.use(express.static('./dist/'))

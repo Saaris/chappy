@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
 	proxy: {
 		
-		'/api': 'http://localhost:1338/'
+		'/api': 'http://localhost:10000/'
 	}
   }
 })
