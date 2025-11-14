@@ -27,8 +27,6 @@ if (!validation.success) {
   return;
 }
 
-// validation.data innehåller nu validerad data
-
       const response = await fetch('/api/users', {
          method: 'POST',
          headers: {

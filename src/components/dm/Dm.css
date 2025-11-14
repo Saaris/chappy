@@ -1,20 +1,20 @@
 .dm-list {
-    padding: 1rem;
+  padding: 1rem;
   background: #f5f5f5;
   border-radius: 8px;
   margin: 1rem 0;
-
-    max-height: 600px;    /* Begränsar höjden (ca 15 li-element) */
-    overflow-y: auto;     /* Visar vertikal scrollbar vid behov */
-    overflow-x: hidden;   /* Döljer horisontell scrollbar */
-    
-
+  
+  max-height: 600px;   
+  overflow-y: auto;     
+  overflow-x: hidden;   
+  
+  
   li {
-      display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
-   min-height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+    min-height: 40px;
   }
 }
 .dm-chat-box {
@@ -23,16 +23,16 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Mörk bakgrund */
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
- 
-
-    p {
-      margin: 4px;
-    }
+  
+  
+  p {
+    margin: 4px;
+  }
 }
 .dmchat-text {
   font-size: 1rem;
@@ -60,12 +60,12 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-    
-    input {
-      font-size: 16px;
-      width: 100%;
-      padding: 4px;
-    }
+  
+  input {
+    font-size: 16px;
+    width: 100%;
+    padding: 4px;
+  }
   
 }
 .send-dm-box {
@@ -78,28 +78,28 @@
   padding: 6px;
   
   
-
-    input, textarea {
-      max-width: 380px;
-      margin: 6px;
-      padding: 6px;
-      font-size: 18px;
-      min-height: 60px;
-      resize: vertical;
-      font-family: inherit;
-    }
-
-    button {
-      padding:6px;
-      font-size:1.1rem;
-      background:rgb(214, 233, 229);
-      border: 1px dotted rgb(165, 165, 165);
-      border-radius:2px;
-      color:rgb(35, 37, 37);
-      cursor:pointer;
-      margin: 4px;
-      
-    }
+  
+  input, textarea {
+    max-width: 380px;
+    margin: 6px;
+    padding: 6px;
+    font-size: 18px;
+    min-height: 60px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  
+  button {
+    padding:6px;
+    font-size:1.1rem;
+    background:rgb(214, 233, 229);
+    border: 1px dotted rgb(165, 165, 165);
+    border-radius:2px;
+    color:rgb(35, 37, 37);
+    cursor:pointer;
+    margin: 4px;
+    
+  }
 }
 .dm-buttons {
   width: 80px;
@@ -120,64 +120,64 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
-    button {
-      padding: 4px;
-      font-size: 15px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    p {
-      font-size: 14px;
-    }
-
+  
+  button {
+    padding: 4px;
+    font-size: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  p {
+    font-size: 14px;
+  }
+  
 }
 .dm-status {
-    font-size: 14px;
-    color: rgb(45, 159, 45);
-    font-weight: bold;
-    animation: fadeInOut 2.5s ease-in-out forwards;
+  font-size: 14px;
+  color: rgb(45, 159, 45);
+  font-weight: bold;
+  animation: fadeInOut 2.5s ease-in-out forwards;
 }
 
 @keyframes fadeInOut {
-    0% { opacity: 0; transform: translateY(-10px); }
-    20% { opacity: 1; transform: translateY(0); }
-    80% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-10px); }
+  0% { opacity: 0; transform: translateY(-10px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
 }
 .dm-message {
-    border-bottom: 1px dotted rgb(153, 152, 152);
-    color: rgb(25, 47, 53);
+  border-bottom: 1px dotted rgb(153, 152, 152);
+  color: rgb(25, 47, 53);
 }
 .new-dm-section {
   padding: 4px;
   gap: 4px;
-
+  
   border-radius: 8px;
-
+  
 }
 h4 {
-    margin: 4px;
-    color: rgb(25, 47, 53);
+  margin: 4px;
+  color: rgb(25, 47, 53);
 }
 option {
-    font-size: 1.1rem;
-    border: 1px dotted rgb(150, 150, 150);
+  font-size: 1.1rem;
+  border: 1px dotted rgb(150, 150, 150);
 }
- select {
-      height: 30px;
-      border-radius: 2px;
-      padding: 2px 4px;
+select {
+  height: 30px;
+  border-radius: 2px;
+  padding: 2px 4px;
   
 }
 @media (max-width: 400px) {
   .new-dm-section {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
- 
+  
   .send-dm-box textarea {
-      font-size: 14px;
-      
+    font-size: 14px;
+    
   }
 }

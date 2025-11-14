@@ -40,7 +40,7 @@ const Login = () => {
 		const data = await response.json()
 
 		if (data && data.success) {
-			// Sätt både username och userId från backend
+			
 			useUserStore.getState().setUsername(data.username);
 			useUserStore.getState().setUserId(data.userId);
 			const jwt: string = data.token;
@@ -53,7 +53,6 @@ const Login = () => {
 		
 		}
 	}
-
 
 return (
 	<div className="auth-page">

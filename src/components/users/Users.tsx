@@ -18,7 +18,7 @@ const Users = () => {
 
     useEffect(() => {
         handleGetUsers(setUsers);
-		// console.log(users)
+	
     }, []);
 
     return (

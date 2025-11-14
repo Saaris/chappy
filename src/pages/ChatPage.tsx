@@ -5,14 +5,9 @@ import Channels from '../components/channel/Channels';
 import './ChatPage.css';
 
 
-
-
 const ChatPage = () => {
-  // Removed unused channels state and related logic
-
   const username = useUserStore((state) => state.username);
   const isLoggedIn = !!username && username !== 'guest';
-
 
 
   return (
@@ -25,8 +20,6 @@ const ChatPage = () => {
       )}
        <div className='chatpage'>
         <div className='sidebar'>
-
-     
       <Users />
       <Channels />
       </div>

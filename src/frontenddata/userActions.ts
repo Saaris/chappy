@@ -19,12 +19,8 @@ export const handleGetUsers = async (setUsers: (users: any[]) => void) => {
     const response = await fetch('/api/users');
     const data = await response.json();
     setUsers(data.users || []);
-    // console.log(data)
+   
 };
-
-
-
-// handleSendDm function removed - DM functionality now handled in Dm.tsx component
 
 // Hämta DM
 export const handleGetDm = async () => {

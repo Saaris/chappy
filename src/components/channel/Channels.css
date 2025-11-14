@@ -298,14 +298,3 @@
 .delete-own-channel {
     padding: 0;
 }
-/* @media (max-width: 768px) {
-    .channels-list {
-        padding: 0.5rem;
-    }
-    .channels-list li {
-        font-size: 1rem;
-        padding: 0;
-        gap: 0;
-    }
-    
-} */

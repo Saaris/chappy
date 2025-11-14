@@ -45,14 +45,14 @@ const Header = () => {
         closeProfile();
     };
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login'; // kolla om anv är på login-sidan
+    const isLoginPage = location.pathname === '/login'; 
 
     return (
         <div className='header-container'>
             <nav className='navbar'>
                 <div 
                     className="user-icon-container" 
-                    data-tooltip={isLoggedIn ? 'logout' : 'login as user'}
+                    data-tooltip={isLoggedIn ? 'user profile management' : 'login as user'}
                     onClick={!isLoginPage ? (isLoggedIn ? handleProfileClick : handleLogin) : undefined}
                 >
                     <FontAwesomeIcon 

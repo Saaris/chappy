@@ -5,7 +5,7 @@
   padding-block:4rem;
   flex-wrap:wrap;
   font-family:system-ui, sans-serif;
-  background: linear-gradient(135deg, #f5f9fa 0%, #c3d9e2 100%);
+  background: var(--main-gradient);
 }
 
 .auth-column {
@@ -43,10 +43,10 @@
   margin-top:0.75rem;
   padding:0.6rem;
   font-size:1.2rem;
-  background: rgb(159, 218, 198);
+  background: var(--buttonBackground);
   border: 1px dotted rgb(139, 139, 139);
   border-radius:6px;
-  color:rgb(17, 18, 18);
+  color:rgb(250, 249, 249);
   cursor:pointer;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .auth-form .guest-button {
-  background:#f5f9fa;;
+  background:#7d8788;
   font-size: 1.2rem;
   margin: 0;
 }
@@ -74,6 +74,7 @@
   color: rgb(224, 38, 38);
   font-weight: 600;
   margin: 0;
+   word-wrap: break-word;
 }
 .or {
   margin: 0;
