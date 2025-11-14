@@ -31,7 +31,7 @@ const Header = () => {
     const handleLogout = () => {
         closeProfile(); 
         logout();
-        navigate('/login');
+        navigate('/loginPage');
     };
 
 
@@ -44,16 +44,16 @@ const Header = () => {
         );
         setTimeout(() => {
             closeProfile();
-            navigate('/login');
+            navigate('/loginPage');
         }, 1000); 
     }
 
     const handleLogin = () => {
-        navigate('/login');
+        navigate('/loginPage');
         closeProfile();
     };
     const location = useLocation();
-    const isLoginPage = location.pathname === '/login'; 
+    const isLoginPage = location.pathname === 'loginPage'; 
 
     return (
         <div className='header-container'>

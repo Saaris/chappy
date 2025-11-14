@@ -67,7 +67,7 @@ export const handleDeleteUser = async (
             if (userId === currentUser) {
                 logout();
                 localStorage.removeItem(LocalStorage_KEY);
-                navigate('/login'); 
+                navigate('/loginPage'); 
             }
         } else {
             console.log('Kunde ej ta bort användare', userId, 'Status:', response.status)
