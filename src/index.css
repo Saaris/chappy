@@ -5,6 +5,7 @@
   --boxShadow: 0 6px 12px rgba(0, 0, 0, 0.06);
   --buttonBackground: #478e9acc;
   --main-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3d9e2 100%);
+  --titleColor: rgb(25, 47, 53);
   line-height: 1.5;
   font-weight: 400;
 

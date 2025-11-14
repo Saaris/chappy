@@ -208,14 +208,13 @@ const Channels = () => {
         </div>
       )}
       <ul className="channels-list">
-      
-        <div className='title-button'>
-        <h2>Channels</h2>
-              {!showCreateChannel && isLoggedIn && (
-          <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
-            Create new channel
-          </button>
-        )}
+        <div className="title-button-row">
+          <h2>Channels</h2>
+          {!showCreateChannel && isLoggedIn && (
+            <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
+              New channel
+            </button>
+          )}
         </div>
         {channels.map(channel => {
           const isGuest = !username || username === 'guest';
@@ -249,10 +248,15 @@ const Channels = () => {
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
               <button className="close-channel-chat" onClick={closeChatWindow}
+              title="close"
+
               onKeyDown={e => { if (e.key === "Enter" || e.key === " ") closeChatWindow() }}><FontAwesomeIcon icon={faXmark} /></button>
-              
               {isLoggedIn && isChannelCreator(activeChatChannel) && (
-                <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}>
+                <button 
+                  className="delete-own-channel" 
+                  onClick={() => handleDeleteChannel(activeChatChannel)}
+                  title="Delete this channel"
+                >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
               )}
