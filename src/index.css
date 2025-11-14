@@ -17,5 +17,6 @@
 body {
   font-family: 'comic-neue', sans-serif;
   min-height: 100vh;
+  color: var(--titleColor)
 
 }

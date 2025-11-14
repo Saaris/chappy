@@ -107,7 +107,7 @@
 .logout-btn, .remove-btn, .close-btn, .login-btn {
     padding:6px;
     font-size:16px;
-    background: rgb(214, 233, 229);
+    background: rgb(242, 247, 251);
     border: 1px dotted rgb(165, 165, 165);
     border-radius:1px;
     color:rgb(35, 37, 37);
