@@ -1,5 +1,116 @@
+
+/* Huvudcontainer för hela applikationen */
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0.5rem; 
+  padding: 0.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* App-komponenten huvudlayout */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header område */
+.app-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Huvudinnehåll område */
+.app-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Sidebar/navigation område */
+.app-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-right: 1px solid #e0e0e0;
+}
+
+/* Huvudcontent område */
+.app-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Layout för login/register sidor */
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Chat layout */
+.chat-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Responsiv design */
+@media (max-width: 768px) {
+  #root {
+    padding: 0.25rem;
+  }
+  
+  .app-main {
+    flex-direction: column;
+  }
+  
+  .app-sidebar {
+    width: 100%;
+    order: 2;
+    border-right: none;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .app-content {
+    padding: 0.5rem;
+  }
+  
+  .auth-layout {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0.125rem;
+  }
+  
+  .app-content {
+    padding: 0.25rem;
+  }
+}
+
+/* Utility classes för spacing */
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.full-height {
+  height: 100vh;
 }

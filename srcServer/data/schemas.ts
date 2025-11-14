@@ -16,11 +16,7 @@ const result = UserSchema.safeParse({
   userId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   accessLevel: "user",
 });
-if (!result.success) {
-  console.log(result.error);
-} else {
-  console.log("Validering lyckades!", result.data); //ta bort hela if satsen sen
-}
+
 
 // Schema för att skicka meddelande till kanal
 export const ChannelMessageSchema = z.object({

@@ -14,13 +14,11 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 	
 	const result = UserSchema.pick({ username: true, password: true }).safeParse(req.body);
 	if (!result.success) {
-		console.log('Validation error', result.error)
 		res.sendStatus(400)
 		return
 	}
 
 	const body: UserPostBody = result.data
-	console.log('body', body)
 
 	const command = new QueryCommand({
 		TableName: myTable,
@@ -30,7 +28,6 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 	})
 	const output = await db.send(command)
 	if( !output.Items || output.Items.length === 0 ) {
-		console.log('No items from db')
 		res.sendStatus(404)
 		return
 	}
@@ -50,7 +47,6 @@ router.post('/', async (req: Request<{}, JwtRes | void, UserPostBody>, res: Resp
 	}
 
 	// pk = 'USER#username'
-	console.log('Found user', found)
 	const token: string = createToken(found.userId, found.pk.substring(5), found.accessLevel)
 	res.send({ 
 		success: true, 

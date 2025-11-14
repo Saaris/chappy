@@ -26,7 +26,6 @@ export const handleGetUsers = async (setUsers: (users: any[]) => void) => {
 export const handleGetDm = async () => {
     const jwt: string | null = localStorage.getItem(LocalStorage_KEY);
     if (!jwt) {
-        console.log('Ingen JWT hittades');
         return [];
     }
 
@@ -40,7 +39,6 @@ export const handleGetDm = async () => {
         const data = await response.json();
         return data.dm || [];
     } else {
-        console.log('Kunde inte hämta DM:', response.status);
         return [];
     }
 };
@@ -53,11 +51,9 @@ export const handleDeleteUser = async (
 ) => {
         const jwt: string | null = localStorage.getItem(LocalStorage_KEY)
         if( !jwt ) {
-            console.log('No JWT in localStorage')
             return
         }
 
-        console.log('Försöker ta bort användare:', userId);
         const response: Response = await fetch('/api/users/' + userId, {
             method: 'DELETE',
             headers: {
@@ -65,7 +61,6 @@ export const handleDeleteUser = async (
             }
         })
 
-        console.log('Delete response status:', response.status);
         if( response.status === 204 ) {
             console.log('Tog bort användare!', userId)
             // Om man tar bort sig själv, logga ut

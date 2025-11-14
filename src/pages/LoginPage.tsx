@@ -46,7 +46,6 @@ const Login = () => {
 			const jwt: string = data.token;
 			localStorage.setItem(LocalStorage_KEY, jwt);
 			
-			console.log('Login succed', 'Username:', data.username, 'UserId:', data.userId);
 			navigate('/chatPage'); 
 		} else {
 			localStorage.removeItem(LocalStorage_KEY);
@@ -76,7 +75,8 @@ return (
 						value={formData.password}
 					/>
 				{loginErrorMsg && <span> {loginErrorMsg} </span>}
-				<button onClick={handleLogin}>Login</button>
+				<button onClick={handleLogin}
+				onKeyDown={e => { if (e.key === "Enter") handleLogin(); }}>Login</button>
 			</form>
 		</div>
 		

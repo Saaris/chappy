@@ -43,9 +43,7 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 //Säkerställer att jag skickar både receiverId och message när man skickar DM.
 	const { userId, message } = req.body;
-	console.log('DM POST request body:', req.body);
-	console.log('Sender (from JWT):', payload.username, payload.userId);
-	console.log('Receiver (from body):', userId);
+	
 	if (!userId || !message) {
 		return res.status(400).send({ success: false, message: 'userId and message required' });
 	}

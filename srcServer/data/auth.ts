@@ -12,8 +12,6 @@ function createToken(userId: string,username: string, accessLevel?: string): str
 
 	const expiration: number = now + 60 * 60
 	
-	console.log('JWT sign secret:', myJwtSecret); 
-	
 	return jwt.sign({
 		userId: userId,
 		username: username,
@@ -29,7 +27,7 @@ function validateJwt(authHeader: string | undefined): Payload | null {
 	}
 	
 	const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
-	console.log('Token to verify:', token);
+
 	try {
 		const decodedPayload: Payload = jwt.verify(token, myJwtSecret) as Payload;
 		const userPayload: Payload = { 
@@ -39,10 +37,9 @@ function validateJwt(authHeader: string | undefined): Payload | null {
 			userId: decodedPayload.userId, 
 			creatorUserId: decodedPayload.creatorUserId 
 		};
-		console.log('JWT verify secret:', myJwtSecret); 
+	
 		return userPayload;
 	} catch (error) {
-		console.log('JWT verify failed: ', (error as any)?.message);
 		return null;
 	}
 }

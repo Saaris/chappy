@@ -59,7 +59,6 @@ const Channels = () => {
       // Öppna chattfönstret för denna kanal
       setActiveChatChannel(channelId);
       
-      // console.log(`Hämtade ${messages.length} meddelanden för kanal ${channelId}`);
     } catch (error) {
       console.error('Error fetching channel messages:', error);
     }
@@ -193,7 +192,8 @@ const Channels = () => {
         <div className="create-channel-form" onClick={() => setShowCreateChannel(false)}>
           <div className="create-channel-content" onClick={(e) => e.stopPropagation()}>
              
-            <h3>Create New Channel<FontAwesomeIcon icon={faXmark}className="close-channel-button" onClick={() => setShowCreateChannel(false)}></FontAwesomeIcon></h3>
+            <h3>Create New Channel<FontAwesomeIcon icon={faXmark}className="close-channel-button" onClick={() => setShowCreateChannel(false)}
+              ></FontAwesomeIcon></h3>
             <input 
               value={newChannelId}
               onChange={(e) => setNewChannelId(e.target.value)}
@@ -201,7 +201,8 @@ const Channels = () => {
               autoFocus
             />
             <div className="create-channel-buttons">
-              <button className="create-button" onClick={handleCreateChannel}>Create</button>
+              <button className="create-button" onClick={handleCreateChannel}
+              onKeyDown={e => { if (e.key === "Enter") handleCreateChannel(); }}>Create</button>
             </div>
           </div>
         </div>
@@ -247,7 +248,8 @@ const Channels = () => {
 
             <div className="channel-chat-header">
               <h3>#{activeChatChannel}</h3>
-              <button className="close-channel-chat" onClick={closeChatWindow}><FontAwesomeIcon icon={faXmark} /></button>
+              <button className="close-channel-chat" onClick={closeChatWindow}
+              onKeyDown={e => { if (e.key === "Enter" || e.key === " ") closeChatWindow() }}><FontAwesomeIcon icon={faXmark} /></button>
               
               {isLoggedIn && isChannelCreator(activeChatChannel) && (
                 <button className="delete-own-channel" onClick={() => handleDeleteChannel(activeChatChannel)}>

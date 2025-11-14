@@ -45,8 +45,7 @@ if (!validation.success) {
 		setRegErrorMsg('')
 			const jwt: string = data.token
 			localStorage.setItem(LocalStorage_KEY, jwt) //JWT-token från backend sparas i webbläsarens localStorage för att användas vid framtida requests.
-			setRegSuccessMsg('Register succed, now you can sign in!')
-			// navigate('/chatPage'); 
+			setRegSuccessMsg('Register succed, now you can sign in!') 
 
 			 setFormData({ username: '', password: '', accessLevel: 'user', confirmPassword: '' }); //töm formuläret
 			useUserStore.getState().setUsername(formData.username); //Sparar användarnamnet i Zustand-store.
@@ -88,11 +87,13 @@ if (!validation.success) {
 					/>
 				 {regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
 				 {regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
-				<button className='signup-button' onClick={handleSubmitReg} > Sign up </button>
+				<button className='signup-button' onClick={handleSubmitReg}
+				onKeyDown={e => { if (e.key === "Enter") handleSubmitReg(); }} > Sign up </button>
 				<p className='or'>or</p>
 				<button className='guest-button' onClick={() => {
 					navigate('/chatPage');
-					}}>Continue as a guest</button>
+					}}
+					onKeyDown={e => { if (e.key === "Enter") navigate('/chatpage'); }}>Continue as a guest</button>
 				</form>
 			</div>
 }

@@ -6,7 +6,8 @@ import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { handleDeleteUser } from '../../frontenddata/userActions';
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router';
+import { useEffect } from 'react';
 
 const Header = () => {
     const username = useUserStore((state) => state.username) || "guest";
@@ -15,18 +16,22 @@ const Header = () => {
     const isProfileOpen = useProfileStore((state) => state.isProfileOpen);
     const openProfile = useProfileStore((state) => state.openProfile);
     const closeProfile = useProfileStore((state) => state.closeProfile);
-    const setProfileUserId = useProfileStore((state) => state.setProfileUserId);// sätta användar-ID för profil
 
     const navigate = useNavigate();
 
+    // Stäng profil popup när användaren ändras eller vid första inladdning
+    useEffect(() => {
+        closeProfile();
+    }, [username, closeProfile]);
+
     const handleProfileClick = () => {
-        setProfileUserId(username);
         openProfile();
     };
 
     const handleLogout = () => {
+        closeProfile(); 
         logout();
-        
+        navigate('/login');
     };
 
 
@@ -35,10 +40,13 @@ const Header = () => {
             username, //anv som ska tas bort
             username, //nuvarande användare
             logout,
-            navigate
+            () => {} // navigera inte direkt
         );
-        closeProfile();
-    };
+        setTimeout(() => {
+            closeProfile();
+            navigate('/login');
+        }, 1000); 
+    }
 
     const handleLogin = () => {
         navigate('/login');

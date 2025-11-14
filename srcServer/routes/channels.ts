@@ -17,7 +17,6 @@ const router: Router = express.Router()
 // GET, Se alla kanaler
 router.get('/', async (req: Request, res: Response) => {
     try {
-        console.log('Fetching all channels from DynamoDB');
         
         const result = await db.send(new ScanCommand({
             TableName: myTable,
@@ -37,7 +36,6 @@ router.get('/', async (req: Request, res: Response) => {
             creatorUserId: item.creatorUserId
         })) || [];
 
-        console.log(`Found ${channels.length} channels:`, channels);
         res.status(200).send({ channels });
         
     } catch (error) {
@@ -103,27 +101,6 @@ router.get('/:channelId/messages', async (req: Request<ChannelParams>, res: Resp
     }
 })
 
-//  // GET meddelanden för en öppen kanal, även för gäst
-// router.get('/:channelId/messages', async (req: Request, res: Response) => {
-//     const { channelId } = req.params
-//     try {
-       
-//         // Hämta meddelanden för kanalen med QueryCommand
-//         const messageResult = await db.send(new QueryCommand({
-//             TableName: myTable,
-//             KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
-//             ExpressionAttributeValues: {
-//                 ':pk': `CHANNEL#${channelId}`,
-//                 ':sk': 'MESSAGE#'
-//             }
-//         }))
-//         const messages = messageResult.Items || []
-//         res.status(200).send({ messages })
-//     } catch (error) {
-//         console.error('Error when get messages from the channel:', error)
-//         res.status(500).send({ success: false, message: 'Failed to fetch messages' })
-//     }
-// })
 
 // Skapa ny kanal (endast för inloggad användare)
 router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<JwtRes>) => {
@@ -142,7 +119,6 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
     const command = new PutCommand({
         TableName: myTable,
         Item: {
-            //username: {username},
             channelId: newChannelId,
             accessLevel: payload?.accessLevel || 'user',
             isLocked: body.isLocked || false,
@@ -157,7 +133,6 @@ router.post('/', async (req: Request<{}, JwtRes, ChannelBody>, res: Response<Jwt
 		res.send({ success: true, token: token })
 
 	} catch(error) {
-		console.log(`register.ts fel:`, (error as any)?.message)
 		res.status(500).send({ success: false })
 	}
 
@@ -187,7 +162,7 @@ router.delete('/:channelId', async (req: Request<ChannelParams>, res: Response<v
     return;
   }
 
-  // Tillåt borttagning endast om userId matchar creatorUserId eller om accessLevel är admin
+
   if (channel.creatorUserId !== payload.userId && payload.accessLevel !== 'admin') {
     res.sendStatus(401);
     return;
