@@ -12,6 +12,7 @@ const ChatPage = () => {
 
   return (
     <div className='chat-container'>
+      
       <p className="welcome">Welcome {isLoggedIn ? username : 'Guest'} </p>
       {isLoggedIn && (
         <div className='dm-selection'>

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
+import DmItem from './DmItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import type { DmResponse, User } from '../../frontenddata/types';
@@ -205,22 +206,24 @@ const oneDmConversation = useMemo(() => {
 }, [dms, users, userIdToUsername, currentUser, currentUserId]);
 
     return (
-        <div>
+        <div className='dm-content'>
             {/* starta ny DM-konversation */}
-            {isLoggedIn && (
+            
+            <ul className="dm-list">
+                {isLoggedIn && (
                 <div className="new-dm-section">
-                    <h4>Start new DM</h4>
+                    <h4>Start new conversation</h4>
                     <select onChange={(e) => {
                         if (e.target.value) {
                             const userId = e.target.value;
-                            // Skapa ett mock DM-objekt för att öppna chat med denna användare
+                            // Skapa ett mock DM-objekt för att öppna chat första ggn
                             setSelectedDm({
                                 senderId: currentUser || '',
                                 receiverId: userId,
                                 message: '',
                                 sentAt: Date.now().toString()
                             });
-                            e.target.value = ''; // Reset select
+                            e.target.value = ''; // Reseta dropdownlista
                         }
                     }}>
                         <option value="">Select user to message...</option>
@@ -235,12 +238,10 @@ const oneDmConversation = useMemo(() => {
                     </select>
                 </div>
             )}
-
-            <ul className="dm-list">
-                <h3>My Dm conversations </h3>
+        
                 {oneDmConversation.length === 0 ? (
                 <li className="no-dms-message">
-                    <p>No DMs yet</p>
+                    <p>No DM:s yet..</p>
                 </li>
                 ) : (
                 oneDmConversation.map((conversation: any) => (
@@ -268,13 +269,12 @@ const oneDmConversation = useMemo(() => {
                         })()
                             ?.sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera chronologiskt
                             .map((message: DmResponse, index: number) => (
-                                <div key={index} className={`dm-message ${message.senderId === currentUser || message.senderId === currentUserId ? 'sent' : 'received'}`}>
-                                    <p className='dm-sender'>
-                                        {message.senderId === currentUser || message.senderId === currentUserId ? 'You' : userIdToUsername[message.senderId] || message.senderId}
-                                    </p>
-                                    <p className='dmchat-text'>{message.message}</p>
-                                    <p className='dm-date'>{new Date(message.sentAt).toLocaleString()}</p>
-                                </div>
+                                <DmItem
+                                  key={index}
+                                  message={message}
+                                  isCurrentUser={message.senderId === currentUser || message.senderId === currentUserId}
+                                  senderName={userIdToUsername[message.senderId] || message.senderId}
+                                />
                             ))
                         }
                         {/* Element för auto-scroll till senaste meddelande */}

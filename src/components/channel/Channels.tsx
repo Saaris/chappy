@@ -192,8 +192,7 @@ const Channels = () => {
         <div className="create-channel-form" onClick={() => setShowCreateChannel(false)}>
           <div className="create-channel-content" onClick={(e) => e.stopPropagation()}>
              
-            <h3>Create New Channel<FontAwesomeIcon icon={faXmark}className="close-channel-button" onClick={() => setShowCreateChannel(false)}
-              ></FontAwesomeIcon></h3>
+            <h3>Create New Channel</h3>
             <input 
               value={newChannelId}
               onChange={(e) => setNewChannelId(e.target.value)}
@@ -203,6 +202,8 @@ const Channels = () => {
             <div className="create-channel-buttons">
               <button className="create-button" onClick={handleCreateChannel}
               onKeyDown={e => { if (e.key === "Enter") handleCreateChannel(); }}>Create</button>
+              <button className="close-channel-button" onClick={() => setShowCreateChannel(false)}
+              >Close</button>
             </div>
           </div>
         </div>

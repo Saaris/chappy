@@ -1,5 +1,3 @@
-
-/* Huvudcontainer för hela applikationen */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -9,14 +7,12 @@
   flex-direction: column;
 }
 
-/* App-komponenten huvudlayout */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Header område */
 .app-header {
   flex-shrink: 0;
   position: sticky;
@@ -24,14 +20,13 @@
   z-index: 100;
 }
 
-/* Huvudinnehåll område */
+
 .app-main {
   flex: 1;
   display: flex;
   overflow: hidden;
 }
 
-/* Sidebar/navigation område */
 .app-sidebar {
   width: 300px;
   flex-shrink: 0;
@@ -39,14 +34,12 @@
   border-right: 1px solid #e0e0e0;
 }
 
-/* Huvudcontent område */
 .app-content {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
 }
 
-/* Layout för login/register sidor */
 .auth-layout {
   display: flex;
   justify-content: center;
@@ -55,14 +48,13 @@
   padding: 2rem;
 }
 
-/* Chat layout */
 .chat-layout {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* Responsiv design */
+
 @media (max-width: 768px) {
   #root {
     padding: 0.25rem;
@@ -98,7 +90,6 @@
   }
 }
 
-/* Utility classes för spacing */
 .container {
   max-width: 100%;
   margin: 0 auto;

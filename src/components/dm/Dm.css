@@ -159,8 +159,9 @@
   
 }
 h4 {
-  margin: 4px;
+  margin: 6px 4px;
   color: rgb(25, 47, 53);
+  font-weight: 400;
 }
 option {
   font-size: 1.1rem;
@@ -184,5 +185,14 @@ select {
   }
   .dmchat-content {
     padding: 10px;
+  }
+}
+.no-dms-message {
+  color: rgb(100, 100, 100);
+  font-style: italic;
+
+  p {
+    margin: 4px 0;
+    padding: 4px;
   }
 }
