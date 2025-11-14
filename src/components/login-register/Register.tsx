@@ -12,7 +12,7 @@ const Register = ({ onRegisterSuccess }: { onRegisterSuccess?: () => void }) => 
 	const [formData, setFormData] = useState<UserRegister>({ username: '', password: '', accessLevel: 'user', confirmPassword: '' });
 	const [regErrorMsg, setRegErrorMsg] = useState('');
 	const [regSuccessMsg, setRegSuccessMsg] = useState('');
-
+	
 	const handleSubmitReg = async () => {
 		useUserStore.getState().setGuest();
 		const validation = validateAndGetError(RegisterSchema, formData, getRegisterErrorMessage);
@@ -53,40 +53,46 @@ const Register = ({ onRegisterSuccess }: { onRegisterSuccess?: () => void }) => 
 	}
 	return (
 		<div className="auth-column">
-			<p className='create-title'> Create new user </p>
-			<form className='auth-form'>
-				<label> Username </label>
-				<input type="text" 
-					placeholder="username"
-					autoComplete="username"
-					onChange={event => setFormData({ ...formData, username: event.target.value })}
-					value={formData.username}
-				/>
-				<label> New password </label>
-				<input type="password" placeholder="password"
-					autoComplete="new-password"
-					onChange={event => setFormData({ ...formData, password: event.target.value })}
-					value={formData.password}
-				/>
-				<label> Confirm new password </label>
-				<input
-					type="password"
-					placeholder="confirm password"
-					autoComplete="new-password"
-					onChange={event => setFormData({ ...formData, confirmPassword: event.target.value })}
-					value={formData.confirmPassword}
-				/>
-				{regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
-				{regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
-				<button className='signup-button' onClick={handleSubmitReg}
-					onKeyDown={e => { if (e.key === "Enter") handleSubmitReg(); }} > Sign up </button>
-				<p className='or'>or</p>
-				<button className='guest-button' onClick={() => {
-					navigate('/chatPage');
-				}}
-					onKeyDown={e => { if (e.key === "Enter") navigate('/chatpage'); }}>Continue as a guest</button>
-					
-			</form>
+		<p className="login-link-text">
+		<span>Already have an account?</span>  
+		<span className="login-link" onClick={onRegisterSuccess} role="button" tabIndex={0}
+		onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') navigate('/loginPage'); }}>
+		<span className='login-link'>Login here!</span>
+		</span>
+		</p>
+		<p className='create-title'> Create new user </p>
+		<form className='auth-form'>
+		<label> Username </label>
+		<input type="text" 
+		placeholder="username"
+		autoComplete="username"
+		onChange={event => setFormData({ ...formData, username: event.target.value })}
+		value={formData.username}
+		/>
+		<label> New password </label>
+		<input type="password" placeholder="password"
+		autoComplete="new-password"
+		onChange={event => setFormData({ ...formData, password: event.target.value })}
+		value={formData.password}
+		/>
+		<label> Confirm new password </label>
+		<input
+		type="password"
+		placeholder="confirm password"
+		autoComplete="new-password"
+		onChange={event => setFormData({ ...formData, confirmPassword: event.target.value })}
+		value={formData.confirmPassword}
+		/>
+		{regErrorMsg && <p className="error-message">{regErrorMsg}</p>}
+		{regSuccessMsg && <p className="success-message">{regSuccessMsg}</p>}
+		<button className='signup-button' onClick={handleSubmitReg}
+		onKeyDown={e => { if (e.key === "Enter") handleSubmitReg(); }} > Sign up </button>
+		<p className='or'>or</p>
+		<button className='guest-button' onClick={() => {
+			navigate('/chatPage');
+		}}
+		onKeyDown={e => { if (e.key === "Enter") navigate('/chatpage'); }}>Continue as a guest</button>
+		</form>
 		</div>
 	);
 }

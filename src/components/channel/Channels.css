@@ -305,3 +305,8 @@
     background: none;
     border: none;
 }
+@media (max-width: 325px) {
+    .channel-chat-input {
+       flex-direction: column; 
+    }
+}

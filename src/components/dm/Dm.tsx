@@ -280,7 +280,7 @@ const oneDmConversation = useMemo(() => {
                         {/* Element för auto-scroll till senaste meddelande */}
                         <div ref={messagesEndRef} />
                         <form className='send-dm-box' onSubmit={(e) => { e.preventDefault(); handleSendDm(); }}>
-                        <input type="text" value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
+                        <input type='text' value={dmMessage} onChange={(e) => setDmMessage(e.target.value)} />
                         <button
                         type="submit">Send</button>
                         <button type="button" onClick={() => setSelectedDm(null)}>Close</button>

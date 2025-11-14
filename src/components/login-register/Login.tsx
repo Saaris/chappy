@@ -66,21 +66,23 @@ const Login = ({ setShowRegister }: { showRegister: boolean, setShowRegister: (v
 				<span className="login-error-message" style={{ minHeight: "1.5em", display: "block" }}>
 					{loginErrorMsg || "\u00A0"}
 					</span>
-				<button onClick={handleLogin}
+				<button 
+				className='login-button' onClick={handleLogin}
 				onKeyDown={e => { if (e.key === "Enter") handleLogin(); }}>Login</button>
-			</form>
+			
 			<p className="register-link-text">
 				Not a registered user?{' '}
 				<span className="register-link" onClick={() => setShowRegister(true)} role="button" onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setShowRegister(true); }}>
 					Register here!
 				</span>
 			</p>
+			<p className='or'>or</p>
 			<button className='guest-button' onClick={() => {
 					navigate('/chatPage');
 				}}
 					onKeyDown={e => { if (e.key === "Enter") navigate('/chatpage'); }}>Continue as a guest</button>
+			</form>	
 		</div>
-	);
-
+	)
 }
 export default Login
