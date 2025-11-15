@@ -18,7 +18,4 @@ API:
 - /api/channels (GET, POST, DELETE): Get, create, and delete channels and channel messages.
 
 
-My Github repo:
-https://github.com/Saaris/chappy.git
-
-// Sara Serti
+// Sara Serti Frontend developer
