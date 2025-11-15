@@ -119,8 +119,8 @@
 .create-channel-button {
     padding:4px;
     font-size:16px;
-    color: var(--buttonBackground);
-    border: 1px solid var(--buttonBackground);
+    color: var(--titleColor);
+    border: 1px solid var(--titleColor);
     border-radius:6px;
     cursor:pointer;
     

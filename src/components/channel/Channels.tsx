@@ -213,7 +213,7 @@ const Channels = () => {
           <h2>Channels</h2>
           {!showCreateChannel && isLoggedIn && (
             <button className={`create-channel-button ${!isLoggedIn ? 'transparent' : ''}`} onClick={() => setShowCreateChannel(true)}>
-              New channel
+              Create channel
             </button>
           )}
         </div>
