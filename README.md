@@ -3,7 +3,7 @@ Chappy - Overview of the project
 
 Chappy is a fullstack chat application built with React, TypeScript, Node.js, and AWS DynamoDB. The project is structured as a monorepo and includes both frontend and backend.
 
-- Technologies and Libraries:
+Technologies and Libraries:
 
 - Frontend: React, TypeScript, Zustand, Vite and CSS.
 - Backend: Node.js, Express, TypeScript, AWS (DynamoDB).
