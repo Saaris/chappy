@@ -68,7 +68,7 @@
 }
 
 .channel-box:hover {
-    background: #e0e0e0;
+    background: #ebebeb;
 }
 
 .message-count {
@@ -123,7 +123,9 @@
     border: 1px solid var(--titleColor);
     border-radius:6px;
     cursor:pointer;
-    
+}
+.create-channel-button:hover {
+    background: #edf7f9;
 }
 .create-channel-form {
     position: fixed;

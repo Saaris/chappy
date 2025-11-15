@@ -23,7 +23,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap:10px;
+    gap:1rem;
     
     a {
         margin: 5px;
@@ -67,7 +67,7 @@
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
-    left: 100%;
+    left: 250%;
     transform: translateX(-50%);
     background-color: #f5f5f5;
     color: rgb(36, 35, 35);
@@ -104,7 +104,7 @@
 .logout-btn, .remove-btn, .close-btn, .login-btn {
     padding:6px;
     font-size:16px;
-    background: rgb(242, 247, 251);
+    background: rgb(252, 254, 255);
     border: 1px dotted rgb(165, 165, 165);
     border-radius:1px;
     color:rgb(35, 37, 37);

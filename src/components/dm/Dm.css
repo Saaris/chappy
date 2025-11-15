@@ -111,7 +111,11 @@
   margin: 4px;
   border: none;
   cursor: pointer;
-  color: var(--titleColor)
+  color: var(--titleColor);
+  border-radius: 6px;
+}
+.dm-buttons:hover {
+  background-color: #ececec;
 }
 .dm-label {
   font-size: 16px;
