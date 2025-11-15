@@ -16,7 +16,7 @@ import { randomUUID } from "crypto";
 const router: Router = express.Router()
 
 
-// //GET alla users
+// GET alla users
 router.get('/', async (req: Request, res: Response<UsersRes | ErrorMessage>) =>  { 
  try {
 
@@ -73,8 +73,8 @@ router.post('/', async (req: Request, res: Response<UserPostRes | ErrorMessage>)
     }
 
     const salt = await genSalt(10);
-    const hashedPassword = await hash(password, salt); //lägger till ett "salt" till lösenordet innan man hashar. (salt = ett slumpat tal)
-    // Spara hashedPassword istället för password
+    const hashedPassword = await hash(password, salt); 
+    
     //newUser objekt, ny användare
     const userId = randomUUID().slice(0, 5);
     const newUser = {
