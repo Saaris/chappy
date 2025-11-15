@@ -48,7 +48,7 @@ const Login = ({ setShowRegister }: { showRegister: boolean, setShowRegister: (v
 
 	return (
 		<div className="auth-column">
-			<p className='create-title'>Login to Chappy</p>
+			<p className='create-title'>Login to start chat</p>
 			<form className="auth-form">
 				<label>Username</label>
 				<input type="text" placeholder="username"
