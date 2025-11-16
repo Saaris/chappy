@@ -8,7 +8,7 @@ import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { handleDeleteUser } from '../../frontenddata/userActions';
 import { useLocation } from 'react-router';
 import { useEffect } from 'react';
-import chappyLogo from '../../../public/chappyLogo.png';
+import chappyLogo from '../../assets/chappyLogo.png'
 
 const Header = () => {
     const username = useUserStore((state) => state.username) || "guest";
