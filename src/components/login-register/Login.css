@@ -51,6 +51,7 @@
   gap:4rem;
   padding-block:1rem;
   flex-wrap:wrap;
+  margin-top: 2rem;
   
 }
 .auth-form {
@@ -118,7 +119,7 @@
   .guest-button {
     max-width: 100%;
     padding:0.2rem;
-    font-size:1rem;
+    font-size:1.1rem;
     background: #7d8788;
     border: 1px dotted rgb(139, 139, 139);
     border-radius:6px;
