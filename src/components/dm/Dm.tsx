@@ -9,19 +9,17 @@ import { setDmUpdater } from '../../frontenddata/userActions';
 import './Dm.css';
 
 const Dm = () => {
-    const [dms, setDms] = useState<DmResponse[]>([]);//array med alla DM-meddelanden
-    const [users, setUsers] = useState<User[]>([]);//array med alla användare (för att mappa userId till username)
-    const [selectedDm, setSelectedDm] = useState<DmResponse | null> (null); // vilket DM som är valt för chat
-    const [dmMessage, setDmMessage] = useState(''); //text som användaren skriver i chatfönstret
-    const [dmStatus, setDmStatus] = useState(''); //statusmeddelande ("Meddelande skickat!
+    const [dms, setDms] = useState<DmResponse[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+    const [selectedDm, setSelectedDm] = useState<DmResponse | null> (null); 
+    const [dmMessage, setDmMessage] = useState(''); 
+    const [dmStatusWhenSend, setDmStatus] = useState(''); 
     const isLoggedIn = useUserStore((state) => state.isLoggedIn());
     const currentUser = useUserStore((state) => state.username);
     const currentUserId = useUserStore((state) => state.userId);
 
     // Ref för att scroll till senaste meddelande
     const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // Auto-scroll till senaste meddelande när selectedDm ändras
     useEffect(() => {
         if (selectedDm && messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -59,7 +57,7 @@ const Dm = () => {
     };
     useEffect(() => {
         if (isLoggedIn && currentUser) {
-            handleGetdm(); // Hämta DM när komponenten laddas
+            handleGetdm(); // Hämta DM vid inloggad user
         }
 
         // uppdaterings funktion för andra komponenter 
@@ -102,7 +100,6 @@ const Dm = () => {
             setDmStatus('Meddelande skickat!');
             setDmMessage('');
             
-            // Ladda om DM-listan för att visa det nya meddelandet
             await handleGetdm();
             
             // Rensa meddelandet efter 2.5 sekunder (när animationen är klar)
@@ -113,7 +110,6 @@ const Dm = () => {
         } else {
             setDmStatus('Kunde inte skicka meddelande.');
             
-            // Rensa felmeddelandet efter 3 sekunder
             setTimeout(() => {
                 setDmStatus('');
             }, 3000);
@@ -121,42 +117,32 @@ const Dm = () => {
     };
     
     const userIdToUsername = useMemo(() => {
-        // Skapa mapping för både userId -> username OCH username -> username
+        //  mapping för userId till username och username till username
         const mapping: { [key: string]: string } = {};
         users.forEach(u => {
-            mapping[u.userId] = u.username;  // Normal mapping: userId -> username
-            mapping[u.username] = u.username; // Fallback: username -> username
+            mapping[u.userId] = u.username; 
+            mapping[u.username] = u.username; 
         });
         
         return mapping;
     }, [users]);
 
 
-    // Memoized DM conversation grouping
+    //  oneDmConversation räknas ut på nytt om någon av dms, users, userIdToUsername, currentUser eller currentUserId ändras. Annars återanvänds det gamla värdet.
 const oneDmConversation = useMemo(() => {
     const conversations = new Map();
     
-    // Filter DMs for current user inside useMemo
+    //filter används för att välja ut dm där inloggad är avsänd eller mottag.
+    //forEach används för att gruppera dem per konversation.
     const isCurrentUserReceiver = dms.filter(dm => {
-        // Jämför med både username OCH userId för både sender och receiver
+        
         const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
         const isReceiver = dm.receiverId === currentUser || dm.receiverId === currentUserId;
         return isSender || isReceiver;
     });
+    
+    isCurrentUserReceiver.forEach(dm => {
 
-    
-    // kolla om det finns dubbletter 
-    const duplicateCheck = new Map();
-    isCurrentUserReceiver.forEach(dm => {
-        const key = `${dm.senderId}-${dm.receiverId}-${dm.sentAt}-${dm.message}`;
-        if (duplicateCheck.has(key)) {
-        } else {
-            duplicateCheck.set(key, dm);
-        }
-    });
-    
-    isCurrentUserReceiver.forEach(dm => {
-        // Bestäm vem som är "den andra personen" i konversationen
         const isSender = dm.senderId === currentUser || dm.senderId === currentUserId;
         const otherPersonRaw = isSender ? dm.receiverId : dm.senderId;
         
@@ -165,7 +151,7 @@ const oneDmConversation = useMemo(() => {
         
         // Om otherPersonRaw redan är ett username, behåll det
         // Om det är ett userId, konvertera till username
-        // Men vi behöver också kolla omvänt (om någon userId mappar till otherPersonRaw)
+        // kolla omvänt (om någon userId mappar till otherPersonRaw)
         const userByUsername = users.find(u => u.username === otherPersonRaw);
         const userByUserId = users.find(u => u.userId === otherPersonRaw);
         
@@ -207,8 +193,7 @@ const oneDmConversation = useMemo(() => {
 
     return (
         <div className='dm-content'>
-            {/* starta ny DM-konversation */}
-            
+
             <ul className="dm-list">
                 {isLoggedIn && (
                 <div className="new-dm-section">
@@ -267,7 +252,7 @@ const oneDmConversation = useMemo(() => {
                                 .find((conv: any) => conv.otherPerson === normalizedOtherPerson)
                                 ?.messages || [];
                         })()
-                            ?.sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera chronologiskt
+                            ?.sort((a: DmResponse, b: DmResponse) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()) // Sortera kronologiskt
                             .map((message: DmResponse, index: number) => (
                                 <DmItem
                                   key={index}
@@ -285,7 +270,7 @@ const oneDmConversation = useMemo(() => {
                         type="submit">Send</button>
                         <button type="button" onClick={() => setSelectedDm(null)}>Close</button>
                     </form>
-                    {dmStatus && <p className="dm-status">{dmStatus}</p>}
+                    {dmStatusWhenSend && <p className="dm-status">{dmStatusWhenSend}</p>}
                     </div>
                  
                 </div>

@@ -13,9 +13,9 @@
     
 }
 
-.chatLogo {
-    width: 75px;
-    height: 60px;
+.chat-logo {
+    max-width: 70px;
+    max-height: 71px;
     
 }
 .navbar {
@@ -23,7 +23,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap:1rem;
+    gap:2rem;
     
     a {
         margin: 5px;

@@ -8,7 +8,7 @@ import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { handleDeleteUser } from '../../frontenddata/userActions';
 import { useLocation } from 'react-router';
 import { useEffect } from 'react';
-import chatLogo from '../../../public/chatLogo.png';
+import chappyLogo from '../../../public/chappyLogo.png';
 
 const Header = () => {
     const username = useUserStore((state) => state.username) || "guest";
@@ -60,8 +60,8 @@ const Header = () => {
         <div className='header-container'>
             <nav className='navbar'>
                 <img 
-                    src={chatLogo}
-                    alt='chat logo'
+                    src={chappyLogo}
+                    alt='chappy logo'
                     className='chat-logo'
                 />
 
